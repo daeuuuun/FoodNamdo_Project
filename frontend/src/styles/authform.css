@@ -1,0 +1,102 @@
+.auth-form-container {
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-form-container img {
+    width: 8rem;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem 0;
+    padding: 3rem 3rem;
+    border: 1px solid #3F72AF;
+    background-color: #DBE2EF;
+    width: 30%;
+    min-height: 150px;
+    border-radius: 25px;
+}
+
+.auth-form .input-form {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    margin: 0.3rem 0;
+    width: 80%;
+    border-radius: 15px;
+    padding: 0 0.8rem;
+    background-color: #F9F7F7;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.address-form {
+    min-height: 2.2rem;
+    height: 3rem;
+}
+
+.input-form .icons {
+    font-size: 1.3rem;
+    margin-right: 0.3rem;
+    color: #DBE2EF;
+}
+
+.input-form input {
+    width: 80%;
+    height: 2.2rem;
+    border: none;
+    outline: none;
+    font-size: 0.8rem;
+    background-color: #F9F7F7;
+    font-family: 'Gmarket Sans Medium';
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.btn {
+    padding: 0 5px;
+    font-family: 'Gmarket Sans Medium';
+    font-size: 0.7rem;
+    font-weight: 300;
+    width: 4rem;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    border-radius: 15px;
+    border: 1px solid #3F72AF;
+    color: #3F72AF;
+    text-align: center;
+
+    &:hover {
+        background-color: #DBE2EF;
+    }
+}
+
+.auth-button {
+    height: 2.5rem;
+    width: 90%;
+    border-radius: 15px;
+    background-color: #F9F7F7;
+    text-align: center;
+    line-height: 2.3rem;
+    font-size: 0.8rem;
+    margin-top: 0.9rem;
+    border: 1px solid #3F72AF;
+    font-family: 'Gmarket Sans Medium';
+
+    &:hover {
+        cursor: pointer;
+        background-color: #F9F7F7;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+}

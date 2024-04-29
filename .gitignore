@@ -1,0 +1,4 @@
+backend/imageSearchRecommend/__pycache__
+backend/imageSearchRecommend/img
+.env
+frontend/node_modules
