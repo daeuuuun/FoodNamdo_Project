@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>User SignUp</title>
+</head>
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    User SignUp
+                </div>
+                <div class="card-body">
+                    <form action="/user/signUp" method="post">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Name</span>
+                            <input type="text" name="name" class="form-control" placeholder="Name">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Nickname</span>
+                            <input type="text" name="nickname" class="form-control" placeholder="Nickname">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Phone</span>
+                            <input type="text" name="phone" class="form-control" placeholder="Phone">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">AccountId</span>
+                            <input type="text" name="accountId" class="form-control" placeholder="AccountId">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Password</span>
+                            <input type="text" name="password" class="form-control" placeholder="Password">
+                        </div>
+
+                        <div class="my-4">
+                            <div class="float-end">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="reset" class="btn btn-secondary">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div><!--end card body-->
+            </div><!--end card-->
+        </div><!-- end col-->
+    </div><!-- end row-->
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    const errors = [[${errors}]]
+    console.log(errors)
+
+    let errorMsg = ''
+
+    if(errors){
+        for (let i = 0; i < errors.length; i++) {
+            errorMsg += `${errors[i].field}은(는) ${errors[i].code} \n`
+        }
+        alert(errorMsg)
+    }
+
+</script>
