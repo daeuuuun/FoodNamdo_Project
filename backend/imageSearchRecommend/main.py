@@ -1,4 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form
+from contextlib import asynccontextmanager
 import chromadb_utils
 import chromadb
 from chromadb.utils.embedding_functions import OpenCLIPEmbeddingFunction
@@ -18,7 +19,14 @@ collection = client.get_or_create_collection(
     embedding_function=embedding_function,
     data_loader=image_loader)
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    if not chromaDB_exists:
+        chromadb_utils.init(collection)
+    yield
+    print("FastAPI application is shutting down!")
+
+app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # 모든 출처 허용
@@ -46,12 +54,3 @@ async def create_upload_file(file: UploadFile = File(...), n_results: int = Form
 @app.get("/")
 def read_root():
     return {"Hello" : "World"}
-
-@app.on_event("startup")
-async def on_startup():
-    if not chromaDB_exists:
-        chromadb_utils.init(collection)
-
-@app.on_event("shutdown")
-async def on_shutdown():
-    print("FastAPI application is shutting down!")
