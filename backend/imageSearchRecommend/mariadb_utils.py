@@ -3,11 +3,11 @@ import mariadb
 from mariadb import Error
 
 db_config = {
-    'host': os.getenv("MYSQL_USER"),
+    'host': os.getenv("MYSQL_HOST"),
     'user': os.getenv("MYSQL_USER"),
     'password': os.getenv("MYSQL_PASSWORD"),
     'database': os.getenv("MYSQL_DATABASE"),
-    'port': os.getenv("MYSQL_PORT")
+    'port': int(os.getenv("MYSQL_PORT"))
 }
 
 # DB 연결
@@ -19,13 +19,10 @@ def connect_to_mariadb():
         print(f"Error connecting to MariaDB Platform: {e}")
 
 # 데이터 조회 함수 정의
-def fetch_data_from_table(connection, table):
+def fetch_data_from_table(connection, query):
     try:
         # 커서 생성
         cursor = connection.cursor()
-
-        # 데이터 조회 쿼리 실행
-        query = f"SELECT * FROM {table}"
         cursor.execute(query)
 
         # 결과 가져오기
@@ -39,14 +36,32 @@ def fetch_data_from_table(connection, table):
         # 커서 닫기
         cursor.close()
 
-def select_from_table(db_connection, table):
-    data = fetch_data_from_table(db_connection, table)
-    return data
-
-def select_from_db():
+def select_from_db_data(table):
     # 연결 및 데이터 조회
     db_connection = connect_to_mariadb()
-    rstrimg = select_from_table(db_connection, "RstrImg")
+    result = fetch_data_from_table(db_connection, table)
     db_connection.close()
-    return rstrimg
-    
+    return result
+
+def fetch_data_from_table_column(connection, query):
+    try:
+        # 커서 생성
+        cursor = connection.cursor()
+        cursor.execute(query)
+
+        # 결과 가져오기
+        return [col[0] for col in cursor.description]
+
+    except Error as e:
+        print(f"Error fetching data from MariaDB: {e}")
+        return None
+    finally:
+        # 커서 닫기
+        cursor.close()
+
+def select_from_db_column(query):
+    # 연결 및 데이터 조회
+    db_connection = connect_to_mariadb()
+    result = fetch_data_from_table_column(db_connection, query)
+    db_connection.close()
+    return result

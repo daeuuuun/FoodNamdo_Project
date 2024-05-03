@@ -1,4 +1,5 @@
 backend/imageSearchRecommend/__pycache__
 backend/imageSearchRecommend/img
+backend/imageSearchRecommend/chromadb_data
 .env
 frontend/node_modules
