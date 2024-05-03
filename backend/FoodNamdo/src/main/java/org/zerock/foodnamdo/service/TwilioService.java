@@ -10,7 +10,8 @@ public class TwilioService {
     // Twilio 계정 정보 초기화
     public static final String ACCOUNT_SID = "ACe30bdd07ba1c58f4b4b132feece69ba4";
     public static final String AUTH_TOKEN = "d18a85c5fcfa58a2c007da854c851213";
-    public static final String FROM_PHONE_NUMBER = "010-4557-5569";
+//    public static final String FROM_PHONE_NUMBER = "+8201045575569";
+    public static final String FROM_PHONE_NUMBER = "+14024152442";
 
     static {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
@@ -22,8 +23,6 @@ public class TwilioService {
                         new PhoneNumber(FROM_PHONE_NUMBER),
                         body)
                 .create();
-
-        System.out.println("Sent message SID: " + message.getSid());
     }
 }
 

@@ -11,6 +11,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.foodnamdo.dto.UserDTO;
 import org.zerock.foodnamdo.service.TwilioService;
 import org.zerock.foodnamdo.service.UserManagementService;
+import org.zerock.foodnamdo.service.CoolsmsService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/usermanagement")
@@ -20,7 +24,8 @@ import org.zerock.foodnamdo.service.UserManagementService;
 public class UserManagementController {
 
     private final UserManagementService userManagementService;
-    private final TwilioService twilioService;
+
+    private Map<String, String> verificationCodes = new HashMap<>();
 
 //    @GetMapping("/list")
 //    public void list(PageRequestDTO pageRequestDTO, Model model) {
@@ -99,37 +104,75 @@ public class UserManagementController {
 //        }
 //    }
 
-    @Operation(summary = "이름을 이용해 아이디 찾기")
-    @GetMapping("/findIdByName")
-    public UserDTO findIdByName(
+    @Operation(summary = "이름, 전화번호를 이용해 아이디 찾기")
+    @PostMapping("/findAccountIdByNameAndPhone")
+    public UserDTO findAccountIdByNameAndPhone(
             @RequestParam("name") String name,
-            @RequestParam("phone") String phone) {
-        log.info("findIdByName...." + name + phone);
-//        UserDTO userDTO = UserDTO.fromUser(userManagementService.findIdByName(name));
-//
-//        return userDTO;
-        UserDTO userDTO = UserDTO.fromUser(userManagementService.findIdByName(name, phone));
+            @RequestParam("phone") String phone,
+            @RequestParam("code") String code) {
+        String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
+        log.info("findAccountIdByNameAndPhone...." + name + formatPhone);
+        String savedCode = verificationCodes.get(formatPhone);
 
-        if(userDTO != null) {
-            TwilioService twilioService = new TwilioService();
-            String messageBody = "Your ID is " + userDTO.getAccountId() + ".";
-            twilioService.sendSms(phone, messageBody);
+        if (savedCode == null || !savedCode.equals(code)) {
+            UserDTO userDTO = UserDTO.fromUser(userManagementService.findAccountIdByNameAndPhone(name, formatPhone));
+            System.out.println(userManagementService.findAccountIdByNameAndPhone(name, formatPhone));
+            if(userDTO == null) return null;
+            return userDTO;
         } else {
+            return null;
         }
-
-        return userDTO;
     }
 
-//    @Operation(summary = "이름, 아이디를 이용해 비밀번호 찾기")
-//    @GetMapping("/findPwdByNameId")
-//    public UserDTO findPwdByNameId(
-//            @RequestParam("name") String name,
-//            @RequestParam("accountId") String accountId) {
-//        log.info("findPwdByNameId...." + name + accountId);
-//        UserDTO userDTO = UserDTO.fromUser(userManagementService.findIdByName(name));
-//
-//        return userDTO;
-//    }
+    @Operation(summary = "아이디, 이름, 전화번호를 이용해 비밀번호 찾기")
+    @PostMapping("/findPasswordByAccountIdAndNameAndPhone")
+    public UserDTO findPasswordByAccountIdAndNameAndPhone(
+            @RequestParam("accountId") String accountId,
+            @RequestParam("name") String name,
+            @RequestParam("phone") String phone,
+            @RequestParam("code") String code) {
+        String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
+        log.info("findAccountIdByNameAndPhone...." + name + formatPhone);
+        String savedCode = verificationCodes.get(formatPhone);
+
+        if (savedCode == null || !savedCode.equals(code)) {
+            UserDTO userDTO = UserDTO.fromUser(userManagementService.findUserByAccountIdAndNameAndPhone(accountId, name, formatPhone));
+            System.out.println(userManagementService.findUserByAccountIdAndNameAndPhone(accountId, name, formatPhone));
+            if(userDTO == null) return null;
+            return userDTO;
+        } else {
+            return null;
+        }
+    }
+
+//        if (userDTO != null) {
+//            String verificationCode = userManagementService.generateVerificationCode();
+//            verificationCodes.put(formatPhone, verificationCode);
+////            coolsmsService.sendSMS(userDTO.getPhone(),verificationCode);
+//            //        UserDTO userDTO = UserDTO.fromUser(userManagementService.findUserByPhone(formatPhone));
+//            return true;
+//        } else {
+//            return false;
+//        }
+
+    @Operation(summary = "인증번호 요청")
+    @PostMapping("/verify")
+    public boolean verify(@RequestParam("phone") String phone) {
+        String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
+        String verificationCode = userManagementService.generateVerificationCode();
+        verificationCodes.put(formatPhone, verificationCode);
+        CoolsmsService coolsmsService = new CoolsmsService();
+        UserDTO userDTO = UserDTO.fromUser(userManagementService.findUserByPhone(formatPhone));
+
+        if (userDTO != null) {
+            try {
+                coolsmsService.sendSMS(formatPhone, verificationCode);
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }else return false;
+    }
 
 //    @GetMapping("/read")
 //    public void read(Long userId, PageRequestDTO pageRequestDTO, Model model) {

@@ -14,5 +14,9 @@ public interface UserManagementRepository extends JpaRepository<User, Long>, Use
 
 //    User findIdByName(String name);;
 
-    User findByNameAndPhone(String name, String phone);
+    User findAccountIdByNameAndPhone(String name, String phone);
+
+    User findUserByAccountIdAndNameAndPhone(String accountId, String name, String phone);
+
+    User findUserByPhone(String phone);
 }

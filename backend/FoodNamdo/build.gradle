@@ -65,6 +65,8 @@ dependencies {
 
 	implementation 'com.twilio.sdk:twilio:8.25.0'
 
+	implementation 'net.nurigo:sdk:4.3.0'
+
 }
 
 tasks.named('test') {

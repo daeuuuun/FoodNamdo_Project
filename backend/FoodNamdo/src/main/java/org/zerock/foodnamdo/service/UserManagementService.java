@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.zerock.foodnamdo.domain.User;
 import org.zerock.foodnamdo.dto.UserDTO;
 
-@Service
+//@Service
 public interface UserManagementService {
 
     Long signUp(UserDTO userDTO);
@@ -15,7 +15,12 @@ public interface UserManagementService {
 
     void deleteUser(Long userId);
 
-    User findIdByName(String name, String phone);
+    User findAccountIdByNameAndPhone(String name, String phone);
+    User findUserByAccountIdAndNameAndPhone(String accountId, String name, String phone);
+
+    User findUserByPhone(String phone);
+
+    String generateVerificationCode();
 
 //    PageResponseDTO<UserDTO> list(PageRequestDTO pageRequestDTO);
 }
