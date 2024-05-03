@@ -19,13 +19,10 @@ def connect_to_mariadb():
         print(f"Error connecting to MariaDB Platform: {e}")
 
 # 데이터 조회 함수 정의
-def fetch_data_from_table(connection, table):
+def fetch_data_from_table(connection, query):
     try:
         # 커서 생성
         cursor = connection.cursor()
-
-        # 데이터 조회 쿼리 실행
-        query = f"SELECT * FROM {table}"
         cursor.execute(query)
 
         # 결과 가져오기
@@ -46,13 +43,10 @@ def select_from_db_data(table):
     db_connection.close()
     return result
 
-def fetch_data_from_table_column(connection, table):
+def fetch_data_from_table_column(connection, query):
     try:
         # 커서 생성
         cursor = connection.cursor()
-
-        # 데이터 조회 쿼리 실행
-        query = f"SELECT * FROM {table}"
         cursor.execute(query)
 
         # 결과 가져오기
@@ -65,9 +59,9 @@ def fetch_data_from_table_column(connection, table):
         # 커서 닫기
         cursor.close()
 
-def select_from_db_column(table):
+def select_from_db_column(query):
     # 연결 및 데이터 조회
     db_connection = connect_to_mariadb()
-    result = fetch_data_from_table_column(db_connection, table)
+    result = fetch_data_from_table_column(db_connection, query)
     db_connection.close()
     return result
