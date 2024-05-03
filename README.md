@@ -14,7 +14,8 @@ FoodNamdo(Directory)
     └─FoodNamdo
     └─imageSearchRecommend
         └─chromadb_data
-            └─chromad.sqlite3
+            └─chroma.sqlite3
+            └─...
 └─frontend
 └─.env
 └─docker-copmose.yml
