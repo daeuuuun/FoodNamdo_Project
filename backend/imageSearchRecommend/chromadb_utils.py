@@ -49,7 +49,7 @@ def img_saving(collection, save_path, table, data, columns):
 keys_to_remove = ["embeddings", "documents", "uris", "data"]
 
 # 이미지로 음식점 이미지 유사도 검색
-def img_to_img(collection, file, file_extension_name, n_results, similarity, table):
+def img_to_img(collection, file, file_extension_name, similarity, n_results, table):
     save_path = "./img/temp/"
     os.makedirs(save_path, exist_ok=True)
     unique_filename = f"{uuid.uuid4()}.{file_extension_name}"
@@ -57,7 +57,7 @@ def img_to_img(collection, file, file_extension_name, n_results, similarity, tab
     url = save_path + unique_filename
     with open(url, "wb") as f:
         f.write(file.file.read())
-    query_result = collection.query(query_uris=url, n_results = n_results * 2)
+    query_result = collection.query(query_uris=url, n_results=n_results)
     
     for key in keys_to_remove:
         query_result.pop(key, None)
@@ -106,6 +106,7 @@ def insert_rstrimg_rstr_info(query_result):
         data = mariadb_utils.select_from_db_data(query)
         for i in range(len(rstr_column_array)):
             item[rstr_column_array[i]] = data[0][i]
+        item['menu_description'] = select_menu_description_info(item['rstr_id'])
     return query_result
 
 def insert_reviewimg_rstr_info(query_result):
@@ -114,4 +115,19 @@ def insert_reviewimg_rstr_info(query_result):
         data = mariadb_utils.select_from_db_data(query)
         for i in range(len(rstr_column_array)):
             item[rstr_column_array[i]] = data[0][i]
+        item['menu_description'] = select_menu_description_info(item['rstr_id'])
     return query_result
+
+menu_column_array = ['menu_description_id', 'menu_id', 'menu_category_sub', 'menu_name', 'menu_price']
+menu_column = ", ".join(menu_column_array)
+def select_menu_description_info(item_rstr_id):
+    query = f"SELECT {menu_column} FROM menu_description WHERE menu_description.rstr_id = {item_rstr_id}"
+    data = mariadb_utils.select_from_db_data(query)
+    menu_data = []
+
+    for row in data:
+        json_item = {}
+        for i in range(len(menu_column_array)):
+            json_item[menu_column_array[i]] = row[i]
+        menu_data.append(json_item)
+    return menu_data
