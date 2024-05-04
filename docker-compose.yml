@@ -13,11 +13,15 @@ services:
     build: ./frontend
     ports:
       - "3000:3000"
+    depends_on:
+      - food_namdo
     restart: always
 
   food_namdo:
     build: ./backend/FoodNamdo
     ports:
       - "8080:8080"
+    depends_on:
+      - image_search_recommend
     env_file: .env
     restart: always
