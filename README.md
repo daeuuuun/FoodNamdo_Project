@@ -6,8 +6,8 @@
 3. .env 파일을 추가하여 내용을 채운다. ([참고](https://github.com/foodnamdo/env))
 4. [프로젝트 구조도](#프로젝트-구조도)와 같이 구성해야 한다.
 5. backend/FoodNamdo 디렉토리에서 아래의 명령어 각각 실행
-    ./gradlew build
-    java -jar build/libs/FoodNamdo-0.0.1-SNAPSHOT.jar
+    `./gradlew build`, 
+    `java -jar build/libs/FoodNamdo-0.0.1-SNAPSHOT.jar`
 6. project 디렉토리에서 `docker-compose up --build` 명령어로 프로젝트 실행
 
 ### 프로젝트 구조도
