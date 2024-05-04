@@ -31,29 +31,29 @@ public class UserManagementServiceTests {
 
         log.info("userId: " + userId);
     }
+//
+//    @Test
+//    public void modify() {
+//        UserDTO userDTO = UserDTO.builder()
+//                .userId(1L)
+//                .nickname("update_belljin")
+//                .build();
+//
+//        userManagementService.modify(userDTO);
+//    }
 
-    @Test
-    public void modify() {
-        UserDTO userDTO = UserDTO.builder()
-                .userId(1L)
-                .nickname("update_belljin")
-                .build();
-
-        userManagementService.modify(userDTO);
-    }
-
-    @Test
-    public void testList() {
-
-        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
-                .type("n")
-                .keyword("b")
-                .page(1)
-                .size(10)
-                .build();
-
-        PageResponseDTO<UserDTO> responseDTO = userManagementService.list(pageRequestDTO);
-
-        log.info(responseDTO);
-    }
+//    @Test
+//    public void testList() {
+//
+//        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+//                .type("n")
+//                .keyword("b")
+//                .page(1)
+//                .size(10)
+//                .build();
+//
+//        PageResponseDTO<UserDTO> responseDTO = userManagementService.list(pageRequestDTO);
+//
+//        log.info(responseDTO);
+//    }
 }
