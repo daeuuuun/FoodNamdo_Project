@@ -1,17 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import palette from '../../../../styles/palette';
-import StarIcon from '@mui/icons-material/Star';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import { useNavigate } from 'react-router-dom';
 
 const RstrCardContainer = styled.div`
-    margin: 5px;
+    margin: 5px 8px;
     padding: 0.5rem;
-    width: 170px;
+    width: 167px;
     border-radius: 10px;
     border: 1px solid ${palette.lightblue};
     box-shadow: 2px 1px 2px ${palette.gray};
-    // background-color: ${palette.lightblue};
+    background-color: ${palette.lightblue};
     
     &:hover {
         cursor: pointer;
@@ -46,15 +46,15 @@ const RstrInfo = styled.div`
     }
 
     &.info .rating {
-        display: flex;
-        align-items: center;
+        flex-direction: row;
         font-size: 0.8rem;
     }
 `;
 
-const StyledStarIcon = styled(StarIcon)`
+const StyledStarIcon = styled(StarRoundedIcon)`
     color: ${palette.yellow};
     color: #FFD700;
+    margin-right: -2px;
 `;
 
 const RstrCard = () => {
@@ -72,10 +72,10 @@ const RstrCard = () => {
                 {'금오식육식당'}
             </RstrInfo>
             <RstrInfo className='info'>
-                <div>{'식육(숯불구이)'}</div>
-                <div className='rating'>
+                <div style={{ marginTop: '1px' }}>{'식육(숯불구이)'}</div>
+                <div className='centered-flex rating'>
                     <StyledStarIcon />
-                    <div>
+                    <div style={{ marginTop: '1px' }}>
                         {`${4.9}(${10})`}
                     </div>
                 </div>

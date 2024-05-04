@@ -9,9 +9,9 @@ import LoginPage from './pages/auth/LoginPage';
 import SignUpPage from './pages/auth/SignUpPage';
 import RstrDetailPage from './pages/rstr/detail/RstrDetailPage';
 import RstrListPage from './pages/rstr/list/RstrListPage';
-import IdAuthPage from './pages/auth/IdAuthPage';
-import PwAuthPage from './pages/auth/PwAuthPage';
 import UpArrow from './components/common/UpArrow';
+import FindIdPage from './pages/auth/FindIdPage';
+import FindPwPage from './pages/auth/FindPwPage';
 
 function App() {
   return (
@@ -26,8 +26,8 @@ function App() {
           {/* 회원 인증 페이지들 */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/find-pw" element={<PwAuthPage />} />
-          <Route path="/find-id" element={<IdAuthPage />} />
+          <Route path="/find-pw" element={<FindPwPage />} />
+          <Route path="/find-id" element={<FindIdPage />} />
 
           {/* 음식점 페이지들 */}
           <Route path="/rstr/1" element={<RstrDetailPage />} />

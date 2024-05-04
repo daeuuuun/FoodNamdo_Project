@@ -8,6 +8,7 @@ const palette = {
     darkblue1: "#254871",
     darkblue2: "#112D4E",
     yellow: "#FFDA57",
+    error: "#D50136",
 };
 
 export default palette;

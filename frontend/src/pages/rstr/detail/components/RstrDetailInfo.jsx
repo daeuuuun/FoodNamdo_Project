@@ -23,6 +23,25 @@ const InfoContent = styled.div`
     font-size: 0.9rem;
 `;
 
+const MenuTable = styled.div`
+    .menu-table {
+        width: 40%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 6px;
+        text-align: left;
+        font-size: 0.8rem;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    .menu-table-container {
+        margin: 20px;
+    }
+`;
+
 const RstrDetailInfo = () => {
     return (
         <RstrDetailInfoContainer>
@@ -39,7 +58,27 @@ const RstrDetailInfo = () => {
             </InfoContainer>
             <InfoContainer>
                 <InfoTitle>메뉴정보</InfoTitle>
-                <InfoContent></InfoContent>
+                <InfoContent>
+                    <MenuTable className='menu-table-container'>
+                        <table className='menu-table'>
+                            <tr>
+                                <th>분류</th>
+                                <th>메뉴명</th>
+                                <th>가격</th>
+                            </tr>
+                            <tr>
+                                <td>비빔냉면</td>
+                                <td>열무냉면</td>
+                                <td>7,000원</td>
+                            </tr>
+                            <tr>
+                                <td>냉면</td>
+                                <td>냉면</td>
+                                <td>7,000원</td>
+                            </tr>
+                        </table>
+                    </MenuTable>
+                </InfoContent>
             </InfoContainer>
             <InfoContainer>
                 <InfoTitle>추가정보</InfoTitle>
