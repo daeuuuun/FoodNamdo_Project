@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException, Form
+from fastapi import FastAPI, File, UploadFile, HTTPException, Form, Query
 from contextlib import asynccontextmanager
 import chromadb_utils
 import chromadb
@@ -49,34 +49,34 @@ def is_valid_image_filename(filename: str) -> bool:
 @app.post("/image_to_image/",
           summary="음식점 이미지와 리뷰 이미지를 이용한 이미지 검색",
           description="이미지 파일(png, jpg, jpeg)와 결과 수(n_results)의 값과 유사도(similarity: 0에 근접할수록 유사도 증가 0에 멀어질수록 유사도 감소) 함께 요청하면 입력한 이미지 파일과 유사한 이미지를 입력한 결과 수만큼 검색한다.")
-async def image_search_all(file: UploadFile = File(...), n_results: int = Form(...), similarity: float = Form(...)):
+async def image_search_all(file: UploadFile = File(...), n_results: int = Form(...), similarity: float = Query(..., ge=0, le=10)):
     # 파일이 이미지인지 확인
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=400, detail="Only images with extensions {} are allowed.".format(ALLOWED_IMAGE_EXTENSIONS))
     
     file_copy = copy.deepcopy(file)
-    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, file, file.filename.split(".")[-1], n_results, similarity, "rstr_img")
-    results_review_img = chromadb_utils.img_to_img(review_img_collection, file_copy, file.filename.split(".")[-1], n_results, similarity, "review_img")
+    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, file, file.filename.split(".")[-1], similarity, "rstr_img")
+    results_review_img = chromadb_utils.img_to_img(review_img_collection, file_copy, file.filename.split(".")[-1], similarity, "review_img")
     return sorted(results_rstr_img + results_review_img, key=lambda x: x['distance'])[:n_results]
 
 @app.post("/image_to_image_rstr/",
           summary="음식점 이미지를 이용한 이미지 검색",
           description="이미지 파일(png, jpg, jpeg)와 결과 수(n_results)의 값과 유사도(similarity: 0에 근접할수록 유사도 증가 0에 멀어질수록 유사도 감소) 함께 요청하면 입력한 이미지 파일과 유사한 이미지를 입력한 결과 수만큼 검색한다.")
-async def image_search_only_rstr(file: UploadFile = File(...), n_results: int = Form(...), similarity: float = Form(...)):
+async def image_search_only_rstr(file: UploadFile = File(...), n_results: int = Form(...), similarity: float = Query(..., ge=0, le=10)):
     # 파일이 이미지인지 확인
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=400, detail="Only images with extensions {} are allowed.".format(ALLOWED_IMAGE_EXTENSIONS))
     
-    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, file, file.filename.split(".")[-1], n_results, similarity, "rstr_img")
+    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, file, file.filename.split(".")[-1], similarity, "rstr_img")
     return results_rstr_img[:n_results]
 
 @app.post("/img_to_img_review/",
           summary="리뷰 이미지를 이용한 이미지 검색",
           description="이미지 파일(png, jpg, jpeg)와 결과 수(n_results)의 값과 유사도(similarity: 0에 근접할수록 유사도 증가 0에 멀어질수록 유사도 감소) 함께 요청하면 입력한 이미지 파일과 유사한 이미지를 입력한 결과 수만큼 검색한다.")
-async def image_search_only_review(file: UploadFile = File(...), n_results: int = Form(...), similarity: float = Form(...)):
+async def image_search_only_review(file: UploadFile = File(...), n_results: int = Form(...), similarity: float = Query(..., ge=0, le=10)):
     # 파일이 이미지인지 확인
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=400, detail="Only images with extensions {} are allowed.".format(ALLOWED_IMAGE_EXTENSIONS))
     
-    results_review_img = chromadb_utils.img_to_img(review_img_collection, file, file.filename.split(".")[-1], n_results, similarity, "review_img")
+    results_review_img = chromadb_utils.img_to_img(review_img_collection, file, file.filename.split(".")[-1], similarity, "review_img")
     return results_review_img[:n_results]
