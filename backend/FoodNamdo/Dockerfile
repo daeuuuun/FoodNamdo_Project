@@ -1,11 +1,5 @@
 FROM openjdk:17-jdk-alpine AS builder
 
-COPY . /usr/src/app
-WORKDIR /usr/src/app
+COPY build/libs/FoodNamdo-0.0.1-SNAPSHOT.jar app.jar
 
-RUN chmod +x ./gradlew
-RUN ./gradlew bootJar
-
-FROM openjdk:17-jdk-alpine
-COPY --from=builder /usr/src/app/build/libs/*.jar /home/server.jar
-ENTRYPOINT ["java", "-jar", "/home/server.jar", "--spring.profiles.active=dev"]
+ENTRYPOINT ["java","-jar","/app.jar"]
