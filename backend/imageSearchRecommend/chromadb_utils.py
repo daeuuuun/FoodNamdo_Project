@@ -49,7 +49,7 @@ def img_saving(collection, save_path, table, data, columns):
 keys_to_remove = ["embeddings", "documents", "uris", "data"]
 
 # 이미지로 음식점 이미지 유사도 검색
-def img_to_img(collection, file, file_extension_name, similarity, table):
+def img_to_img(collection, file, file_extension_name, similarity, n_results, table):
     save_path = "./img/temp/"
     os.makedirs(save_path, exist_ok=True)
     unique_filename = f"{uuid.uuid4()}.{file_extension_name}"
@@ -57,7 +57,7 @@ def img_to_img(collection, file, file_extension_name, similarity, table):
     url = save_path + unique_filename
     with open(url, "wb") as f:
         f.write(file.file.read())
-    query_result = collection.query(query_uris=url)
+    query_result = collection.query(query_uris=url, n_results=n_results)
     
     for key in keys_to_remove:
         query_result.pop(key, None)
