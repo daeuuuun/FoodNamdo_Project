@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
 import palette from '../../../../styles/palette';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
@@ -61,14 +62,27 @@ const StyledStarIcon = styled(StarRoundedIcon)`
 const RstrCard = ({ rstrInfo }) => {
 
     const navigate = useNavigate();
+    const imgUrl = rstrInfo.rstr_img_url;
 
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const response = await axios.get(imgUrl);
+    //             console.log(response.data);
+    //         } catch (error) {
+    //             console.error('이미지 요청 에러:', error);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, []);
 
     return (
         <RstrCardContainer onClick={() => {
-            navigate(`/rstr/${1}`)
+            navigate(`/rstr/${rstrInfo.rstr_id}`, { state: { rstrInfo } })
         }}>
             <ImgContainer>
-                <Img src={'/img/cat1.jpg'} alt={'이미지'} />
+                <Img src={imgUrl} alt={'이미지'} />
             </ImgContainer>
             <RstrInfo className='title'>
                 {rstrInfo.rstr_name}

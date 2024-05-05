@@ -36,7 +36,7 @@ function App() {
           <Route path="/find-id" element={<FindIdPage />} />
 
           {/* 음식점 페이지들 */}
-          <Route path="/rstr/1" element={<RstrDetailPage />} />
+          <Route path="/rstr/:rstrId" element={<RstrDetailPage />} />
           <Route path="/rstr/:page?" element={
             <FileProvider>
               <RstrListPage />

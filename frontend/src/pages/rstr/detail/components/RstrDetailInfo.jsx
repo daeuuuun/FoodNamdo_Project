@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import palette from '../../../../styles/palette';
 import AdditionInfo from './AdditionInfo';
 import RstrMap from './RstrMap';
+import { useLocation } from 'react-router-dom';
 
 const RstrDetailInfoContainer = styled.div`
     padding: 10px;
@@ -20,7 +21,8 @@ const InfoTitle = styled.div`
 
 const InfoContent = styled.div`
     margin-top: 0.8rem;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    line-height: 25px;
 `;
 
 const MenuTable = styled.div`
@@ -30,9 +32,9 @@ const MenuTable = styled.div`
     }
     th, td {
         border: 1px solid black;
-        padding: 6px;
+        padding: 3px;
         text-align: left;
-        font-size: 0.8rem;
+        font-size: 0.9rem;
     }
     th {
         background-color: #f2f2f2;
@@ -43,17 +45,21 @@ const MenuTable = styled.div`
 `;
 
 const RstrDetailInfo = () => {
+
+    const location = useLocation();
+    const { rstrInfo } = location.state;
+
     return (
         <RstrDetailInfoContainer>
             <InfoContainer>
                 <InfoTitle>소개내용</InfoTitle>
-                <InfoContent>OO식당은 한식을 전문으로 하는 매장입니다. 경상남도 OO시에 위치해 있습니다.</InfoContent>
+                <InfoContent>{rstrInfo.rstr_intro}</InfoContent>
             </InfoContainer>
             <InfoContainer>
                 <InfoTitle>운영시간</InfoTitle>
                 <InfoContent>
-                    <div>매일 10:30 ~ 20:30</div>
-                    <div>휴무일 - 화요일</div>
+                    {rstrInfo.rstr_business_hour != 'null' ? <div>{rstrInfo.rstr_business_hour}</div> : <div>운영시간 정보 없음</div>}
+                    {rstrInfo.rstr_closed != 'null' ? <div>{rstrInfo.rstr_closed}</div> : <div>휴무일 정보 없음</div>}
                 </InfoContent>
             </InfoContainer>
             <InfoContainer>
@@ -66,16 +72,13 @@ const RstrDetailInfo = () => {
                                 <th>메뉴명</th>
                                 <th>가격</th>
                             </tr>
-                            <tr>
-                                <td>비빔냉면</td>
-                                <td>열무냉면</td>
-                                <td>7,000원</td>
-                            </tr>
-                            <tr>
-                                <td>냉면</td>
-                                <td>냉면</td>
-                                <td>7,000원</td>
-                            </tr>
+                            {rstrInfo.menu_description.map((menu) => (
+                                <tr key={menu.menu_description_id}>
+                                    <td>{menu.menu_category_sub != 'null' ? menu.menu_category_sub : ''}</td>
+                                    <td>{menu.menu_name}</td>
+                                    <td>{menu.menu_price}</td>
+                                </tr>
+                            ))}
                         </table>
                     </MenuTable>
                 </InfoContent>
@@ -83,14 +86,14 @@ const RstrDetailInfo = () => {
             <InfoContainer>
                 <InfoTitle>추가정보</InfoTitle>
                 <InfoContent>
-                    <AdditionInfo />
+                    <AdditionInfo rstrInfo={rstrInfo} />
                 </InfoContent>
             </InfoContainer>
             <InfoContainer>
                 <InfoTitle>음식점 위치</InfoTitle>
                 <InfoContent>
-                    <div>경상남도 사천시 각산로 54</div>
-                    <RstrMap />
+                    <div>{rstrInfo.rstr_address}</div>
+                    <RstrMap rstrInfo={rstrInfo} />
                 </InfoContent>
             </InfoContainer>
         </RstrDetailInfoContainer>

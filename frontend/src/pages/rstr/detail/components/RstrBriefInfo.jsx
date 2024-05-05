@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { rstrInfo } from '../../../../data/rstr/RstrInfo';
 import styled from "styled-components";
 import palette from "../../../../styles/palette";
 import PlaceIcon from '@mui/icons-material/Place';
@@ -23,18 +22,18 @@ const RstrBriefInfoContainer = styled.div`
 
 const RstrName = styled.div`
     font-family: 'Gmarket Sans Bold';
-    font-size: 2rem;
+    font-size: 2.2rem;
 `
 
 const RstrReviewInfo = styled.div`
     & > div {
         margin-bottom: 0.3rem;
-        font-size: 0.9rem;
+        font-size: 1rem;
     }
 
     & > div > span {
         font-family: 'Gmarket Sans Bold';
-        font-size: 0.9rem;
+        font-size: 1rem;
         margin-right: 0.3rem;
         color: #03c75a;
     }
@@ -111,7 +110,7 @@ const RstrIconAndInfo = styled.div`
     align-items: center;
 
     div {
-        font-size: 0.9rem;
+        font-size: 1rem;
     }
 `;
 
@@ -146,7 +145,7 @@ const StyledBookmarkIcon = styled(BookmarkIcon)`
     margin-bottom: -8px;
 `;
 
-const RstrBriefInfo = () => {
+const RstrBriefInfo = ({ rstrInfo }) => {
     const [isFavoriate, setIsFavoriate] = useState(true);
     const MoveToTop = () => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })

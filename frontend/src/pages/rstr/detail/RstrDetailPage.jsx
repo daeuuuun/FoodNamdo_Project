@@ -4,6 +4,7 @@ import UpArrow from './../../../components/common/UpArrow';
 import styled from 'styled-components';
 import RstrImgCarusel from './components/RstrImgCarusel';
 import RstrBriefInfo from './components/RstrBriefInfo';
+import { useLocation } from 'react-router-dom';
 
 const RstrDetailMainContainer = styled.div`
     padding-top: 50px;
@@ -11,18 +12,20 @@ const RstrDetailMainContainer = styled.div`
 
 const RstrDetailPage = () => {
 
+    const location = useLocation();
+    const { rstrInfo } = location.state;
 
     return (
         <div style={{ padding: '0 3rem' }}>
             <RstrDetailMainContainer>
                 <div style={{ margin: '5px 50px', fontSize: '0.9rem' }}>
-                    <span>경상남도</span>
+                    <span>{rstrInfo.rstr_region}</span>
                     <span> | </span>
-                    <span>한식</span>
+                    <span>{rstrInfo.category_name}</span>
                 </div>
                 <div style={{ display: 'flex' }}>
                     <RstrImgCarusel />
-                    <RstrBriefInfo />
+                    <RstrBriefInfo rstrInfo={rstrInfo} />
                 </div>
             </RstrDetailMainContainer>
             <RstrTabBar />

@@ -91,7 +91,7 @@ export const RstrListPage = () => {
     useEffect(() => {
         const query = new URLSearchParams(location.search);
         const newPage = parseInt(query.get('page') || '1', 10);
-        setPage(newPage); // URL에서 페이지 번호를 가져와 상태를 업데이트
+        setPage(newPage);
     }, [location]);
 
 
@@ -122,13 +122,22 @@ export const RstrListPage = () => {
     }, [file, page, pageSize]);
 
 
+    const regionOptions = [
+        '전체', '경상남도', '전라남도'
+    ];
 
     const categoryOptions = [
-        '한식', '중식', '일식', '양식', '음료류', '제과류', '패스트푸드', '기타'
+        '전체', '한식', '중식', '일식', '카페/제과점', '양식', '치킨/호프',
+        '분식', '식육(숯불구이)', '회', '패스트푸드', '푸드트럭', '유원지', '전통차', '복어', '외국음식전문점', '아이스크림', '뷔페식', '기타'
     ];
 
     // 체크박스 상태 관리하는 state (하나의 카테고리만 선택 가능)
+    const [checkedRegion, setCheckedRegion] = useState('전체');
     const [checkedCategory, setCheckedCategory] = useState(null);
+
+    const handleRegionCheckboxChange = (e) => {
+        setCheckedRegion(e.target.checked ? e.target.name : null);
+    }
 
     const handleCheckboxChange = (e) => {
         setCheckedCategory(e.target.checked ? e.target.name : null);
@@ -136,20 +145,38 @@ export const RstrListPage = () => {
 
     useEffect(() => {
         console.log(checkedCategory);
-        console.log(totalPage);
     }, [checkedCategory]);
 
 
     const handlePageChange = (event, value) => {
         setPage(value);
-        const newPageSize = value * 5; // 예시로, 페이지 번호에 따라 pageSize를 변경
-        setPageSize(newPageSize);
+        // const newPageSize = value * 5; // 예시로, 페이지 번호에 따라 pageSize를 변경
+        // setPageSize(newPageSize);
         // fetchRestaurants(value, newPageSize);
     };
 
     return (
         <RstrListPageContainer>
             <CategoryBarContainer>
+                <div className='title'>지역</div>
+                <div className='content'>
+                    {regionOptions.map((region) => (
+                        <div key={region} style={{ marginTop: '-8px' }}>
+                            <StyledFormControlLabel
+                                isChecked={checkedRegion === region}
+                                control={
+                                    <StyledCheckbox
+                                        checked={checkedRegion === region}
+                                        onChange={handleRegionCheckboxChange}
+                                        name={region}
+                                        size="small"
+                                    />
+                                }
+                                label={region}
+                            />
+                        </div>
+                    ))}
+                </div>
                 <div className='title'>카테고리</div>
                 <div className='content'>
                     {categoryOptions.map((category) => (
@@ -171,27 +198,28 @@ export const RstrListPage = () => {
                 </div>
             </CategoryBarContainer>
             <RstrListContainer>
-                <>
+                <div style={{ height: '550px' }}>
                     <div className='total-rstr-num'>{`약 ${rstrList.length}건`}</div>
                     <RstrCards>
                         {rstrList.map((rstrInfo) => (
                             <RstrCard key={rstrInfo.rstr_id} rstrInfo={rstrInfo} />
                         ))}
                     </RstrCards>
-                    <Pagination
-                        page={page}
-                        count={totalPage}
-                        onChange={handlePageChange}
-                        color="primary"
-                        renderItem={(item) => (
-                            <PaginationItem
-                                component={Link}
-                                to={`/rstr?page=${item.page}`}
-                                {...item}
-                            />
-                        )}
-                    />
-                </>
+                </div>
+                <Pagination
+                    style={{ margin: '0 auto' }}
+                    page={page}
+                    count={totalPage}
+                    onChange={handlePageChange}
+                    color="primary"
+                    renderItem={(item) => (
+                        <PaginationItem
+                            component={Link}
+                            to={`/rstr?page=${item.page}`}
+                            {...item}
+                        />
+                    )}
+                />
             </RstrListContainer>
         </RstrListPageContainer>
     )

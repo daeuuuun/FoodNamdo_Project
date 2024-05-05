@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const RstrMap = () => {
+const RstrMap = ({ rstrInfo }) => {
     const [isKakaoMapLoaded, setKakaoMapLoaded] = useState(false);
 
     useEffect(() => {
@@ -14,21 +14,22 @@ const RstrMap = () => {
                 setKakaoMapLoaded(true);
             });
         };
+        console.log(rstrInfo);
     }, []);
 
     useEffect(() => {
-        if (isKakaoMapLoaded) {
+        if (isKakaoMapLoaded && rstrInfo) {
             // Kakao 지도 API를 이용하여 지도를 생성합니다.
             const container = document.getElementById('map'); // 지도를 표시할 div
             const options = {
-                center: new window.kakao.maps.LatLng(37.566826, 126.978656), // 지도의 중심 좌표
+                center: new window.kakao.maps.LatLng(rstrInfo.rstr_la, rstrInfo.rstr_lo), // 지도의 중심 좌표
                 level: 3, // 지도의 확대 레벨
             };
 
             const map = new window.kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
 
             // 마커가 표시될 위치를 지정합니다 
-            const markerPosition = new window.kakao.maps.LatLng(37.566826, 126.978656);
+            const markerPosition = new window.kakao.maps.LatLng(rstrInfo.rstr_la, rstrInfo.rstr_lo); // 수정된 부분
 
             // 마커를 생성합니다
             const marker = new window.kakao.maps.Marker({
@@ -38,7 +39,7 @@ const RstrMap = () => {
             // 마커가 지도 위에 표시되도록 설정합니다
             marker.setMap(map);
         }
-    }, [isKakaoMapLoaded]); // isKakaoMapLoaded 상태가 변경될 때만 실행
+    }, [isKakaoMapLoaded, rstrInfo]); // isKakaoMapLoaded 상태가 변경될 때만 실행
 
     return <div id="map" style={{ marginTop: '5px', width: '600px', height: '20rem' }}></div>;
 };

@@ -31,13 +31,6 @@ const AdditionInfoLabel = styled.div`
     font-size: 0.8rem;
 `;
 
-const addInfo = {
-    "주차가능": true,
-    "놀이방보유": true,
-    "반려동물 입장가능": true,
-    "배달서비스": true,
-}
-
 const iconMap = {
     "주차가능": LocalParkingIcon,
     "놀이방보유": PetsIcon,
@@ -45,11 +38,19 @@ const iconMap = {
     "배달서비스": DeliveryDiningIcon,
 }
 
-const AdditionInfo = () => {
+const AdditionInfo = ({ rstrInfo }) => {
+
+    const addInfo = {
+        "주차가능": rstrInfo.rstr_parking,
+        "놀이방보유": rstrInfo.rstr_play,
+        "반려동물 입장가능": rstrInfo.rstr_pet,
+        "배달서비스": rstrInfo.rstr_delivery,
+    }
+
     return (
         <AdditionInfoContainer>
             {Object.entries(addInfo).map(([key, value]) => (
-                value && (
+                (value !== 0) && (
                     <AdditionInfoContent className='centered-flex' key={key}>
                         <AdditionInfoLabel>{key}</AdditionInfoLabel>
                     </AdditionInfoContent>
