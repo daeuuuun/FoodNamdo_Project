@@ -12,6 +12,8 @@ import RstrListPage from './pages/rstr/list/RstrListPage';
 import UpArrow from './components/common/UpArrow';
 import FindIdPage from './pages/auth/FindIdPage';
 import FindPwPage from './pages/auth/FindPwPage';
+import SearchBar from './components/common/SearchBar';
+import { FileProvider } from './data/FileContext'; // 이미지 파일 전역 관리
 
 function App() {
   return (
@@ -21,7 +23,11 @@ function App() {
       </Helmet>
       <Router>
         <Routes>
-          <Route path="/" element={<MainPage />} />
+          <Route path="/" element={
+            <FileProvider>
+              <MainPage />
+            </FileProvider>
+          } />
 
           {/* 회원 인증 페이지들 */}
           <Route path="/login" element={<LoginPage />} />
@@ -31,7 +37,11 @@ function App() {
 
           {/* 음식점 페이지들 */}
           <Route path="/rstr/1" element={<RstrDetailPage />} />
-          <Route path="/rstr" element={<RstrListPage />} />
+          <Route path="/rstr/:page?" element={
+            <FileProvider>
+              <RstrListPage />
+            </FileProvider>
+          } />
         </Routes>
       </Router>
       {/* <UpArrow /> */}

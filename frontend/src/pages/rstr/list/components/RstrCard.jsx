@@ -29,6 +29,7 @@ const Img = styled.img`
     height: 100%;
     object-fit: cover;
 `;
+
 const RstrInfo = styled.div`
     display: flex;
     align-items: center;
@@ -57,9 +58,10 @@ const StyledStarIcon = styled(StarRoundedIcon)`
     margin-right: -2px;
 `;
 
-const RstrCard = () => {
+const RstrCard = ({ rstrInfo }) => {
 
     const navigate = useNavigate();
+
 
     return (
         <RstrCardContainer onClick={() => {
@@ -69,14 +71,18 @@ const RstrCard = () => {
                 <Img src={'/img/cat1.jpg'} alt={'이미지'} />
             </ImgContainer>
             <RstrInfo className='title'>
-                {'금오식육식당'}
+                {rstrInfo.rstr_name}
             </RstrInfo>
             <RstrInfo className='info'>
-                <div style={{ marginTop: '1px' }}>{'식육(숯불구이)'}</div>
+                <div style={{ marginTop: '1px' }}>
+                    <span>{rstrInfo.rstr_region}</span>
+                    <span> | </span>
+                    <span>{rstrInfo.category_name}</span>
+                </div>
                 <div className='centered-flex rating'>
                     <StyledStarIcon />
                     <div style={{ marginTop: '1px' }}>
-                        {`${4.9}(${10})`}
+                        {`${rstrInfo.rstr_review_rating}(${10})`}
                     </div>
                 </div>
             </RstrInfo>

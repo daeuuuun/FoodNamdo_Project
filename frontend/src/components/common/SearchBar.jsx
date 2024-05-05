@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import palette from '../../styles/palette';
 import SearchIcon from '@mui/icons-material/Search';
@@ -10,9 +11,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import { useFile } from '../../data/FileContext';
 
 const theme = createTheme({
     typography: {
@@ -57,8 +57,8 @@ const Container = styled.div`
     padding: 5px 10px;
     border: 2px solid ${palette.blue};
     border-radius: 20px;
-    width: 400px;
-    height: 25px;
+    width: 250px;
+    height: 20px;
 
     input {
         font-family: 'Gmarket Sans Medium';
@@ -85,9 +85,11 @@ const StyledImageSearchIcon = styled(ImageSearchIcon)`
 `
 
 const SearchBar = () => {
+    const navigate = useNavigate();
     const [search, setSearch] = useState();
     const fileInputRef = useRef(null);
     const searchInputRef = useRef(null);
+    const { setFile } = useFile(); // 등록된 이미지 파일
 
     // 모달창 관련
     const [open, setOpen] = useState(false);
@@ -110,45 +112,28 @@ const SearchBar = () => {
     }
 
     // 이미지 검색
-    const handleClickImageSearch = async (e, droppedFile) => {
+    const handleClickImageSearch = async (e) => {
+        // let file;
+        // if (e && e.target.files && e.target.files.length > 0) {
+        //     file = e.target.files[0];
+        // }
+        // if (file) {
+        //     console.log(file);
+        //     const formData = new FormData();
+        //     formData.append('file', file); // image는 예시 추후에 서버에서 요구하는 필드명과 맞출 것
+
+        // }
+        // console.log('이미지 검색입니다');
         let file;
-        if (droppedFile) {
-            file = droppedFile;
-        } else if (e && e.target.files && e.target.files.length > 0) {
+        if (e && e.target.files && e.target.files.length > 0) {
             file = e.target.files[0];
         }
         if (file) {
             console.log(file);
-            const formData = new FormData();
-            formData.append('image', file); // image는 예시 추후에 서버에서 요구하는 필드명과 맞출 것
-
-            try {
-                const response = await axios.post('url', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    }
-                });
-                console.log('이미지 검색 결과:', response.data);
-            } catch (error) {
-                console.error('이미지 검색 에러:', error);
-            }
+            setFile(file); // 파일을 Context에 저장
+            navigate('/rstr'); // 페이지 이동
         }
-
         console.log('이미지 검색입니다');
-    }
-
-    const handleDragOver = (e) => {
-        e.preventDefault();
-    }
-
-    const handleDrop = (e) => {
-        e.preventDefault();
-        const files = e.dataTransfer.files;
-        if (files && files.length > 0) {
-            const file = files[0];
-            console.log(file);
-            handleClickImageSearch(null, file);
-        }
     }
 
     return (
@@ -188,8 +173,6 @@ const SearchBar = () => {
                             음식점/리뷰 이미지로 비슷한 음식점을 검색해보세요!
                         </Typography>
                         <Typography className='centered-flex' id="modal-modal-description" sx={modalContentStyle}
-                            onDragOver={handleDragOver}
-                            onDrop={handleDrop}
                             onClick={() => fileInputRef.current.click()}
                         >
                             <input
@@ -199,7 +182,6 @@ const SearchBar = () => {
                                 onChange={(e) => handleClickImageSearch(e)}
                             />
                             <PhotoSizeSelectActualOutlinedIcon sx={{ fontSize: '2.4rem', color: palette.lightblue, marginBottom: '5px' }} />
-                            <div>이미지를 드래그하거나</div>
                             <div>파일을 업로드해주세요!</div>
                         </Typography>
                     </Box>
