@@ -1,8 +1,5 @@
-import mariadb_utils
-import os
+import mariadb_utils, os, uuid, main, Region, Category
 from tqdm import tqdm
-import uuid
-import main
 
 def init(collection, table):
     query = ""
@@ -49,7 +46,7 @@ def img_saving(collection, save_path, table, data, columns):
 keys_to_remove = ["embeddings", "documents", "uris", "data"]
 
 # 이미지로 음식점 이미지 유사도 검색
-def img_to_img(collection, file, file_extension_name, similarity, n_results, table):
+def img_to_img(collection, file, file_extension_name, similarity, n_results, table, category, region):
     save_path = "./img/temp/"
     os.makedirs(save_path, exist_ok=True)
     unique_filename = f"{uuid.uuid4()}.{file_extension_name}"
@@ -67,15 +64,16 @@ def img_to_img(collection, file, file_extension_name, similarity, n_results, tab
         query_result['metadatas'][0][i]['distance'] = query_result['distances'][0][i]
     
     os.remove(url)
-    return filter_by_condition(query_result, similarity, table)
+    return filter_by_condition(query_result, similarity, table, category, region)
 
 # 결과 필터링
-def filter_by_condition(query_result, similarity, table):
+def filter_by_condition(query_result, similarity, table, category, region):
     query_result = remove_above_threshold(remove_duplicates(query_result), similarity)
     if(table == "rstr_img"):
-        return insert_rstrimg_rstr_info(query_result)
+        query_result = insert_rstrimg_rstr_info(query_result)
     elif(table == "review_img"):
-        return insert_reviewimg_rstr_info(query_result)
+        query_result = insert_reviewimg_rstr_info(query_result)
+    return remove_final(query_result, category, region)
 
 # 중복 제거
 def remove_duplicates(query_result):
@@ -95,8 +93,17 @@ def remove_duplicates(query_result):
     # 중복이 제거된 metadata를 원래 데이터에 적용
     return unique_metadata
 
+# 유사도 필터링
 def remove_above_threshold(query_result, similarity):
     return [item for item in query_result if item["distance"] <= similarity]
+
+# 카테고리, 지역 필터링
+def remove_final(query_result, category: Category.rstrCategory, region: Region.rstrRegion):
+    if category != Category.rstrCategory.전체:
+        query_result = [item for item in query_result if item["category_name"] == category.value]
+    if region != Region.rstrRegion.전체:
+        query_result = [item for item in query_result if item["rstr_region"] == region.value]
+    return query_result
 
 rstr_column_array = ['rstr_num', 'rstr_region', 'rstr_permission', 'rstr_name', 'rstr_address', 'rstr_la', 'rstr_lo', 'rstr_tel', 'rstr_intro', 'rstr_naver_rating', 'rstr_review_rating', 'example', 'relax', 'rstr_favorite_count', 'rstr_parking', 'rstr_play', 'rstr_pet', 'rstr_closed', 'rstr_business_hour', 'rstr_delivery', 'category_name']
 rstr_column = ", ".join(rstr_column_array)
