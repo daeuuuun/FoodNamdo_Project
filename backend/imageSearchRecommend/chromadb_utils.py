@@ -98,11 +98,12 @@ def remove_duplicates(query_result):
 def remove_above_threshold(query_result, similarity):
     return [item for item in query_result if item["distance"] <= similarity]
 
-rstr_column_array = ['rstr_num', 'rstr_region', 'rstr_permission', 'rstr_name', 'rstr_address', 'rstr_la', 'rstr_lo', 'rstr_tel', 'rstr_intro', 'rstr_naver_rating', 'rstr_review_rating', 'example', 'relax', 'rstr_favorite_count', 'rstr_parking', 'rstr_play', 'rstr_pet', 'rstr_closed', 'rstr_business_hour', 'rstr_delivery']
+rstr_column_array = ['rstr_num', 'rstr_region', 'rstr_permission', 'rstr_name', 'rstr_address', 'rstr_la', 'rstr_lo', 'rstr_tel', 'rstr_intro', 'rstr_naver_rating', 'rstr_review_rating', 'example', 'relax', 'rstr_favorite_count', 'rstr_parking', 'rstr_play', 'rstr_pet', 'rstr_closed', 'rstr_business_hour', 'rstr_delivery', 'category_name']
 rstr_column = ", ".join(rstr_column_array)
+join_category = "JOIN rstr_category ON rstr_category.rstr_id = rstr.rstr_id JOIN category ON category.category_id = rstr_category.category_id"
 def insert_rstrimg_rstr_info(query_result):
     for item in query_result:
-        query = f"SELECT {rstr_column} FROM rstr_img JOIN rstr ON rstr_img.rstr_id = rstr.rstr_id WHERE rstr_img.rstr_id = {item['rstr_id']}"
+        query = f"SELECT {rstr_column} FROM rstr_img JOIN rstr ON rstr_img.rstr_id = rstr.rstr_id {join_category} WHERE rstr_img.rstr_id = {item['rstr_id']}"
         data = mariadb_utils.select_from_db_data(query)
         for i in range(len(rstr_column_array)):
             item[rstr_column_array[i]] = data[0][i]
@@ -111,7 +112,7 @@ def insert_rstrimg_rstr_info(query_result):
 
 def insert_reviewimg_rstr_info(query_result):
     for item in query_result:
-        query = f"SELECT {rstr_column} FROM review_img JOIN review ON review_img.review_id = review.review_id JOIN rstr ON review.rstr_id = rstr.rstr_id WHERE review_img.review_id = {item['review_id']}"
+        query = f"SELECT {rstr_column} FROM review_img JOIN review ON review_img.review_id = review.review_id JOIN rstr ON review.rstr_id = rstr.rstr_id {join_category} WHERE review_img.review_id = {item['review_id']}"
         data = mariadb_utils.select_from_db_data(query)
         for i in range(len(rstr_column_array)):
             item[rstr_column_array[i]] = data[0][i]
