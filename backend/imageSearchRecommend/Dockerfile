@@ -1,6 +1,8 @@
 FROM python:3.10
 
-RUN pip3 install chromadb open-clip-torch fastapi uvicorn[standard] mariadb scikit-surprise tqdm python-multipart uuid
+RUN apt-get update && apt-get install -y libleveldb-dev
+
+RUN pip3 install chromadb open-clip-torch fastapi uvicorn[standard] mariadb scikit-surprise tqdm python-multipart uuid plyvel
 
 WORKDIR /usr/src/app
 

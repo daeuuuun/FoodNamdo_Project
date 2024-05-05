@@ -1,6 +1,6 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException, Form, Query
+from fastapi import FastAPI, File, UploadFile, HTTPException, Query
 from contextlib import asynccontextmanager
-import chromadb_utils, chromadb, os, copy, SortBy, Category, Region
+import chromadb_utils, chromadb, os, copy, SortBy, Category, Region, plyvel, leveldb_utils, json
 from chromadb.utils.embedding_functions import OpenCLIPEmbeddingFunction
 from chromadb.utils.data_loaders import ImageLoader
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,12 +21,16 @@ review_img_collection = client.get_or_create_collection(
     embedding_function=embedding_function,
     data_loader=image_loader)
 
+#LevelDB 생성 혹은 가져오기
+levelDB = plyvel.DB("./levelDB_data/", create_if_missing=True)
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     if not chromaDB_exists:
         chromadb_utils.init(rstr_img_collection, "rstr_img")
         chromadb_utils.init(review_img_collection, "review_img")
     yield
+    levelDB.close()
     print("FastAPI application is shutting down!")
 
 app = FastAPI(lifespan=lifespan)
@@ -52,11 +56,20 @@ async def image_search_all(file: UploadFile = File(...), similarity: float = Que
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=422, detail=error_422_detail)
     
-    file_copy = copy.deepcopy(file)
-    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "rstr_img", category, region)
-    results_review_img = chromadb_utils.img_to_img(review_img_collection, file_copy, file.filename.split(".")[-1], similarity, n_results, "review_img", category, region)
-    results = results_rstr_img + results_review_img
-    return sort_paginate_json(results, page_size, page_number, sort_order, reverse)
+    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "rstr_img")
+    results_review_img = None
+    results = None
+    try:
+        file_copy = copy.deepcopy(file)
+        results_review_img = chromadb_utils.img_to_img(review_img_collection, file_copy, file.filename.split(".")[-1], similarity, n_results, "review_img")
+    except Exception as e:
+        print("Error copying image data:", e)
+    if results_review_img is not None:
+        results = results_rstr_img + results_review_img
+    else:
+        results = results_rstr_img
+    random = leveldb_utils.insert_results(levelDB, results)
+    return sort_paginate_json(results, page_size, page_number, sort_order, reverse, category, region, random)
 
 @app.post("/image_to_image_rstr/",
           summary="음식점 이미지를 이용한 이미지 검색",
@@ -66,8 +79,9 @@ async def image_search_only_rstr(file: UploadFile = File(...), similarity: float
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=422, detail=error_422_detail)
     
-    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "rstr_img", category, region)
-    return sort_paginate_json(results_rstr_img, page_size, page_number, sort_order, reverse)
+    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "rstr_img")
+    random = leveldb_utils.insert_results(levelDB, results_rstr_img)
+    return sort_paginate_json(results_rstr_img, page_size, page_number, sort_order, reverse, category, region, random)
 
 @app.post("/img_to_img_review/",
           summary="리뷰 이미지를 이용한 이미지 검색",
@@ -77,18 +91,41 @@ async def image_search_only_review(file: UploadFile = File(...), similarity: flo
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=422, detail=error_422_detail)
     
-    results_review_img = chromadb_utils.img_to_img(review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "review_img", category, region)
-    return sort_paginate_json(results_review_img, page_size, page_number, sort_order, reverse)
+    results_review_img = chromadb_utils.img_to_img(review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "review_img")
+    random = leveldb_utils.insert_results(levelDB, results_review_img)
+    return sort_paginate_json(results_review_img, page_size, page_number, sort_order, reverse, category, region, random)
 
-def sort_paginate_json(json_data, page_size, page_number, sort_order, reverse):
-    json_data = sorted(json_data, key=lambda x: x[sort_order.value], reverse=reverse)
-    total_pages = len(json_data) // page_size + (1 if len(json_data) % page_size != 0 else 0)
+@app.get("/{random}/")
+async def image_search_result(random: str, page_size: int = Query(8, ge=1), page_number: int = Query(1, ge=1), sort_order: SortBy.Column = SortBy.Column.distance, reverse: bool = False, category: Category.rstrCategory = Category.rstrCategory.전체, region: Region.rstrRegion = Region.rstrRegion.전체):
+    result = levelDB.get(random.encode())
+    if result is None:
+        raise HTTPException(status_code=404, detail="Page not found")
     
+    return sort_paginate_json(json.loads(result.decode()), page_size, page_number, sort_order, reverse, category, region, random)
+
+def sort_paginate_json(json_data, page_size, page_number, sort_order, reverse, category, region, random):
+    json_data = sorted(json_data, key=lambda x: x[sort_order.value], reverse=reverse)
+
+    json_data = remove_final(json_data, category, region)
+    total_pages = len(json_data) // page_size + (1 if len(json_data) % page_size != 0 else 0)
+
     if page_number < 1 or page_number > total_pages:
         raise HTTPException(status_code=404, detail={"message": "Invalid page number. Please choose a page within the range.", "page_size": page_size, "total_pages": total_pages})
     
     start_index = (page_number - 1) * page_size
     end_index = min(start_index + page_size, len(json_data))
-    result = {"page_size": page_size, "total_pages": total_pages}
+    result = {"random": random, "page_size": page_size, "total_pages": total_pages, "total_rstr": len(json_data)}
+
+    # e표기법에서 소수점으로 표기
+    # for item in json_data:
+    #     item['distance'] = format(float(item['distance']), '.17f')
     result['rstr'] = json_data[start_index:end_index]
     return result
+
+# 카테고리, 지역 필터링
+def remove_final(query_result, category: Category.rstrCategory, region: Region.rstrRegion):
+    if category != Category.rstrCategory.전체:
+        query_result = [item for item in query_result if item["category_name"] == category.value]
+    if region != Region.rstrRegion.전체:
+        query_result = [item for item in query_result if item["rstr_region"] == region.value]
+    return query_result
