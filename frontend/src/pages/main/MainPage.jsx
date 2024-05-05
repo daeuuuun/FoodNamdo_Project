@@ -1,14 +1,12 @@
 import React from 'react';
-import SearchBar from '../../components/common/SearchBar';
-// import Main from '../../containers/Main/Main';
-// import Header from '../../containers/Header/Header';
+import Main from '../main/Main';
+import Header from '../header/Header';
 
 const MainPage = () => {
     return (
         <>
-            <SearchBar />
-            {/* <Header />
-            <Main /> */}
+            <Header />
+            <Main />
         </>
     )
 }

@@ -1,7 +1,6 @@
 package org.zerock.foodnamdo.service;
 
-import org.springframework.stereotype.Service;
-import org.zerock.foodnamdo.domain.User;
+import org.zerock.foodnamdo.domain.UserEntity;
 import org.zerock.foodnamdo.dto.UserDTO;
 
 //@Service
@@ -15,10 +14,10 @@ public interface UserManagementService {
 
     void deleteUser(Long userId);
 
-    User findAccountIdByNameAndPhone(String name, String phone);
-    User findUserByAccountIdAndNameAndPhone(String accountId, String name, String phone);
+    UserEntity findAccountIdByNameAndPhone(String name, String phone);
+    UserEntity findUserByAccountIdAndNameAndPhone(String accountId, String name, String phone);
 
-    User findUserByPhone(String phone);
+    UserEntity findUserByPhone(String phone);
 
     String generateVerificationCode();
 

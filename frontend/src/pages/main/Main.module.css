@@ -1,0 +1,15 @@
+.backgroundColor {
+    background-color: #F9F7F7;
+}
+
+.div {
+    display: flex;
+    justify-content: center;
+}
+
+.div2 {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 50%;
+}

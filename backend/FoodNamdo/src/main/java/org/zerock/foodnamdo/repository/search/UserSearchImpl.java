@@ -6,27 +6,27 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.zerock.foodnamdo.domain.QUser;
-import org.zerock.foodnamdo.domain.User;
+import org.zerock.foodnamdo.domain.QUserEntity;
+import org.zerock.foodnamdo.domain.UserEntity;
 
 import java.util.List;
 
 public class UserSearchImpl extends QuerydslRepositorySupport implements UserSearch {
     public UserSearchImpl(){
-        super(User.class);
+        super(UserEntity.class);
     }
 
     @Override
-    public Page<User> search1(Pageable pageable){
-        QUser user = QUser.user;
+    public Page<UserEntity> search1(Pageable pageable){
+        QUserEntity userEntity = QUserEntity.userEntity;
 
-        JPQLQuery<User> query = from(user);
+        JPQLQuery<UserEntity> query = from(userEntity);
 
-        query.where(user.nickname.contains("belljin"));
+        query.where(userEntity.nickname.contains("belljin"));
 
         this.getQuerydsl().applyPagination(pageable, query);
 
-        List<User> list = query.fetch();
+        List<UserEntity> list = query.fetch();
 
         long count = query.fetchCount();
 
@@ -34,9 +34,9 @@ public class UserSearchImpl extends QuerydslRepositorySupport implements UserSea
     }
 
     @Override
-    public Page<User> searchAll(String[] types, String keyword, Pageable pageable) {
-        QUser user = QUser.user;
-        JPQLQuery<User> query = from(user);
+    public Page<UserEntity> searchAll(String[] types, String keyword, Pageable pageable) {
+        QUserEntity userEntity = QUserEntity.userEntity;
+        JPQLQuery<UserEntity> query = from(userEntity);
 
         if( (types != null && types.length > 0) && keyword != null ) {
 
@@ -45,23 +45,23 @@ public class UserSearchImpl extends QuerydslRepositorySupport implements UserSea
             for(String type: types) {
                 switch (type){
                     case "t":
-                        booleanBuilder.or(user.name.contains(keyword));
+                        booleanBuilder.or(userEntity.name.contains(keyword));
                         break;
                     case "c":
-                        booleanBuilder.or(user.phone.contains(keyword));
+                        booleanBuilder.or(userEntity.phone.contains(keyword));
                         break;
                     case "w":
-                        booleanBuilder.or(user.accountId.contains(keyword));
+                        booleanBuilder.or(userEntity.accountId.contains(keyword));
                         break;
                 }
             }
             query.where(booleanBuilder);
         }
-        query.where(user.userId.gt(0L));
+        query.where(userEntity.userId.gt(0L));
 
         this.getQuerydsl().applyPagination(pageable, query);
 
-        List<User> list = query.fetch();
+        List<UserEntity> list = query.fetch();
 
         long count = query.fetchCount();
 
