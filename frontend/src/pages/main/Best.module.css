@@ -1,0 +1,52 @@
+.recommendContain {
+    margin-top: 5%;
+    height: 40%;
+    margin-left: 2vw;
+    padding-top: 1%;
+    padding-bottom: 3%;
+    width: 90%;
+    background-color: #DBE2EF;
+    border-radius: 10px;
+}
+
+.recommendText {
+    padding-top: 2%;
+    margin-bottom: 1%;
+    font-size: 18px;
+    padding-left: 3vw;
+}
+
+.recImgContain {
+    display: flex;
+    justify-content: center;
+}
+
+.recImgDiv {
+    margin: 1% 3% 3%;
+}
+
+.recommendStoreImg {
+    display: flex;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+}
+
+.imgText{
+    padding-top: 5%;
+    padding-left: 1%;
+    font-size: 18px;
+}
+
+.buttonStyle {
+    background-color: #F9F7F7;
+    border-style: none;
+    height: 150px;
+    border-radius: 5px;
+    margin: 1% 0 0;
+}
+
+.buttonStyle:hover {
+    cursor: pointer;
+}

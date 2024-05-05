@@ -1,0 +1,44 @@
+* {
+    margin: 0 auto;
+    font-family: 'Gmarket Sans Medium';
+}
+
+.recommendContain {
+    margin-top: 2%;
+    width: 90%;
+    height: 30%;
+    background-color: #DBE2EF;
+    border-radius: 10px;
+    padding-left: 1%;
+    padding-right: 1%;
+}
+
+.recommendText {
+    padding-top: 2%;
+    margin-bottom: 1%;
+    margin-left: 3%;
+    font-size: 30px;
+}
+
+.recImgContain {
+    display: flex;
+    justify-content: center;
+}
+
+.recImgDiv {
+    margin: 1% 3% 3%;
+}
+
+.recommendStoreImg {
+    display: flex;
+    justify-content: center;
+    width: 250px;
+    height: 250px;
+    border-radius: 10px;
+}
+
+.imgText{
+    padding-top: 5%;
+    padding-left: 1%;
+    font-size: 23px;
+}
