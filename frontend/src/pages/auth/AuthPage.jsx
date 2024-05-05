@@ -51,15 +51,22 @@ const AuthPage = ({ mode }) => {
     const handleAuth = async () => {
         try {
             const response = await axios.post(
-                'foodnamdoserver.iptime.org:8001/usermanagement/verify', {
-                phone: formData.phone
+                // `http://localhost:8080/usermanagement/verify?phone=${encodeURIComponent(formData.phone)}`,
+                'http://localhost:8080/usermanagement/verify', null, {
+                    params: {phone: formData.phone}
+                // 'foodnamdoserver.iptime.org:8001/usermanagement/verify', {
+                // phone: formData.phone
             });
-            console.log(response.data);
+            // )
+            console.log("response")
+            console.log(response);
+            // console.log(response.data);
             alert('인증 요청 버튼 눌림');
         } catch (error) {
             console.log(error);
         }
     }
+    
 
     return (
         <div className="auth-form-container centered-flex">

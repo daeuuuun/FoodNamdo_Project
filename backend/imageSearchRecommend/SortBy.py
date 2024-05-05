@@ -22,3 +22,4 @@ class Column(Enum):
     rstr_closed = "rstr_closed"
     rstr_business_hour = "rstr_business_hour"
     rstr_delivery = "rstr_delivery"
+    category_name = "category_name"

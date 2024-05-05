@@ -1,13 +1,9 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form, Query
 from contextlib import asynccontextmanager
-import chromadb_utils
-import chromadb
+import chromadb_utils, chromadb, os, copy, SortBy, Category, Region
 from chromadb.utils.embedding_functions import OpenCLIPEmbeddingFunction
 from chromadb.utils.data_loaders import ImageLoader
 from fastapi.middleware.cors import CORSMiddleware
-import os
-import copy
-import SortBy
 
 # ChromaDB 정보 존재 여부 확인
 chromaDB_exists = os.path.exists("./chromadb_data/")
@@ -51,37 +47,37 @@ image_search_description = "이미지 파일(png, jpg, jpeg)와 결과 수(n_res
 @app.post("/image_to_image/",
           summary="음식점 이미지와 리뷰 이미지를 이용한 이미지 검색",
           description=image_search_description)
-async def image_search_all(file: UploadFile = File(...), similarity: float = Query(..., ge=0), n_results: int = Query(30, ge=1, le=70), page_size: int = Query(8, ge=1), page_number: int = Query(1, ge=1), sort_order: SortBy.Column = SortBy.Column.distance, reverse: bool = False):
+async def image_search_all(file: UploadFile = File(...), similarity: float = Query(..., ge=0), n_results: int = Query(30, ge=1, le=70), page_size: int = Query(8, ge=1), page_number: int = Query(1, ge=1), sort_order: SortBy.Column = SortBy.Column.distance, reverse: bool = False, category: Category.rstrCategory = Category.rstrCategory.전체, region: Region.rstrRegion = Region.rstrRegion.전체):
     # 파일이 이미지인지 확인
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=422, detail=error_422_detail)
     
     file_copy = copy.deepcopy(file)
-    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "rstr_img")
-    results_review_img = chromadb_utils.img_to_img(review_img_collection, file_copy, file.filename.split(".")[-1], similarity, n_results, "review_img")
+    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "rstr_img", category, region)
+    results_review_img = chromadb_utils.img_to_img(review_img_collection, file_copy, file.filename.split(".")[-1], similarity, n_results, "review_img", category, region)
     results = results_rstr_img + results_review_img
     return sort_paginate_json(results, page_size, page_number, sort_order, reverse)
 
 @app.post("/image_to_image_rstr/",
           summary="음식점 이미지를 이용한 이미지 검색",
           description=image_search_description)
-async def image_search_only_rstr(file: UploadFile = File(...), similarity: float = Query(..., ge=0), n_results: int = Query(30, ge=1, le=70), page_size: int = Query(8, ge=1), page_number: int = Query(1, ge=1), sort_order: SortBy.Column = SortBy.Column.distance, reverse: bool = False):
+async def image_search_only_rstr(file: UploadFile = File(...), similarity: float = Query(..., ge=0), n_results: int = Query(30, ge=1, le=70), page_size: int = Query(8, ge=1), page_number: int = Query(1, ge=1), sort_order: SortBy.Column = SortBy.Column.distance, reverse: bool = False, category: Category.rstrCategory = Category.rstrCategory.전체, region: Region.rstrRegion = Region.rstrRegion.전체):
     # 파일이 이미지인지 확인
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=422, detail=error_422_detail)
     
-    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "rstr_img")
+    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "rstr_img", category, region)
     return sort_paginate_json(results_rstr_img, page_size, page_number, sort_order, reverse)
 
 @app.post("/img_to_img_review/",
           summary="리뷰 이미지를 이용한 이미지 검색",
           description=image_search_description)
-async def image_search_only_review(file: UploadFile = File(...), similarity: float = Query(..., ge=0), n_results: int = Query(30, ge=1, le=70), page_size: int = Query(8, ge=1), page_number: int = Query(1, ge=1), sort_order: SortBy.Column = SortBy.Column.distance, reverse: bool = False):
+async def image_search_only_review(file: UploadFile = File(...), similarity: float = Query(..., ge=0), n_results: int = Query(30, ge=1, le=70), page_size: int = Query(8, ge=1), page_number: int = Query(1, ge=1), sort_order: SortBy.Column = SortBy.Column.distance, reverse: bool = False, category: Category.rstrCategory = Category.rstrCategory.전체, region: Region.rstrRegion = Region.rstrRegion.전체):
     # 파일이 이미지인지 확인
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=422, detail=error_422_detail)
     
-    results_review_img = chromadb_utils.img_to_img(review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "review_img")
+    results_review_img = chromadb_utils.img_to_img(review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "review_img", category, region)
     return sort_paginate_json(results_review_img, page_size, page_number, sort_order, reverse)
 
 def sort_paginate_json(json_data, page_size, page_number, sort_order, reverse):
