@@ -5,40 +5,43 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.zerock.foodnamdo.domain.User;
+import org.zerock.foodnamdo.domain.UserEntity;
 import org.zerock.foodnamdo.dto.UserDTO;
 import org.zerock.foodnamdo.repository.UserManagementRepository;
+import org.zerock.foodnamdo.util.JWTUtil;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @Log4j2
 @RequiredArgsConstructor
 @Transactional
-public class UserManagementServiceImpl implements UserManagementService{
+public class UserManagementServiceImpl implements UserManagementService {
 
     private final ModelMapper modelMapper;
 
     private final UserManagementRepository userManagementRepository;
 
+    private final JWTUtil jwtUtil;
 
+
+//    public logIn(String accountId, String password) {
+//
+//    }
 
     @Override
     public Long signUp(UserDTO userDTO) {
 
-        User user = modelMapper.map(userDTO, User.class);
+        UserEntity user = modelMapper.map(userDTO, UserEntity.class);
 
         Long userId = userManagementRepository.save(user).getUserId();
 
         return userId;
     }
 
-    public User findAccountIdByNameAndPhone(String name, String phone) {
+    public UserEntity findAccountIdByNameAndPhone(String name, String phone) {
         // 사용자 정보를 DB에서 조회
-        User user = userManagementRepository.findAccountIdByNameAndPhone(name, phone);
+        UserEntity user = userManagementRepository.findAccountIdByNameAndPhone(name, phone);
         System.out.println(user);
         if (user != null) {
             return user;
@@ -46,9 +49,9 @@ public class UserManagementServiceImpl implements UserManagementService{
         return null;
     }
 
-    public User findUserByAccountIdAndNameAndPhone(String accountId, String name, String phone) {
+    public UserEntity findUserByAccountIdAndNameAndPhone(String accountId, String name, String phone) {
         // 사용자 정보를 DB에서 조회
-        User user = userManagementRepository.findUserByAccountIdAndNameAndPhone(accountId, name, phone);
+        UserEntity user = userManagementRepository.findUserByAccountIdAndNameAndPhone(accountId, name, phone);
         System.out.println(user);
         if (user != null) {
             return user;
@@ -56,9 +59,9 @@ public class UserManagementServiceImpl implements UserManagementService{
         return null;
     }
 
-    public User findUserByPhone(String phone) {
+    public UserEntity findUserByPhone(String phone) {
         // 사용자 정보를 DB에서 조회
-        User user = userManagementRepository.findUserByPhone(phone);
+        UserEntity user = userManagementRepository.findUserByPhone(phone);
         System.out.println(user);
         if (user != null) {
             return user;
@@ -130,6 +133,8 @@ public class UserManagementServiceImpl implements UserManagementService{
     public void deleteUser(Long userId) {
         userManagementRepository.deleteById(userId);
     }
+
+
 
 //    @Override
 //    public PageResponseDTO<UserDTO> list(PageRequestDTO pageRequestDTO) {

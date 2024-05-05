@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.foodnamdo.dto.APIUserDTO;
 import org.zerock.foodnamdo.dto.UserDTO;
 import org.zerock.foodnamdo.service.UserManagementService;
 import org.zerock.foodnamdo.service.CoolsmsService;

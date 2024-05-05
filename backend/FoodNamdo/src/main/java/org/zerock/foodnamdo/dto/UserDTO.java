@@ -6,7 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.zerock.foodnamdo.domain.User;
+import org.zerock.foodnamdo.domain.UserEntity;
+//import org.springframework.security.core.GrantedAuthority;
+//import org.springframework.security.core.userdetails.User;
+
+import java.util.Collection;
 
 @Data
 @Builder
@@ -33,7 +37,9 @@ public class UserDTO {
     private String password;
 
 
-    public static UserDTO fromUser(User user) {
+
+
+    public static UserDTO fromUser(UserEntity user) {
         return new UserDTO(
                 user.getUserId(),
                 user.getName(),
@@ -43,5 +49,6 @@ public class UserDTO {
                 user.getPassword()
         );
     }
+
     // Getters and setters
 }
