@@ -15,9 +15,9 @@ const RstrListPageContainer = styled.div`
 `;
 
 const CategoryBarContainer = styled.div`
-    width: 15%;
+    width: 160px;
     margin: 40px 5px 0 0;
-    padding: 10px 15px;
+    padding: 10px 10px;
     height: 100%;
     background-color: ${palette.lightgray};
     border: 1px solid ${palette.lightblue};
@@ -33,8 +33,8 @@ const CategoryBarContainer = styled.div`
     }
 
     .content {
-        margin-top: 10px;
-        font-size: 0.8rem;
+        margin-top: 5px;
+        font-size: 0.6rem;
     }
 `
 
@@ -68,6 +68,10 @@ const RstrListContainer = styled.div`
         margin: 10px 20px;
         text-align: right;
     }
+    .rstr-loading {
+        margin-top: 10%;
+        font-size: 1.8rem;
+    }
 `
 
 const RstrCards = styled.div`
@@ -98,13 +102,11 @@ export const RstrListPage = () => {
         setPage(newPage);
     }, [location]);
 
-
     // 이미지 파일로 검색 시
     useEffect(() => {
         const fetchDataWithFile = async () => {
             const formData = new FormData();
             formData.append('file', file);
-            console.log('선택된 카테고리', checkedCategory);
             const params = new URLSearchParams({
                 similarity: 1,
                 n_results: 30,
@@ -137,8 +139,19 @@ export const RstrListPage = () => {
 
         const fetchDataWithRandom = async () => {
             const savedRandom = sessionStorage.getItem('random');
+
+            const params = new URLSearchParams({
+                page_number: page,
+                sort_order: 'distance',
+                reverse: 'false',
+                category: checkedCategory,
+                region: checkedRegion,
+            }).toString();
+
+            const url = `http://foodnamdo.iptime.org:7999/${savedRandom}/?${params}`;
+
             try {
-                const response = await axios.get(`http://foodnamdo.iptime.org:7999/${savedRandom}/?page_size=8&page_number=${page}&sort_order=distance&reverse=false&category=%EC%A0%84%EC%B2%B4&region=%EC%A0%84%EC%B2%B4`);
+                const response = await axios.get(url);
                 setRstrList(response.data.rstr); // 음식점 리스트 저장
                 setTotalPage(response.data.total_pages);
                 setPageSize(response.data.page_size);
@@ -231,28 +244,32 @@ export const RstrListPage = () => {
                 </div>
             </CategoryBarContainer>
             <RstrListContainer>
-                <div style={{ height: '550px' }}>
-                    <div className='total-rstr-num'>{`약 ${totalRstr}건`}</div>
-                    <RstrCards>
-                        {rstrList.map((rstrInfo) => (
-                            <RstrCard key={rstrInfo.rstr_id} rstrInfo={rstrInfo} />
-                        ))}
-                    </RstrCards>
-                </div>
-                <Pagination
-                    style={{ margin: '0 auto' }}
-                    page={page}
-                    count={totalPage}
-                    onChange={handlePageChange}
-                    color="primary"
-                    renderItem={(item) => (
-                        <PaginationItem
-                            component={Link}
-                            to={`/rstr?page=${item.page}`}
-                            {...item}
-                        />
-                    )}
-                />
+                {isLoading ?
+                    <div className='rstr-loading'>로딩중입니다. 잠시만 기다려주세요!</div> :
+                    <>
+                        <div style={{ height: '550px' }}>
+                            <div className='total-rstr-num'>{`약 ${totalRstr}건`}</div>
+                            <RstrCards>
+                                {rstrList.map((rstrInfo) => (
+                                    <RstrCard key={rstrInfo.rstr_id} rstrInfo={rstrInfo} />
+                                ))}
+                            </RstrCards>
+                        </div>
+                        <Pagination
+                            style={{ margin: '0 auto' }}
+                            page={page}
+                            count={totalPage}
+                            onChange={handlePageChange}
+                            color="primary"
+                            renderItem={(item) => (
+                                <PaginationItem
+                                    component={Link}
+                                    to={`/rstr?page=${item.page}`}
+                                    {...item}
+                                />
+                            )}
+                        /></>
+                }
             </RstrListContainer>
         </RstrListPageContainer>
     )

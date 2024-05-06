@@ -52,8 +52,8 @@ const AuthPage = ({ mode }) => {
         try {
             const response = await axios.post(
                 // `http://localhost:8080/usermanagement/verify?phone=${encodeURIComponent(formData.phone)}`,
-                'http://localhost:8080/usermanagement/verify', null, {
-                    params: {phone: formData.phone}
+                'http://foodnamdoserver.iptime.org:8001/usermanagement/verify', null, {
+                params: { phone: formData.phone }
                 // 'foodnamdoserver.iptime.org:8001/usermanagement/verify', {
                 // phone: formData.phone
             });
@@ -66,7 +66,7 @@ const AuthPage = ({ mode }) => {
             console.log(error);
         }
     }
-    
+
 
     return (
         <div className="auth-form-container centered-flex">
