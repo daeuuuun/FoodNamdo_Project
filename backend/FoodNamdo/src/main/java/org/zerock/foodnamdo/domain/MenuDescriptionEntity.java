@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,7 @@ public class MenuDescriptionEntity {
 
     @ManyToOne
     @JoinColumn(name = "rstr_id")
+//    @JsonBackReference
     private RstrEntity rstrEntity;
 
     @JoinColumn(name = "menu_id")

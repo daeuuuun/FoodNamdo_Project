@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,9 +26,11 @@ public class UserBadgeEntity {
 
     @ManyToOne
     @JoinColumn(name = "badge_id")
+//    @JsonBackReference
     private BadgeEntity badgeEntity;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "badge_date", nullable = false)
+//    @JsonBackReference
     private LocalDateTime badgeDate;
 }

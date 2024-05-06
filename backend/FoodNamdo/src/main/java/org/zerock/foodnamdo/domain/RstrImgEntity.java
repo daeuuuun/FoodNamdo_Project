@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 @Entity
@@ -17,6 +18,7 @@ public class RstrImgEntity {
 
     @ManyToOne
     @JoinColumn(name = "rstr_id")
+//    @JsonBackReference
     private RstrEntity rstrEntity;
 
     @Column(name = "rstr_img_url", nullable = false)

@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import jakarta.persistence.*;
 
@@ -31,6 +32,7 @@ public class CategoryEntity {
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "rstr_id")
     )
+//    @JsonBackReference
     private List<RstrEntity> rstrEntity;
 
 }

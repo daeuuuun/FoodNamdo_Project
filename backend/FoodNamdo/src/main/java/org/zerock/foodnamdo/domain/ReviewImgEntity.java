@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 @Entity
@@ -18,6 +19,7 @@ public class ReviewImgEntity {
 
     @ManyToOne
     @JoinColumn(name = "review_id")
+//    @JsonBackReference
     private ReviewEntity reviewEntity;
 
     @Column(name = "review_img_url", nullable = false)

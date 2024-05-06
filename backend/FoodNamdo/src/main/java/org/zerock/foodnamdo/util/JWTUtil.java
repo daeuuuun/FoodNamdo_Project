@@ -18,6 +18,7 @@ public class JWTUtil {
     @Value("${org.zerock.jwt.secret}")
     private String key;
 
+//    public String generateToken(String username, int days) {
     public String generateToken(Map<String, Object> valueMap, int days) {
         log.info("generateKey...." + key);
 
@@ -25,8 +26,15 @@ public class JWTUtil {
         headers.put("typ", "JWT");
         headers.put("alg", "HS256");
 
+
         Map<String, Object> payloads = new HashMap<>();
         payloads.putAll(valueMap);
+//        Map<String, Object> payloads = new HashMap<>();
+//        Map<String, Object> valueMap = null;
+//        payloads.putAll(valueMap);
+
+//        valueMap = new HashMap<>();
+//        valueMap.put("username", username);
 
         int time = (1) * days;
 

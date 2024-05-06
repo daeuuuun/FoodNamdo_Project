@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 @Entity
@@ -13,11 +14,13 @@ public class ReactionEntity {
     @Id
     @ManyToOne
     @JoinColumn(name = "review_id")
+//    @JsonBackReference
     private ReviewEntity reviewEntity;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "user_id")
+//    @JsonBackReference
     private UserEntity userEntity;
 
     @Column(name = "reaction_type", nullable = false)

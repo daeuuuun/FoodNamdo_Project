@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,5 +29,6 @@ public class BadgeEntity {
     private String badgeUnlock;
 
     @OneToMany(mappedBy = "badgeEntity", cascade = CascadeType.ALL)
+//    @JsonManagedReference
     private List<UserBadgeEntity> userBadges;
 }

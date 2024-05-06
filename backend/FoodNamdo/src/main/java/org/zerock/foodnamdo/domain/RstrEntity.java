@@ -1,11 +1,16 @@
 package org.zerock.foodnamdo.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
 import java.util.Set;
 
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "rstrId")
 @Entity
 @Getter
 @Builder
@@ -84,20 +89,26 @@ public class RstrEntity {
     private boolean rstrDelivery;
 
     @OneToMany(mappedBy = "rstrEntity")
+    //@JsonManagedReference
     private List<RstrCategoryEntity> rstrCategories;
 
     @OneToMany(mappedBy = "rstrEntity")
+    //@JsonManagedReference
     private List<RstrImgEntity> rstrImages;
 
     @OneToMany(mappedBy = "rstrEntity")
+    //@JsonManagedReference
     private List<ReviewEntity> reviews;
 
     @OneToMany(mappedBy = "rstrEntity")
+    //@JsonManagedReference
     private List<MenuDescriptionEntity> menuDescriptions;
 
     @ManyToMany(mappedBy = "rstrEntity")
+    //@JsonBackReference
     private List<CategoryEntity> categories;
 
     @OneToMany(mappedBy = "rstrEntity")
+    //@JsonManagedReference
     private List<FavoriteEntity> favorites;
 }

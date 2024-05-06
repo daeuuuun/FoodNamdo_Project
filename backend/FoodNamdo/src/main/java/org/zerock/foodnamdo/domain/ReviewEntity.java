@@ -14,7 +14,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = {"rstrEntity", "userEntity"})
 @Table(name = "review")
 public class ReviewEntity {
     @Id
