@@ -64,19 +64,6 @@ const RstrCard = ({ rstrInfo }) => {
     const navigate = useNavigate();
     const imgUrl = rstrInfo.rstr_img_url;
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const response = await axios.get(imgUrl);
-    //             console.log(response.data);
-    //         } catch (error) {
-    //             console.error('이미지 요청 에러:', error);
-    //         }
-    //     };
-
-    //     fetchData();
-    // }, []);
-
     return (
         <RstrCardContainer onClick={() => {
             navigate(`/rstr/${rstrInfo.rstr_id}`, { state: { rstrInfo } })
@@ -96,7 +83,7 @@ const RstrCard = ({ rstrInfo }) => {
                 <div className='centered-flex rating'>
                     <StyledStarIcon />
                     <div style={{ marginTop: '1px' }}>
-                        {`${rstrInfo.rstr_review_rating}(${10})`}
+                        {`${rstrInfo.rstr_review_rating}(${rstrInfo.review_count})`}
                     </div>
                 </div>
             </RstrInfo>

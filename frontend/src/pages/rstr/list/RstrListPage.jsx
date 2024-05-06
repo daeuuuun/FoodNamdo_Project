@@ -63,9 +63,9 @@ const RstrListContainer = styled.div`
     display: flex;
     flex-direction: column;
     .total-rstr-num {
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         // color: ${palette.darygray};
-        margin: 10px;
+        margin: 10px 20px;
         text-align: right;
     }
 `
@@ -85,8 +85,12 @@ export const RstrListPage = () => {
     const [page, setPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
     const [pageSize, setPageSize] = useState(1);
-
+    const [totalRstr, setTotalRstr] = useState(1);
     const location = useLocation();
+
+    // 체크박스 상태 관리하는 state (하나의 카테고리만 선택 가능)
+    const [checkedRegion, setCheckedRegion] = useState('전체');
+    const [checkedCategory, setCheckedCategory] = useState('전체');
 
     useEffect(() => {
         const query = new URLSearchParams(location.search);
@@ -97,29 +101,64 @@ export const RstrListPage = () => {
 
     // 이미지 파일로 검색 시
     useEffect(() => {
+        const fetchDataWithFile = async () => {
+            const formData = new FormData();
+            formData.append('file', file);
+            console.log('선택된 카테고리', checkedCategory);
+            const params = new URLSearchParams({
+                similarity: 1,
+                n_results: 30,
+                page_number: page,
+                sort_order: 'distance',
+                reverse: 'false',
+                category: checkedCategory,
+                region: checkedRegion,
+            }).toString();
+
+            const url = `http://foodnamdo.iptime.org:7999/image_to_image/?${params}`;
+
+            try {
+                const response = await axios.post(url, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                });
+                setRstrList(response.data.rstr); // 음식점 리스트 저장
+                setTotalPage(response.data.total_pages);
+                setPageSize(response.data.page_size);
+                setTotalRstr(response.data.total_rstr);
+                // random URL을 session에 저장하는 코드
+                sessionStorage.setItem('random', response.data.random);
+            } catch (error) {
+                console.error('이미지 검색 에러:', error);
+            }
+            setIsLoading(false);
+        };
+
+        const fetchDataWithRandom = async () => {
+            const savedRandom = sessionStorage.getItem('random');
+            try {
+                const response = await axios.get(`http://foodnamdo.iptime.org:7999/${savedRandom}/?page_size=8&page_number=${page}&sort_order=distance&reverse=false&category=%EC%A0%84%EC%B2%B4&region=%EC%A0%84%EC%B2%B4`);
+                setRstrList(response.data.rstr); // 음식점 리스트 저장
+                setTotalPage(response.data.total_pages);
+                setPageSize(response.data.page_size);
+                setTotalRstr(response.data.total_rstr);
+            } catch (error) {
+                console.error('이미지 검색 에러:', error);
+            }
+            setIsLoading(false);
+        };
+
         if (file) {
             setIsLoading(true);
             console.log('파일 사용', file);
-            const formData = new FormData();
-            formData.append('file', file);
-            const fetchData = async () => {
-                try {
-                    const response = await axios.post(`http://foodnamdo.iptime.org:7999/image_to_image/?similarity=1&n_results=30&page_number=${page}&sort_order=distance&reverse=false`, formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        }
-                    });
-                    setRstrList(response.data.rstr);
-                    setTotalPage(response.data.total_pages);
-                    setPageSize(response.data.page_size);
-                } catch (error) {
-                    console.error('이미지 검색 에러:', error);
-                }
-                setIsLoading(false);
-            };
-            fetchData();
+            fetchDataWithFile();
+        } else {
+            setIsLoading(true);
+            console.log('파일 없음');
+            fetchDataWithRandom();
         }
-    }, [file, page, pageSize]);
+    }, [file, page, pageSize, checkedRegion, checkedCategory]);
 
 
     const regionOptions = [
@@ -131,10 +170,6 @@ export const RstrListPage = () => {
         '분식', '식육(숯불구이)', '회', '패스트푸드', '푸드트럭', '유원지', '전통차', '복어', '외국음식전문점', '아이스크림', '뷔페식', '기타'
     ];
 
-    // 체크박스 상태 관리하는 state (하나의 카테고리만 선택 가능)
-    const [checkedRegion, setCheckedRegion] = useState('전체');
-    const [checkedCategory, setCheckedCategory] = useState('전체');
-
     const handleRegionCheckboxChange = (e) => {
         setCheckedRegion(e.target.checked ? e.target.name : null);
     }
@@ -143,16 +178,14 @@ export const RstrListPage = () => {
         setCheckedCategory(e.target.checked ? e.target.name : null);
     }
 
-    // useEffect(() => {
-    //     console.log(checkedCategory);
-    // }, [checkedCategory]);
+    useEffect(() => {
+        // console.log(checkedCategory);
+        // console.log(random);
+    }, []);
 
 
-    const handlePageChange = (event, value) => {
+    const handlePageChange = (value) => {
         setPage(value);
-        // const newPageSize = value * 5; // 예시로, 페이지 번호에 따라 pageSize를 변경
-        // setPageSize(newPageSize);
-        // fetchRestaurants(value, newPageSize);
     };
 
     return (
@@ -199,7 +232,7 @@ export const RstrListPage = () => {
             </CategoryBarContainer>
             <RstrListContainer>
                 <div style={{ height: '550px' }}>
-                    <div className='total-rstr-num'>{`약 ${rstrList.length}건`}</div>
+                    <div className='total-rstr-num'>{`약 ${totalRstr}건`}</div>
                     <RstrCards>
                         {rstrList.map((rstrInfo) => (
                             <RstrCard key={rstrInfo.rstr_id} rstrInfo={rstrInfo} />
