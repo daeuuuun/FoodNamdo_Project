@@ -1,6 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, Query
 from contextlib import asynccontextmanager
-import chromadb_utils, chromadb, os, copy, SortBy, Category, Region, plyvel, leveldb_utils, json
+import chromadb_utils, chromadb, os, copy, SortBy, Category, Region, plyvel, leveldb_utils, json, Table
 from chromadb.utils.embedding_functions import OpenCLIPEmbeddingFunction
 from chromadb.utils.data_loaders import ImageLoader
 from fastapi.middleware.cors import CORSMiddleware
@@ -51,38 +51,14 @@ image_search_description = "이미지 파일(png, jpg, jpeg)와 결과 수(n_res
 @app.post("/image_to_image/",
           summary="음식점 이미지와 리뷰 이미지를 이용한 이미지 검색",
           description=image_search_description)
-async def image_search_all(file: UploadFile = File(...), similarity: float = Query(..., ge=0), n_results: int = Query(30, ge=1, le=70), page_size: int = Query(8, ge=1), page_number: int = Query(1, ge=1), sort_order: SortBy.Column = SortBy.Column.distance, reverse: bool = False, category: Category.rstrCategory = Category.rstrCategory.전체, region: Region.rstrRegion = Region.rstrRegion.전체):
+async def image_search_all(file: UploadFile = File(...), similarity: float = Query(..., ge=0), n_results: int = Query(30, ge=1, le=70), page_size: int = Query(8, ge=1), page_number: int = Query(1, ge=1), sort_order: SortBy.Column = SortBy.Column.distance, reverse: bool = False, category: Category.rstrCategory = Category.rstrCategory.전체, region: Region.rstrRegion = Region.rstrRegion.전체, table: Table.searchTable = Table.searchTable.전체):
     # 파일이 이미지인지 확인
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=422, detail=error_422_detail)
     
-    results = chromadb_utils.img_to_img(rstr_img_collection, review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "all")
+    results = chromadb_utils.img_to_img(rstr_img_collection, review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, table)
     random = leveldb_utils.insert_results(levelDB, results)
     return sort_paginate_json(results, page_size, page_number, sort_order, reverse, category, region, random)
-
-@app.post("/image_to_image_rstr/",
-          summary="음식점 이미지를 이용한 이미지 검색",
-          description=image_search_description)
-async def image_search_only_rstr(file: UploadFile = File(...), similarity: float = Query(..., ge=0), n_results: int = Query(30, ge=1, le=70), page_size: int = Query(8, ge=1), page_number: int = Query(1, ge=1), sort_order: SortBy.Column = SortBy.Column.distance, reverse: bool = False, category: Category.rstrCategory = Category.rstrCategory.전체, region: Region.rstrRegion = Region.rstrRegion.전체):
-    # 파일이 이미지인지 확인
-    if not is_valid_image_filename(file.filename):
-        raise HTTPException(status_code=422, detail=error_422_detail)
-    
-    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "rstr_img")
-    random = leveldb_utils.insert_results(levelDB, results_rstr_img)
-    return sort_paginate_json(results_rstr_img, page_size, page_number, sort_order, reverse, category, region, random)
-
-@app.post("/img_to_img_review/",
-          summary="리뷰 이미지를 이용한 이미지 검색",
-          description=image_search_description)
-async def image_search_only_review(file: UploadFile = File(...), similarity: float = Query(..., ge=0), n_results: int = Query(30, ge=1, le=70), page_size: int = Query(8, ge=1), page_number: int = Query(1, ge=1), sort_order: SortBy.Column = SortBy.Column.distance, reverse: bool = False, category: Category.rstrCategory = Category.rstrCategory.전체, region: Region.rstrRegion = Region.rstrRegion.전체):
-    # 파일이 이미지인지 확인
-    if not is_valid_image_filename(file.filename):
-        raise HTTPException(status_code=422, detail=error_422_detail)
-    
-    results_review_img = chromadb_utils.img_to_img(rstr_img_collection, review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "review_img")
-    random = leveldb_utils.insert_results(levelDB, results_review_img)
-    return sort_paginate_json(results_review_img, page_size, page_number, sort_order, reverse, category, region, random)
 
 @app.get("/{random}/")
 async def image_search_result(random: str, page_size: int = Query(8, ge=1), page_number: int = Query(1, ge=1), sort_order: SortBy.Column = SortBy.Column.distance, reverse: bool = False, category: Category.rstrCategory = Category.rstrCategory.전체, region: Region.rstrRegion = Region.rstrRegion.전체):
