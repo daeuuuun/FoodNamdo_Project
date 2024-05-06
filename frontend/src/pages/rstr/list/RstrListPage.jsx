@@ -133,7 +133,7 @@ export const RstrListPage = () => {
 
     // 체크박스 상태 관리하는 state (하나의 카테고리만 선택 가능)
     const [checkedRegion, setCheckedRegion] = useState('전체');
-    const [checkedCategory, setCheckedCategory] = useState(null);
+    const [checkedCategory, setCheckedCategory] = useState('전체');
 
     const handleRegionCheckboxChange = (e) => {
         setCheckedRegion(e.target.checked ? e.target.name : null);
@@ -143,9 +143,9 @@ export const RstrListPage = () => {
         setCheckedCategory(e.target.checked ? e.target.name : null);
     }
 
-    useEffect(() => {
-        console.log(checkedCategory);
-    }, [checkedCategory]);
+    // useEffect(() => {
+    //     console.log(checkedCategory);
+    // }, [checkedCategory]);
 
 
     const handlePageChange = (event, value) => {

@@ -2,7 +2,7 @@ import React from 'react';
 import styles from '../header/Header.module.css';
 import FoodNamdoLogo from '../header/FoodNamdoLogo.png';
 import SearchBar from '../../components/common/SearchBar';
-
+import { FileProvider } from '../../data/FileContext';
 const Header = () => {
     return (
         <>
@@ -13,6 +13,9 @@ const Header = () => {
               <div className={styles.searchBar}></div>
               <CiSearch className={styles.search} />
             </div> */}
+                    {/* <FileProvider>
+                        <SearchBar />
+                    </FileProvider> */}
                     <SearchBar />
                     <div className={styles.sign}>
                         <div className={styles.signIn}>로그인</div>

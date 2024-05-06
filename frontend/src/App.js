@@ -14,6 +14,7 @@ import FindIdPage from './pages/auth/FindIdPage';
 import FindPwPage from './pages/auth/FindPwPage';
 import SearchBar from './components/common/SearchBar';
 import { FileProvider } from './data/FileContext'; // 이미지 파일 전역 관리
+import Header from './pages/header/Header';
 
 function App() {
   return (
@@ -28,7 +29,6 @@ function App() {
               <MainPage />
             </FileProvider>
           } />
-
           {/* 회원 인증 페이지들 */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
