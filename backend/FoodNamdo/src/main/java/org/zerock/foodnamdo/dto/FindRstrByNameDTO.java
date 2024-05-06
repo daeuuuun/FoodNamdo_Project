@@ -1,21 +1,19 @@
 package org.zerock.foodnamdo.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.zerock.foodnamdo.domain.MenuDescriptionEntity;
-import org.zerock.foodnamdo.domain.RstrEntity;
+import lombok.*;
+import org.zerock.foodnamdo.domain.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Data
-@Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RstrDTO {
+@Builder
+public class FindRstrByNameDTO {
+    private String category_name;
     private Long rstr_id;
+    private List<RstrImgDTO> rstr_images;
     private int rstr_num;
     private String rstr_region;
     private String rstr_permission;
@@ -25,8 +23,10 @@ public class RstrDTO {
     private Double rstr_lo;
     private String rstr_tel;
     private String rstr_intro;
-    private Double rstr_naver_rating;
-    private Double rstr_review_rating;
+    private String rstr_naver_rating;
+    private String rstr_review_rating;
+//    private Double rstr_naver_rating;
+//    private Double rstr_review_rating;
     private boolean example;
     private boolean relax;
     private int rstr_review_count;
@@ -37,16 +37,23 @@ public class RstrDTO {
     private String rstr_closed;
     private String rstr_business_hour;
     private boolean rstr_delivery;
-    private List<RstrCategoryDTO> rstrCategories;
-    private List<RstrImgDTO> rstrImages;
+//    private List<RstrCategoryDTO> rstr_categories;
     private List<ReviewDTO> reviews;
-    private List<MenuDescriptionDTO> menuDescriptions;
-    private List<CategoryDTO> categories;
+    private List<MenuDescriptionDTO> menu_descriptions;
+//    private List<CategoryDTO> categories;
     private List<FavoriteDTO> favorites;
 
-    public static RstrDTO fromEntity(RstrEntity entity) {
-        return RstrDTO.builder()
+    // 생성자를 이용한 변환 메서드
+    public static FindRstrByNameDTO fromEntity(RstrEntity entity) {
+
+        String naverRating = entity.getRstrNaverRating() != null ? String.format("%.2f", entity.getRstrNaverRating()) : null;
+        String reviewRating = entity.getRstrReviewRating() != null ? String.format("%.2f", entity.getRstrReviewRating()) : null;
+
+
+        return FindRstrByNameDTO.builder()
+                .category_name(CategoryDTO.categoryNamesFromEntities(entity.getCategories()))
                 .rstr_id(entity.getRstrId())
+                .rstr_images(RstrImgDTO.fromEntities(entity.getRstrImages()))
                 .rstr_num(entity.getRstrNum())
                 .rstr_region(entity.getRstrRegion())
                 .rstr_permission(entity.getRstrPermission())
@@ -56,8 +63,8 @@ public class RstrDTO {
                 .rstr_lo(entity.getRstrLo())
                 .rstr_tel(entity.getRstrTel())
                 .rstr_intro(entity.getRstrIntro())
-                .rstr_naver_rating(entity.getRstrNaverRating())
-                .rstr_review_rating(entity.getRstrReviewRating())
+                .rstr_naver_rating(naverRating)
+                .rstr_review_rating(reviewRating)
                 .example(entity.isExample())
                 .relax(entity.isRelax())
                 .rstr_review_count(entity.getRstrReviewCount())
@@ -68,12 +75,12 @@ public class RstrDTO {
                 .rstr_closed(entity.getRstrClosed())
                 .rstr_business_hour(entity.getRstrBusinessHour())
                 .rstr_delivery(entity.isRstrDelivery())
+//                .rstr_categories(RstrCategoryDTO.fromEntities(entity.getRstrCategories()))
+                .reviews(ReviewDTO.fromEntities(entity.getReviews()))
+                .menu_descriptions(MenuDescriptionDTO.fromEntities(entity.getMenuDescriptions()))
+//                .categories(CategoryDTO.fromEntities(entity.getCategories()))
+                .favorites(FavoriteDTO.fromEntities(entity.getFavorites()))
                 .build();
     }
-
-    public static List<RstrDTO> fromEntities(List<RstrEntity> entities) {
-        return entities.stream()
-                .map(RstrDTO::fromEntity)
-                .collect(Collectors.toList());
-    }
 }
+

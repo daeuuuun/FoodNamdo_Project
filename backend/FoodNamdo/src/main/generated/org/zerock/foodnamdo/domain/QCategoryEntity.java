@@ -24,7 +24,7 @@ public class QCategoryEntity extends EntityPathBase<CategoryEntity> {
 
     public final StringPath categoryName = createString("categoryName");
 
-    public final SetPath<RstrEntity, QRstrEntity> restaurants = this.<RstrEntity, QRstrEntity>createSet("restaurants", RstrEntity.class, QRstrEntity.class, PathInits.DIRECT2);
+    public final ListPath<RstrEntity, QRstrEntity> rstrEntity = this.<RstrEntity, QRstrEntity>createList("rstrEntity", RstrEntity.class, QRstrEntity.class, PathInits.DIRECT2);
 
     public QCategoryEntity(String variable) {
         super(CategoryEntity.class, forVariable(variable));

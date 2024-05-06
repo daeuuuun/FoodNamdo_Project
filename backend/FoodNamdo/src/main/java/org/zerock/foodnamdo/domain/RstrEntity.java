@@ -3,7 +3,6 @@ package org.zerock.foodnamdo.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -84,23 +83,21 @@ public class RstrEntity {
     @Column(name = "rstr_delivery", nullable = false)
     private boolean rstrDelivery;
 
-//    @OneToMany(mappedBy = "restaurant")
-//    private Set<RstrCategoryEntity> restaurantCategories = new HashSet<>();
-////    private Set<RstrCategoryEntity> restaurantCategories = new HashSet<>();
-    @OneToMany(mappedBy = "restaurant")
-    private List<RstrCategoryEntity> restaurantCategories;
+    @OneToMany(mappedBy = "rstrEntity")
+    private List<RstrCategoryEntity> rstrCategories;
 
-    @OneToMany(mappedBy = "restaurant")
+    @OneToMany(mappedBy = "rstrEntity")
+    private List<RstrImgEntity> rstrImages;
+
+    @OneToMany(mappedBy = "rstrEntity")
     private List<ReviewEntity> reviews;
 
-    @OneToMany(mappedBy = "restaurant")
+    @OneToMany(mappedBy = "rstrEntity")
     private List<MenuDescriptionEntity> menuDescriptions;
 
-    @OneToMany(mappedBy = "restaurant")
-    private List<RstrimgEntity> restaurantImages;
+    @ManyToMany(mappedBy = "rstrEntity")
+    private List<CategoryEntity> categories;
 
-    @ManyToMany(mappedBy = "restaurants")
-    private Set<CategoryEntity> categories;
-
-
+    @OneToMany(mappedBy = "rstrEntity")
+    private List<FavoriteEntity> favorites;
 }

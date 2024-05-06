@@ -1,12 +1,17 @@
 package org.zerock.foodnamdo.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.zerock.foodnamdo.domain.RstrEntity;
-import org.zerock.foodnamdo.dto.RstrDTO;
 
 import java.util.List;
 
 public interface MainSystemService {
-    List<RstrEntity> getRestaurantsOrderByRstrReviewCountDesc();
+    Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable);
 
-    List<RstrEntity> findAllByRstrNameContains(String name);
+    Page<RstrEntity> findAllByRstrNameContains(String name, Pageable pageable);
+
+    int countAllByRstrNameContains(String rstrName);
+
+    long count();
 }

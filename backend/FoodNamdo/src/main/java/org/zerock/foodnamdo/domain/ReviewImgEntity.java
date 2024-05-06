@@ -18,7 +18,7 @@ public class ReviewImgEntity {
 
     @ManyToOne
     @JoinColumn(name = "review_id")
-    private ReviewEntity review;
+    private ReviewEntity reviewEntity;
 
     @Column(name = "review_img_url", nullable = false)
     private String reviewImgUrl;

@@ -13,12 +13,12 @@ public class ReactionEntity {
     @Id
     @ManyToOne
     @JoinColumn(name = "review_id")
-    private ReviewEntity review;
+    private ReviewEntity reviewEntity;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private UserEntity userEntity;
 
     @Column(name = "reaction_type", nullable = false)
     private String reactionType;

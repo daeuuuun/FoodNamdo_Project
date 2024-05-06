@@ -3,6 +3,7 @@ package org.zerock.foodnamdo.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -23,11 +24,11 @@ public class ReviewEntity {
 
     @ManyToOne
     @JoinColumn(name = "rstr_id")
-    private RstrEntity restaurant;
+    private RstrEntity rstrEntity;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private UserEntity userEntity;
 
     @Lob
     @Column(name = "review_text", nullable = false)
@@ -35,11 +36,11 @@ public class ReviewEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "time_of_creation", nullable = false)
-    private Date timeOfCreation;
+    private LocalDateTime timeOfCreation;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "time_of_revision")
-    private Date timeOfRevision;
+    private LocalDateTime timeOfRevision;
 
     @Column(name = "rating", nullable = false)
     private double rating;
@@ -68,8 +69,8 @@ public class ReviewEntity {
     @Column(name = "dislike", nullable = false)
     private int dislike = 0;
 
-    @OneToMany(mappedBy = "review")
-    private List<ReviewImgEntity> reviewImages;
+//    @OneToMany(mappedBy = "review")
+//    private List<ReviewImgEntity> reviewImages;
 
     // Getters and setters
 }

@@ -13,13 +13,14 @@ import lombok.*;
 public class RstrCategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long rstr_category_id;
+    private Long rstrCategoryId;
 
     @ManyToOne
     @JoinColumn(name = "rstr_id", nullable = false)
-    private RstrEntity restaurant;
+    private RstrEntity rstrEntity;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private CategoryEntity categoryId;
+    private CategoryEntity categoryEntity;
+
 }

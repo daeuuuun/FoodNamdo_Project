@@ -2,6 +2,9 @@ package org.zerock.foodnamdo.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -23,4 +26,7 @@ public class BadgeEntity {
 
     @Column(name = "badge_unlock", nullable = false)
     private String badgeUnlock;
+
+    @OneToMany(mappedBy = "badgeEntity", cascade = CascadeType.ALL)
+    private List<UserBadgeEntity> userBadges;
 }

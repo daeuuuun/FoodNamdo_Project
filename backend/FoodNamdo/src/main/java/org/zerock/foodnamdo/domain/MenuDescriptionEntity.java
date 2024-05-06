@@ -18,7 +18,7 @@ public class MenuDescriptionEntity {
 
     @ManyToOne
     @JoinColumn(name = "rstr_id")
-    private RstrEntity restaurant;
+    private RstrEntity rstrEntity;
 
     @JoinColumn(name = "menu_id")
     private int menuId;

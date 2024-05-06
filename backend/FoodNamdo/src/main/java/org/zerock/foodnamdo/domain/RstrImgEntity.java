@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "rstr_img")
-public class RstrimgEntity {
+public class RstrImgEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rstr_img_id")
@@ -17,7 +17,7 @@ public class RstrimgEntity {
 
     @ManyToOne
     @JoinColumn(name = "rstr_id")
-    private RstrEntity restaurant;
+    private RstrEntity rstrEntity;
 
     @Column(name = "rstr_img_url", nullable = false)
     private String rstrImgUrl;

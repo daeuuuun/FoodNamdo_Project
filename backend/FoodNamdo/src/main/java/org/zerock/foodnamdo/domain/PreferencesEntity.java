@@ -17,7 +17,7 @@ public class PreferencesEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private UserEntity userEntity;
 
     @Column(name = "preference", nullable = false)
     private String preference;

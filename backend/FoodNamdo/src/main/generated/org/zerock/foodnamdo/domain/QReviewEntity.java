@@ -40,19 +40,17 @@ public class QReviewEntity extends EntityPathBase<ReviewEntity> {
 
     public final BooleanPath receipt = createBoolean("receipt");
 
-    public final QRstrEntity restaurant;
-
     public final NumberPath<Long> reviewId = createNumber("reviewId", Long.class);
-
-    public final ListPath<ReviewImgEntity, QReviewImgEntity> reviewImages = this.<ReviewImgEntity, QReviewImgEntity>createList("reviewImages", ReviewImgEntity.class, QReviewImgEntity.class, PathInits.DIRECT2);
 
     public final StringPath reviewText = createString("reviewText");
 
-    public final DateTimePath<java.util.Date> timeOfCreation = createDateTime("timeOfCreation", java.util.Date.class);
+    public final QRstrEntity rstrEntity;
 
-    public final DateTimePath<java.util.Date> timeOfRevision = createDateTime("timeOfRevision", java.util.Date.class);
+    public final DateTimePath<java.time.LocalDateTime> timeOfCreation = createDateTime("timeOfCreation", java.time.LocalDateTime.class);
 
-    public final QUserEntity user;
+    public final DateTimePath<java.time.LocalDateTime> timeOfRevision = createDateTime("timeOfRevision", java.time.LocalDateTime.class);
+
+    public final QUserEntity userEntity;
 
     public QReviewEntity(String variable) {
         this(ReviewEntity.class, forVariable(variable), INITS);
@@ -72,8 +70,8 @@ public class QReviewEntity extends EntityPathBase<ReviewEntity> {
 
     public QReviewEntity(Class<? extends ReviewEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.restaurant = inits.isInitialized("restaurant") ? new QRstrEntity(forProperty("restaurant")) : null;
-        this.user = inits.isInitialized("user") ? new QUserEntity(forProperty("user")) : null;
+        this.rstrEntity = inits.isInitialized("rstrEntity") ? new QRstrEntity(forProperty("rstrEntity")) : null;
+        this.userEntity = inits.isInitialized("userEntity") ? new QUserEntity(forProperty("userEntity")) : null;
     }
 
 }

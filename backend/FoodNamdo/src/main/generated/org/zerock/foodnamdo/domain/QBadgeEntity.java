@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -26,6 +27,8 @@ public class QBadgeEntity extends EntityPathBase<BadgeEntity> {
     public final StringPath badgeName = createString("badgeName");
 
     public final StringPath badgeUnlock = createString("badgeUnlock");
+
+    public final ListPath<UserBadgeEntity, QUserBadgeEntity> userBadges = this.<UserBadgeEntity, QUserBadgeEntity>createList("userBadges", UserBadgeEntity.class, QUserBadgeEntity.class, PathInits.DIRECT2);
 
     public QBadgeEntity(String variable) {
         super(BadgeEntity.class, forVariable(variable));

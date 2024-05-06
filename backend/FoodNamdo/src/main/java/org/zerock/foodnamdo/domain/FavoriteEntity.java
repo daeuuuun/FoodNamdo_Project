@@ -17,10 +17,10 @@ public class FavoriteEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private UserEntity userEntity;
 
     @ManyToOne
     @JoinColumn(name = "rstr_id")
-    private RstrEntity restaurant;
+    private RstrEntity rstrEntity;
 //    private RstrEntity rstrId;
 }
