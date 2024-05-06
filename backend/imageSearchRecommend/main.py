@@ -56,18 +56,7 @@ async def image_search_all(file: UploadFile = File(...), similarity: float = Que
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=422, detail=error_422_detail)
     
-    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "rstr_img")
-    results_review_img = None
-    results = None
-    try:
-        file_copy = copy.deepcopy(file)
-        results_review_img = chromadb_utils.img_to_img(review_img_collection, file_copy, file.filename.split(".")[-1], similarity, n_results, "review_img")
-    except Exception as e:
-        print("Error copying image data:", e)
-    if results_review_img is not None:
-        results = results_rstr_img + results_review_img
-    else:
-        results = results_rstr_img
+    results = chromadb_utils.img_to_img(rstr_img_collection, review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "all")
     random = leveldb_utils.insert_results(levelDB, results)
     return sort_paginate_json(results, page_size, page_number, sort_order, reverse, category, region, random)
 
@@ -79,7 +68,7 @@ async def image_search_only_rstr(file: UploadFile = File(...), similarity: float
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=422, detail=error_422_detail)
     
-    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "rstr_img")
+    results_rstr_img = chromadb_utils.img_to_img(rstr_img_collection, review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "rstr_img")
     random = leveldb_utils.insert_results(levelDB, results_rstr_img)
     return sort_paginate_json(results_rstr_img, page_size, page_number, sort_order, reverse, category, region, random)
 
@@ -91,7 +80,7 @@ async def image_search_only_review(file: UploadFile = File(...), similarity: flo
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=422, detail=error_422_detail)
     
-    results_review_img = chromadb_utils.img_to_img(review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "review_img")
+    results_review_img = chromadb_utils.img_to_img(rstr_img_collection, review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, "review_img")
     random = leveldb_utils.insert_results(levelDB, results_review_img)
     return sort_paginate_json(results_review_img, page_size, page_number, sort_order, reverse, category, region, random)
 

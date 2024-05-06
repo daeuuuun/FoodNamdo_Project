@@ -46,7 +46,7 @@ def img_saving(collection, save_path, table, data, columns):
 keys_to_remove = ["embeddings", "documents", "uris", "data"]
 
 # 이미지로 음식점 이미지 유사도 검색
-def img_to_img(collection, file, file_extension_name, similarity, n_results, table):
+def img_to_img(rstr_img_collection, review_img_collection, file, file_extension_name, similarity, n_results, table):
     save_path = "./img/temp/"
     os.makedirs(save_path, exist_ok=True)
     unique_filename = f"{uuid.uuid4()}.{file_extension_name}"
@@ -54,6 +54,24 @@ def img_to_img(collection, file, file_extension_name, similarity, n_results, tab
     url = save_path + unique_filename
     with open(url, "wb") as f:
         f.write(file.file.read())
+
+    query_result = None
+    if table == "rstr_img":
+        query_result = image_search(rstr_img_collection, url, n_results, similarity, table)
+    elif table == "review_img":
+        if n_results > review_img_collection.count():
+            n_results = review_img_collection.count()
+        query_result = image_search(review_img_collection, url, n_results, similarity, table)
+    else:
+        query_result = image_search(rstr_img_collection, url, n_results, similarity, "rstr_img")
+        if n_results > review_img_collection.count():
+            n_results = review_img_collection.count()
+        query_result += image_search(review_img_collection, url, n_results, similarity, "review_img")
+    
+    os.remove(url)
+    return query_result
+
+def image_search(collection, url, n_results, similarity, table):
     query_result = collection.query(query_uris=url, n_results=n_results)
     
     for key in keys_to_remove:
@@ -62,8 +80,6 @@ def img_to_img(collection, file, file_extension_name, similarity, n_results, tab
     # distances 값을 metadata에 넣기
     for i in range(len(query_result['metadatas'][0])):
         query_result['metadatas'][0][i]['distance'] = float(query_result['distances'][0][i])
-    
-    os.remove(url)
     return filter_by_condition(query_result, similarity, table)
 
 # 결과 필터링
