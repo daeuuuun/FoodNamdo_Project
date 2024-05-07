@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import AuthLogo from './components/AuthLogo';
 import InputForm from './components/InputForm';
+import { BACKEND_SERVER_URL } from "../../config/Config";
 
 const AuthPage = ({ mode }) => {
 
@@ -52,7 +53,7 @@ const AuthPage = ({ mode }) => {
         try {
             const response = await axios.post(
                 // `http://localhost:8080/usermanagement/verify?phone=${encodeURIComponent(formData.phone)}`,
-                'http://foodnamdoserver.iptime.org:8001/usermanagement/verify', null, {
+                BACKEND_SERVER_URL + '/usermanagement/verify', null, {
                 params: { phone: formData.phone }
                 // 'foodnamdoserver.iptime.org:8001/usermanagement/verify', {
                 // phone: formData.phone

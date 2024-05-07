@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import '../../styles/authform.css'
 import palette from "../../styles/palette";
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';

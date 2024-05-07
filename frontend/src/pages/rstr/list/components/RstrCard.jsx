@@ -83,7 +83,7 @@ const RstrCard = ({ rstrInfo }) => {
                 <div className='centered-flex rating'>
                     <StyledStarIcon />
                     <div style={{ marginTop: '1px' }}>
-                        {`${rstrInfo.rstr_review_rating}(${rstrInfo.review_count})`}
+                        {`${rstrInfo.rstr_review_rating} (${rstrInfo.review_count}명)`}
                     </div>
                 </div>
             </RstrInfo>

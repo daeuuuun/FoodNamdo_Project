@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './index.css';
 import '../src/styles/common.css';
-import '../src/styles/authform.css';
+// import '../src/styles/authform.css';
 import MainPage from './pages/main/MainPage';
 import LoginPage from './pages/auth/LoginPage';
 import SignUpPage from './pages/auth/SignUpPage';

@@ -23,13 +23,14 @@ const RstrDetailPage = () => {
                     <span> | </span>
                     <span>{rstrInfo.category_name}</span>
                 </div>
-                <div style={{ display: 'flex' }}>
+                <div
+                    style={{ display: 'flex' }}>
                     <RstrImgCarusel />
                     <RstrBriefInfo rstrInfo={rstrInfo} />
                 </div>
-            </RstrDetailMainContainer>
+            </RstrDetailMainContainer >
             <RstrTabBar />
-        </div>
+        </div >
     )
 }
 

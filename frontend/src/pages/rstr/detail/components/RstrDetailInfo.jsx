@@ -44,6 +44,27 @@ const MenuTable = styled.div`
     }
 `;
 
+//
+
+const AdditionInfoContainer = styled.div`
+    display: flex;
+    justify-content: flex-start;
+`;
+
+const AdditionInfoContent = styled.div`
+    width: 5.2rem;
+    height: 5.2rem;
+    margin-right: 20px;
+    border: 1px solid ${palette.darkblue1};
+    border-radius: 50%;
+    text-align: center;
+     box-shadow: 2px 1px 2px ${palette.gray};
+`;
+const AdditionInfoLabel = styled.div`
+    font-family: 'Gmarket Sans Medium';
+    margin: 0 0.6rem 0 0.6rem;
+    font-size: 0.8rem;
+`;
 const RstrDetailInfo = () => {
 
     const location = useLocation();

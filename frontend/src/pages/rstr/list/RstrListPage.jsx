@@ -10,13 +10,17 @@ import RstrCard from './components/RstrCard';
 import { Link, useLocation } from 'react-router-dom';
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
+
+import { IMAGE_SERVER_URL } from '../../../config/Config';
+
 const RstrListPageContainer = styled.div`
     display: flex;
+    margin-top: 20px;
 `;
 
 const CategoryBarContainer = styled.div`
     width: 160px;
-    margin: 40px 5px 0 0;
+    margin: 0 5px 0 0;
     padding: 10px 10px;
     height: 100%;
     background-color: ${palette.lightgray};
@@ -64,7 +68,6 @@ const RstrListContainer = styled.div`
     flex-direction: column;
     .total-rstr-num {
         font-size: 0.8rem;
-        // color: ${palette.darygray};
         margin: 10px 20px;
         text-align: right;
     }
@@ -79,20 +82,19 @@ const RstrCards = styled.div`
     flex-wrap: wrap;
 `
 
-
 export const RstrListPage = () => {
 
     const { file } = useFile(); // 이미지 파일
+    const location = useLocation();
     const [rstrList, setRstrList] = useState([]); // 음식점 리스트
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isNotInfo, setIsNotInfo] = useState(false);
 
     const [page, setPage] = useState(1);
-    const [totalPage, setTotalPage] = useState(1);
-    const [pageSize, setPageSize] = useState(1);
-    const [totalRstr, setTotalRstr] = useState(1);
-    const location = useLocation();
+    const [totalPage, setTotalPage] = useState(0);
+    const [pageSize, setPageSize] = useState(0);
+    const [totalRstr, setTotalRstr] = useState(0);
 
-    // 체크박스 상태 관리하는 state (하나의 카테고리만 선택 가능)
     const [checkedRegion, setCheckedRegion] = useState('전체');
     const [checkedCategory, setCheckedCategory] = useState('전체');
 
@@ -104,6 +106,7 @@ export const RstrListPage = () => {
 
     // 이미지 파일로 검색 시
     useEffect(() => {
+        setIsNotInfo(false);
         const fetchDataWithFile = async () => {
             const formData = new FormData();
             formData.append('file', file);
@@ -117,7 +120,7 @@ export const RstrListPage = () => {
                 region: checkedRegion,
             }).toString();
 
-            const url = `http://foodnamdo.iptime.org:7999/image_to_image/?${params}`;
+            const url = `${IMAGE_SERVER_URL}/image_to_image/?${params}`;
 
             try {
                 const response = await axios.post(url, formData, {
@@ -132,7 +135,9 @@ export const RstrListPage = () => {
                 // random URL을 session에 저장하는 코드
                 sessionStorage.setItem('random', response.data.random);
             } catch (error) {
-                console.error('이미지 검색 에러:', error);
+                if (error.response.status === 404) {
+                    setIsNotInfo(true);
+                }
             }
             setIsLoading(false);
         };
@@ -148,16 +153,19 @@ export const RstrListPage = () => {
                 region: checkedRegion,
             }).toString();
 
-            const url = `http://foodnamdo.iptime.org:7999/${savedRandom}/?${params}`;
+            const url = `${IMAGE_SERVER_URL}/${savedRandom}/?${params}`;
 
             try {
+                console.log(page)
                 const response = await axios.get(url);
                 setRstrList(response.data.rstr); // 음식점 리스트 저장
                 setTotalPage(response.data.total_pages);
                 setPageSize(response.data.page_size);
                 setTotalRstr(response.data.total_rstr);
             } catch (error) {
-                console.error('이미지 검색 에러:', error);
+                if (error.response.status === 404) {
+                    setIsNotInfo(true);
+                }
             }
             setIsLoading(false);
         };
@@ -180,7 +188,7 @@ export const RstrListPage = () => {
 
     const categoryOptions = [
         '전체', '한식', '중식', '일식', '카페/제과점', '양식', '치킨/호프',
-        '분식', '식육(숯불구이)', '회', '패스트푸드', '푸드트럭', '유원지', '전통차', '복어', '외국음식전문점', '아이스크림', '뷔페식', '기타'
+        '분식', '식육(숯불구이)', '회', '패스트푸드', '푸드트럭', '외국음식전문점', '뷔페식', '기타'
     ];
 
     const handleRegionCheckboxChange = (e) => {
@@ -195,11 +203,6 @@ export const RstrListPage = () => {
         // console.log(checkedCategory);
         // console.log(random);
     }, []);
-
-
-    const handlePageChange = (value) => {
-        setPage(value);
-    };
 
     return (
         <RstrListPageContainer>
@@ -244,31 +247,36 @@ export const RstrListPage = () => {
                 </div>
             </CategoryBarContainer>
             <RstrListContainer>
-                {isLoading ?
-                    <div className='rstr-loading'>로딩중입니다. 잠시만 기다려주세요!</div> :
-                    <>
-                        <div style={{ height: '550px' }}>
-                            <div className='total-rstr-num'>{`약 ${totalRstr}건`}</div>
-                            <RstrCards>
-                                {rstrList.map((rstrInfo) => (
-                                    <RstrCard key={rstrInfo.rstr_id} rstrInfo={rstrInfo} />
-                                ))}
-                            </RstrCards>
-                        </div>
-                        <Pagination
-                            style={{ margin: '0 auto' }}
-                            page={page}
-                            count={totalPage}
-                            onChange={handlePageChange}
-                            color="primary"
-                            renderItem={(item) => (
-                                <PaginationItem
-                                    component={Link}
-                                    to={`/rstr?page=${item.page}`}
-                                    {...item}
-                                />
-                            )}
-                        /></>
+                {
+                    isNotInfo ? (
+                        <div className='rstr-loading'>일치하는 결과 값이 없습니다</div>
+                    ) : (
+                        isLoading ?
+                            (<div className='rstr-loading'>로딩중입니다. 잠시만 기다려주세요!</div>) :
+                            <>
+                                <div className='total-rstr-num'>{`약 ${totalRstr}건`}</div>
+                                <div style={{ height: '550px' }}>
+                                    {/* <div className='total-rstr-num'>{`약 ${totalRstr}건`}</div> */}
+                                    <RstrCards>
+                                        {rstrList.map((rstrInfo) => (
+                                            <RstrCard key={rstrInfo.rstr_id} rstrInfo={rstrInfo} />
+                                        ))}
+                                    </RstrCards>
+                                </div>
+                                <Pagination
+                                    style={{ margin: '0 auto' }}
+                                    page={page}
+                                    count={totalPage}
+                                    color="primary"
+                                    renderItem={(item) => (
+                                        <PaginationItem
+                                            component={Link}
+                                            to={`/rstr?page=${item.page}`}
+                                            {...item}
+                                        />
+                                    )}
+                                /></>
+                    )
                 }
             </RstrListContainer>
         </RstrListPageContainer>
