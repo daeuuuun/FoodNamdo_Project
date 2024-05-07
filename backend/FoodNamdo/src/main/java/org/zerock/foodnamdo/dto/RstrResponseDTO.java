@@ -11,8 +11,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RstrResponseDTO {
-    private int pageSize;
-    private int totalPages;
-    private List<RstrDTO> rstr;
+//    private int pageSize;
+//    private int totalPages;
+    private List<RstrDTObackup> rstr;
     private List<MenuDescriptionDTO> menu_description;
+
+    public void setRstr(List<RstrDTObackup> rstr) {
+        this.rstr = rstr;
+    }
+
+    public void setMenu_description(List<MenuDescriptionDTO> menu_description) {
+        this.menu_description = menu_description;
+    }
 }

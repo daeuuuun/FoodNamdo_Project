@@ -22,11 +22,11 @@ public class QRstrCategoryEntity extends EntityPathBase<RstrCategoryEntity> {
 
     public static final QRstrCategoryEntity rstrCategoryEntity = new QRstrCategoryEntity("rstrCategoryEntity");
 
-    public final QCategoryEntity categoryId;
+    public final QCategoryEntity categoryEntity;
 
-    public final QRstrEntity restaurant;
+    public final NumberPath<Long> rstrCategoryId = createNumber("rstrCategoryId", Long.class);
 
-    public final NumberPath<Long> rstr_category_id = createNumber("rstr_category_id", Long.class);
+    public final QRstrEntity rstrEntity;
 
     public QRstrCategoryEntity(String variable) {
         this(RstrCategoryEntity.class, forVariable(variable), INITS);
@@ -46,8 +46,8 @@ public class QRstrCategoryEntity extends EntityPathBase<RstrCategoryEntity> {
 
     public QRstrCategoryEntity(Class<? extends RstrCategoryEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.categoryId = inits.isInitialized("categoryId") ? new QCategoryEntity(forProperty("categoryId")) : null;
-        this.restaurant = inits.isInitialized("restaurant") ? new QRstrEntity(forProperty("restaurant")) : null;
+        this.categoryEntity = inits.isInitialized("categoryEntity") ? new QCategoryEntity(forProperty("categoryEntity")) : null;
+        this.rstrEntity = inits.isInitialized("rstrEntity") ? new QRstrEntity(forProperty("rstrEntity")) : null;
     }
 
 }

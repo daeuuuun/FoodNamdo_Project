@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 @Entity
@@ -17,7 +18,8 @@ public class PreferencesEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+//    @JsonBackReference
+    private UserEntity userEntity;
 
     @Column(name = "preference", nullable = false)
     private String preference;

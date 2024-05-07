@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 @Entity
@@ -17,10 +18,12 @@ public class FavoriteEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+//    @JsonBackReference
+    private UserEntity userEntity;
 
     @ManyToOne
     @JoinColumn(name = "rstr_id")
-    private RstrEntity restaurant;
+//    @JsonBackReference
+    private RstrEntity rstrEntity;
 //    private RstrEntity rstrId;
 }

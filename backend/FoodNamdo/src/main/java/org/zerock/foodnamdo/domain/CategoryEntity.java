@@ -1,9 +1,11 @@
 package org.zerock.foodnamdo.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -30,6 +32,7 @@ public class CategoryEntity {
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "rstr_id")
     )
-    private Set<RstrEntity> restaurants;
+//    @JsonBackReference
+    private List<RstrEntity> rstrEntity;
 
 }

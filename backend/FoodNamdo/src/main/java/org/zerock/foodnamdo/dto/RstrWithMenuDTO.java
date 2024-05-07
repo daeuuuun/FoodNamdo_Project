@@ -38,11 +38,11 @@ public class RstrWithMenuDTO {
     private int rstrDelivery;
     private List<MenuDescriptionDTO> menuDescription;
 
-    public static RstrWithMenuDTO fromRstrWithMenu(RstrEntity rstrEntity) {
-        RstrWithMenuDTO rstrDTO = new RstrWithMenuDTO();
-        rstrDTO.setRstrId(rstrEntity.getRstrId());
-
-        return rstrDTO;
-    }
+//    public static RstrWithMenuDTO fromRstrWithMenu(RstrEntity rstrEntity) {
+//        RstrWithMenuDTO rstrDTO = new RstrWithMenuDTO();
+//        rstrDTO.setRstrId(rstrEntity.getRstrId());
+//
+//        return rstrDTO;
+//    }
 }
 

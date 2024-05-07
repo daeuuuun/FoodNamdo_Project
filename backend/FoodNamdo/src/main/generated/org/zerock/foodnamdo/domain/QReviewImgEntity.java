@@ -22,7 +22,7 @@ public class QReviewImgEntity extends EntityPathBase<ReviewImgEntity> {
 
     public static final QReviewImgEntity reviewImgEntity = new QReviewImgEntity("reviewImgEntity");
 
-    public final QReviewEntity review;
+    public final QReviewEntity reviewEntity;
 
     public final NumberPath<Long> reviewImgId = createNumber("reviewImgId", Long.class);
 
@@ -46,7 +46,7 @@ public class QReviewImgEntity extends EntityPathBase<ReviewImgEntity> {
 
     public QReviewImgEntity(Class<? extends ReviewImgEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.review = inits.isInitialized("review") ? new QReviewEntity(forProperty("review"), inits.get("review")) : null;
+        this.reviewEntity = inits.isInitialized("reviewEntity") ? new QReviewEntity(forProperty("reviewEntity"), inits.get("reviewEntity")) : null;
     }
 
 }

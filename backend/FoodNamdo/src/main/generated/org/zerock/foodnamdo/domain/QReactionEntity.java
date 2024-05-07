@@ -24,9 +24,9 @@ public class QReactionEntity extends EntityPathBase<ReactionEntity> {
 
     public final StringPath reactionType = createString("reactionType");
 
-    public final QReviewEntity review;
+    public final QReviewEntity reviewEntity;
 
-    public final QUserEntity user;
+    public final QUserEntity userEntity;
 
     public QReactionEntity(String variable) {
         this(ReactionEntity.class, forVariable(variable), INITS);
@@ -46,8 +46,8 @@ public class QReactionEntity extends EntityPathBase<ReactionEntity> {
 
     public QReactionEntity(Class<? extends ReactionEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.review = inits.isInitialized("review") ? new QReviewEntity(forProperty("review"), inits.get("review")) : null;
-        this.user = inits.isInitialized("user") ? new QUserEntity(forProperty("user")) : null;
+        this.reviewEntity = inits.isInitialized("reviewEntity") ? new QReviewEntity(forProperty("reviewEntity"), inits.get("reviewEntity")) : null;
+        this.userEntity = inits.isInitialized("userEntity") ? new QUserEntity(forProperty("userEntity")) : null;
     }
 
 }

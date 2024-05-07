@@ -18,7 +18,7 @@ import java.util.Collection;
 @NoArgsConstructor
 public class UserDTO {
 
-    private Long userId;
+    private Long user_id;
 
     @NotEmpty(message = "name cannot be null")
     @Schema(description = "사용자 이름", nullable = false, example = "박종진")
@@ -31,13 +31,10 @@ public class UserDTO {
     private String phone;
 
     @NotEmpty
-    private String accountId;
+    private String account_id;
 
     @NotEmpty
     private String password;
-
-
-
 
     public static UserDTO fromUser(UserEntity user) {
         return new UserDTO(
@@ -49,6 +46,16 @@ public class UserDTO {
                 user.getPassword()
         );
     }
+//    public static UserDTO fromEntity(UserEntity entity) {
+//        return UserDTO.builder()
+//                .user_id(entity.getUserId())
+//                .name(entity.getName())
+//                .nickname(entity.getNickname())
+//                .phone(entity.getPhone())
+//                .account_id(entity.getAccountId())
+//                .password(entity.getPassword())
+//                .build();
+//    }
 
     // Getters and setters
 }

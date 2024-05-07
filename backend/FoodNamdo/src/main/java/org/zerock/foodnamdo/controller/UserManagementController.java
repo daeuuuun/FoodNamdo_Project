@@ -5,13 +5,25 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.zerock.foodnamdo.dto.APIUserDTO;
+import org.zerock.foodnamdo.dto.LoginRequestDTO;
+import org.zerock.foodnamdo.dto.LoginResponseDTO;
 import org.zerock.foodnamdo.dto.UserDTO;
 import org.zerock.foodnamdo.service.UserManagementService;
 import org.zerock.foodnamdo.service.CoolsmsService;
+import org.zerock.foodnamdo.util.JWTUtil;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +35,10 @@ import java.util.Map;
 @Log4j2
 @RequiredArgsConstructor
 public class UserManagementController {
+
+//    private final AuthenticationManager authenticationManager;
+    private final JWTUtil jwtUtil;
+
 
     private final UserManagementService userManagementService;
 
@@ -64,11 +80,21 @@ public class UserManagementController {
         return redirectAttributes.toString();
     }
 
-    @Operation(summary = "로그인")
-    @PostMapping("/login")
-    public void login() {
-
-    }
+//    @Operation(summary = "로그인")
+//    @PostMapping("/logIn")
+//    public ResponseEntity<LoginResponseDTO> logIn(@RequestBody LoginRequestDTO loginRequest) {
+//        // 사용자 인증
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+//
+//        // 인증이 성공하면 JWT 토큰 생성
+//        String accessToken = jwtUtil.generateToken(authentication.getName(), 1);
+//
+////        String accessToken = jwtUtil.generateToken(authentication.getName(), 1);
+//
+//        // 응답으로 JWT 토큰 반환
+//        return ResponseEntity.ok(new LoginResponseDTO(accessToken));
+//    }
 
     @Operation(summary = "로그아웃")
     @PostMapping("/logout")
@@ -107,16 +133,18 @@ public class UserManagementController {
 //    }
 
     @Operation(summary = "이름, 전화번호를 이용해 아이디 찾기")
-    @PostMapping("/findAccountIdByNameAndPhone")
+    @PostMapping(value = "/findAccountIdByNameAndPhone", produces = "application/json")
+    @ResponseBody
     public UserDTO findAccountIdByNameAndPhone(
             @RequestParam("name") String name,
             @RequestParam("phone") String phone,
             @RequestParam("code") String code) {
         String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
-        log.info("findAccountIdByNameAndPhone...." + name + formatPhone);
+        log.info("findAccountIdByNameAndPhone...." + name + formatPhone + code);
         String savedCode = verificationCodes.get(formatPhone);
+        log.info("savedCode....." + savedCode);
 
-        if (savedCode == null || !savedCode.equals(code)) {
+        if (savedCode != null && savedCode.equals(code)) {
             UserDTO userDTO = UserDTO.fromUser(userManagementService.findAccountIdByNameAndPhone(name, formatPhone));
             System.out.println(userManagementService.findAccountIdByNameAndPhone(name, formatPhone));
             if(userDTO == null) return null;
@@ -127,17 +155,19 @@ public class UserManagementController {
     }
 
     @Operation(summary = "아이디, 이름, 전화번호를 이용해 비밀번호 찾기")
-    @PostMapping("/findPasswordByAccountIdAndNameAndPhone")
+    @PostMapping(value = "/findPasswordByAccountIdAndNameAndPhone", produces = "application/json")
     public UserDTO findPasswordByAccountIdAndNameAndPhone(
             @RequestParam("accountId") String accountId,
             @RequestParam("name") String name,
             @RequestParam("phone") String phone,
             @RequestParam("code") String code) {
         String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
-        log.info("findAccountIdByNameAndPhone...." + name + formatPhone);
+        log.info("findAccountIdByNameAndPhone...." + name + formatPhone + code);
         String savedCode = verificationCodes.get(formatPhone);
+        log.info("savedCode....." + savedCode);
+//        log.info(savedCode);
 
-        if (savedCode == null || !savedCode.equals(code)) {
+        if (savedCode != null && savedCode.equals(code)) {
             UserDTO userDTO = UserDTO.fromUser(userManagementService.findUserByAccountIdAndNameAndPhone(accountId, name, formatPhone));
             System.out.println(userManagementService.findUserByAccountIdAndNameAndPhone(accountId, name, formatPhone));
             if(userDTO == null) return null;
@@ -163,6 +193,7 @@ public class UserManagementController {
         String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
         String verificationCode = userManagementService.generateVerificationCode();
         verificationCodes.put(formatPhone, verificationCode);
+        log.info(verificationCodes);
         CoolsmsService coolsmsService = new CoolsmsService();
         UserDTO userDTO = UserDTO.fromUser(userManagementService.findUserByPhone(formatPhone));
 
