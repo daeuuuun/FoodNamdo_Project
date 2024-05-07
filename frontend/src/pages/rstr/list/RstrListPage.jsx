@@ -156,9 +156,8 @@ export const RstrListPage = () => {
             const url = `${IMAGE_SERVER_URL}/${savedRandom}/?${params}`;
 
             try {
-                console.log(page)
                 const response = await axios.get(url);
-                setRstrList(response.data.rstr); // 음식점 리스트 저장
+                setRstrList(response.data.rstr);
                 setTotalPage(response.data.total_pages);
                 setPageSize(response.data.page_size);
                 setTotalRstr(response.data.total_rstr);
