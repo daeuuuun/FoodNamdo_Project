@@ -21,9 +21,6 @@ public class SwaggerConfig {
     // 모든 api 요청에 대한 jwt 적용 코드
     @Bean
     public OpenAPI openAPI() {
-
-
-
         // SecuritySecheme명
         String jwtSchemeName = "jwtAuth";
         // API 요청헤더에 인증정보 포함
@@ -43,23 +40,23 @@ public class SwaggerConfig {
     }
 
 
+//    @Bean
+//    public GroupedOpenApi restApi() {
+//
+//        return GroupedOpenApi.builder()
+//                .pathsToMatch("/api/**")
+//                .group("REST API")
+//                .packagesToScan("org.zerock.foodnamdo.controller")
+//                .build();
+//    }
+
     @Bean
     public GroupedOpenApi restApi() {
 
         return GroupedOpenApi.builder()
-                .pathsToMatch("/api/**")
-                .group("REST API")
-                .packagesToScan("org.zerock.foodnamdo.controller")
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi commonApi() {
-
-        return GroupedOpenApi.builder()
                 .pathsToMatch("/**/*")
                 .pathsToExclude("/api/**/*")
-                .group("COMMON API")
+                .group("REST API")
                 .build();
     }
 
