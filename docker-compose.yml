@@ -11,10 +11,16 @@ services:
 
   frontend:
     build: ./frontend
+    environment:
+      - WATCHPACK_POLLING=true
+    volumes:
+      - /usr/src/app/node_modules
+      - ./frontend:/usr/src/app
     ports:
       - "3000:3000"
     depends_on:
       - food_namdo
+    stdin_open: true
     restart: always
 
   food_namdo:
