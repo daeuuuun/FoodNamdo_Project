@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from "styled-components";
-// import RstrList from './components/RstrList';
+
 import palette from '../../../styles/palette';
 import { Radio, FormControlLabel } from '@mui/material';
 import { useFile } from '../../../data/FileContext';
@@ -85,6 +85,7 @@ const RstrCards = styled.div`
 export const RstrListPage = () => {
 
     const { file } = useFile(); // 이미지 파일
+    const { setFile } = useFile();
     const location = useLocation();
     const [rstrList, setRstrList] = useState([]); // 음식점 리스트
     const [isLoading, setIsLoading] = useState(true);
@@ -169,12 +170,13 @@ export const RstrListPage = () => {
             setIsLoading(false);
         };
 
-        if (file) {
+        if (file && page == 1) {
             setIsLoading(true);
             console.log('파일 사용', file);
             fetchDataWithFile();
         } else {
             setIsLoading(true);
+            setFile(null);
             console.log('파일 없음');
             fetchDataWithRandom();
         }
@@ -255,7 +257,6 @@ export const RstrListPage = () => {
                             <>
                                 <div className='total-rstr-num'>{`약 ${totalRstr}건`}</div>
                                 <div style={{ height: '550px' }}>
-                                    {/* <div className='total-rstr-num'>{`약 ${totalRstr}건`}</div> */}
                                     <RstrCards>
                                         {rstrList.map((rstrInfo) => (
                                             <RstrCard key={rstrInfo.rstr_id} rstrInfo={rstrInfo} />
@@ -270,7 +271,8 @@ export const RstrListPage = () => {
                                     renderItem={(item) => (
                                         <PaginationItem
                                             component={Link}
-                                            to={`/rstr?page=${item.page}`}
+                                            // to={`/rstr?page=${item.page}`}
+                                            to={`/${item.page === 1 ? 'rstr' : `rstr?page=${item.page}`}`}
                                             {...item}
                                         />
                                     )}
