@@ -37,7 +37,8 @@ public class MainSystemController {
         int pageSize = 8;
 
         // 요청된 페이지의 결과를 가져오기 위해 페이지와 페이지 크기로 Pageable 객체를 생성
-        Pageable pageable = PageRequest.of(page, pageSize);
+//        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
 
         Page<RstrEntity> rstrPage = mainSystemService.findAllByOrderByRstrReviewCountDesc(pageable);
         log.info(rstrPage);
@@ -131,7 +132,8 @@ public class MainSystemController {
         int pageSize = 8;
 
         // 요청된 페이지의 결과를 가져오기 위해 페이지와 페이지 크기로 Pageable 객체를 생성
-        Pageable pageable = PageRequest.of(page, pageSize);
+//        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
 
         Page<RstrEntity> rstrPage = mainSystemService.findAllByRstrNameContains(rstrName, pageable);
         log.info(rstrPage);
