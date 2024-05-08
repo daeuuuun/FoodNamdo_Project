@@ -64,8 +64,11 @@ async def image_search_all(file: UploadFile = File(..., description="이미지 �
     # 파일이 이미지인지 확인
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=422, detail=error_422_detail)
-    
-    results = chromadb_utils.img_to_img(rstr_img_collection, review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, table)
+    try:
+        results = chromadb_utils.img_to_img(rstr_img_collection, review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, table)
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=422, detail="This file cannot be used")
     random = leveldb_utils.insert_results(levelDB, results)
     return sort_paginate_json(results, page_size, page_number, sort_order, reverse, category, region, random)
 
