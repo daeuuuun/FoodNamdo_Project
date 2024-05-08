@@ -1,0 +1,68 @@
+.background {
+    display: flex;
+    flex-direction: column;
+    background-color: #DBE2EF;
+}
+
+.divBox {
+    display: flex;
+    border-radius: 10px;
+    background-color: #F9F7F7;
+    width: 90%;
+    margin: 2% auto;
+    position: relative;
+}
+
+.text {
+    width: 30%;
+    margin: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.userText {
+    width: 70%;
+    margin: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nicknameBtn {
+    background-color: #DBE2EF;
+    border-radius: 20px;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 10%;
+    height: 90%;
+    left: 89%;
+    top: 5%;
+    border: none;
+    font-size: 20px;
+    font-family: 'Gmarket Sans Medium';
+}
+
+.btnBox {
+    display: flex;
+    justify-content: flex-end;
+    border-radius: 10px;
+    width: 95%;
+    padding-bottom: 3%;
+}
+
+.userBtn {
+    background-color: #F9F7F7;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+    height: 100%;
+    border: none;
+    font-size: 20px;
+    padding: 2%;
+    font-family: 'Gmarket Sans Medium';
+}

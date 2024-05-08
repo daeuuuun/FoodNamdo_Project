@@ -1,0 +1,39 @@
+.background {
+    display: flex;
+    flex-direction: row;
+}
+
+.sideBarContainer {
+    flex-direction: column;
+    width: 30%;
+}
+.sideBar {
+    display: flex;
+    justify-content: left;
+    margin: 0;
+    height: 7vh;
+    align-items: center;
+    padding-left: 3%;
+    padding-top: 3%;
+    padding-bottom: 3%;
+}
+
+.sideBar:hover {
+    cursor: pointer;
+    background-color: #DBE2EF;
+}
+
+.sideBar.active {
+    background-color: #DBE2EF;;
+}
+
+.sideBarText {
+    font-size: 30px;
+}
+
+.rightContainer {
+    width: 70%;
+    font-size: 30px;
+    margin: 0;
+    background-color: #DBE2EF;
+}

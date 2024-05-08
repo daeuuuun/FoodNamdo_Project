@@ -13,6 +13,7 @@ import FindIdPage from './pages/auth/FindIdPage';
 import FindPwPage from './pages/auth/FindPwPage';
 import { FileProvider } from './data/FileContext'; // 이미지 파일 전역 관리
 import Header from './pages/header/Header';
+import MyPage from "./pages/myPage/MyPage";
 
 function App() {
   return (
@@ -40,6 +41,8 @@ function App() {
               <RstrListPage />
             </FileProvider>
           } />
+
+          <Route path="/mypage" element={<MyPage />} />
         </Routes>
       </Router>
       {/* <UpArrow /> */}
