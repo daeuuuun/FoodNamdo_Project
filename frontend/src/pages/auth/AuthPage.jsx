@@ -8,14 +8,12 @@ import InputForm from './components/InputForm';
 import { BACKEND_SERVER_URL } from "../../config/Config";
 
 const AuthPage = ({ mode }) => {
-
-    const API_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({ account_id: '', name: '', phone: '', authNum: '' });
+    const [formData, setFormData] = useState({ account_id: '', name: '', phone: '', code: '' });
 
     const onChange = (e) => {
         const { name, value } = e.target;
-        if (name === "phone" || name === "authNum") {
+        if (name === "phone" || name === "code") {
             if (value === '' || /^[0-9]+$/.test(value)) {
                 setFormData(prevState => ({ ...prevState, [name]: value }));
             }
@@ -25,13 +23,13 @@ const AuthPage = ({ mode }) => {
     };
 
     const isFormValid = () => (
-        formData.name && formData.phone && formData.authNum.length == 6 && (mode === 'findPw' ? formData.account_id : true)
+        formData.name && formData.phone && formData.code.length == 6 && (mode === 'findPw' ? formData.account_id : true)
     );
 
     const handleFind = async () => {
         if (mode === 'findId') { // 아이디 찾기
             try {
-                const response = await axios.post('http://foodnamdo.iptime.org:8080/', formData);
+                const response = await axios.post('', formData);
                 console.log(response.data);
                 navigate('/login');
             } catch (error) {
@@ -51,17 +49,10 @@ const AuthPage = ({ mode }) => {
 
     const handleAuth = async () => {
         try {
-            const response = await axios.post(
-                // `http://localhost:8080/usermanagement/verify?phone=${encodeURIComponent(formData.phone)}`,
+            await axios.post(
                 BACKEND_SERVER_URL + '/usermanagement/verify', null, {
                 params: { phone: formData.phone }
-                // 'foodnamdoserver.iptime.org:8001/usermanagement/verify', {
-                // phone: formData.phone
             });
-            // )
-            console.log("response")
-            console.log(response);
-            // console.log(response.data);
             alert('인증 요청 버튼 눌림');
         } catch (error) {
             console.log(error);
@@ -108,7 +99,7 @@ const AuthPage = ({ mode }) => {
                     type="text"
                     name="authNum"
                     placeholder="인증번호 6자리 숫자 입력"
-                    value={formData.authNum}
+                    value={formData.code}
                     onChange={onChange}
                     maxLength={6}
                 />

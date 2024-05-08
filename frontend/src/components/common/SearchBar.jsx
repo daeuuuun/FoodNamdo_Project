@@ -57,8 +57,9 @@ const Container = styled.div`
     padding: 5px 10px;
     border: 2px solid ${palette.blue};
     border-radius: 20px;
-    width: 250px;
-    height: 20px;
+    width: 300px;
+    height: 25px;
+    background-color: #ffffff;
 
     input {
         font-family: 'Gmarket Sans Medium';
