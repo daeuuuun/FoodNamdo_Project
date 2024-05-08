@@ -3,16 +3,14 @@ import { Helmet } from "react-helmet";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './index.css';
 import '../src/styles/common.css';
-import '../src/styles/authform.css';
+// import '../src/styles/authform.css';
 import MainPage from './pages/main/MainPage';
 import LoginPage from './pages/auth/LoginPage';
 import SignUpPage from './pages/auth/SignUpPage';
 import RstrDetailPage from './pages/rstr/detail/RstrDetailPage';
 import RstrListPage from './pages/rstr/list/RstrListPage';
-import UpArrow from './components/common/UpArrow';
 import FindIdPage from './pages/auth/FindIdPage';
 import FindPwPage from './pages/auth/FindPwPage';
-import SearchBar from './components/common/SearchBar';
 import { FileProvider } from './data/FileContext'; // 이미지 파일 전역 관리
 import Header from './pages/header/Header';
 

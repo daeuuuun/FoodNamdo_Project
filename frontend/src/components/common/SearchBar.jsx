@@ -57,8 +57,9 @@ const Container = styled.div`
     padding: 5px 10px;
     border: 2px solid ${palette.blue};
     border-radius: 20px;
-    width: 250px;
-    height: 20px;
+    width: 300px;
+    height: 25px;
+    background-color: #ffffff;
 
     input {
         font-family: 'Gmarket Sans Medium';
@@ -113,17 +114,6 @@ const SearchBar = () => {
 
     // 이미지 검색
     const handleClickImageSearch = async (e) => {
-        // let file;
-        // if (e && e.target.files && e.target.files.length > 0) {
-        //     file = e.target.files[0];
-        // }
-        // if (file) {
-        //     console.log(file);
-        //     const formData = new FormData();
-        //     formData.append('file', file); // image는 예시 추후에 서버에서 요구하는 필드명과 맞출 것
-
-        // }
-        // console.log('이미지 검색입니다');
         let file;
         if (e && e.target.files && e.target.files.length > 0) {
             file = e.target.files[0];
@@ -179,6 +169,7 @@ const SearchBar = () => {
                                 ref={fileInputRef}
                                 type="file"
                                 style={{ display: 'none' }}
+                                accept="image/jpeg, image/jpg, image/png"
                                 onChange={(e) => handleClickImageSearch(e)}
                             />
                             <PhotoSizeSelectActualOutlinedIcon sx={{ fontSize: '2.4rem', color: palette.lightblue, marginBottom: '5px' }} />

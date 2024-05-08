@@ -32,7 +32,7 @@ public class QMenuDescriptionEntity extends EntityPathBase<MenuDescriptionEntity
 
     public final NumberPath<Integer> menuPrice = createNumber("menuPrice", Integer.class);
 
-    public final QRstrEntity restaurant;
+    public final QRstrEntity rstrEntity;
 
     public QMenuDescriptionEntity(String variable) {
         this(MenuDescriptionEntity.class, forVariable(variable), INITS);
@@ -52,7 +52,7 @@ public class QMenuDescriptionEntity extends EntityPathBase<MenuDescriptionEntity
 
     public QMenuDescriptionEntity(Class<? extends MenuDescriptionEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.restaurant = inits.isInitialized("restaurant") ? new QRstrEntity(forProperty("restaurant")) : null;
+        this.rstrEntity = inits.isInitialized("rstrEntity") ? new QRstrEntity(forProperty("rstrEntity")) : null;
     }
 
 }

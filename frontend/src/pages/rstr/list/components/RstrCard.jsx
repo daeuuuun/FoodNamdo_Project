@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import styled from 'styled-components';
 import palette from '../../../../styles/palette';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
@@ -72,18 +71,20 @@ const RstrCard = ({ rstrInfo }) => {
                 <Img src={imgUrl} alt={'이미지'} />
             </ImgContainer>
             <RstrInfo className='title'>
-                {rstrInfo.rstr_name}
+                {rstrInfo.rstr_name.length > 8 ? rstrInfo.rstr_name.slice(0, 8) + '...' : rstrInfo.rstr_name}
             </RstrInfo>
             <RstrInfo className='info'>
                 <div style={{ marginTop: '1px' }}>
                     <span>{rstrInfo.rstr_region}</span>
                     <span> | </span>
-                    <span>{rstrInfo.category_name}</span>
+                    <span>
+                        {rstrInfo.category_name.length > 3 ? rstrInfo.category_name.slice(0, 3) + '...' : rstrInfo.category_name}
+                    </span>
                 </div>
                 <div className='centered-flex rating'>
                     <StyledStarIcon />
                     <div style={{ marginTop: '1px' }}>
-                        {`${rstrInfo.rstr_review_rating}(${rstrInfo.review_count})`}
+                        {`${rstrInfo.rstr_review_rating} (${rstrInfo.review_count}명)`}
                     </div>
                 </div>
             </RstrInfo>

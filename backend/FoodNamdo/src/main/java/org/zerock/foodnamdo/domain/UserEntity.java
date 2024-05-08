@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
@@ -40,19 +41,24 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userEntity")
+//    @JsonManagedReference
     private List<ReviewEntity> reviews;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userEntity")
+//    @JsonManagedReference
     private List<FavoriteEntity> favorites;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userEntity")
+//    @JsonManagedReference
     private List<ReactionEntity> reactions;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userEntity")
+//    @JsonManagedReference
     private List<UserBadgeEntity> userBadges;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userEntity")
+//    @JsonManagedReference
     private List<PreferencesEntity> preferences;
 
 

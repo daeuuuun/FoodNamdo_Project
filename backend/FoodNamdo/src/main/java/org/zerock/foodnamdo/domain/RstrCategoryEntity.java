@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,18 +9,21 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = {"rstrEntity", "categoryEntity"})
 @Table(name = "rstr_category")
 public class RstrCategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long rstr_category_id;
+    private Long rstrCategoryId;
 
     @ManyToOne
     @JoinColumn(name = "rstr_id", nullable = false)
-    private RstrEntity restaurant;
+//    @JsonBackReference
+    private RstrEntity rstrEntity;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private CategoryEntity categoryId;
+//    @JsonBackReference
+    private CategoryEntity categoryEntity;
+
 }

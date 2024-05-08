@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import palette from '../../../../styles/palette';
 import RstrDetailInfo from './RstrDetailInfo';
+import MainPage from '../../../main/MainPage';
 const menuItemList = [
     {
         title: '상세정보',
@@ -9,7 +10,7 @@ const menuItemList = [
     },
     {
         title: '리뷰',
-        component: <RstrDetailInfo />
+        component: < RstrDetailInfo />
     },
 ];
 

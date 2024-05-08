@@ -26,7 +26,7 @@ public class QPreferencesEntity extends EntityPathBase<PreferencesEntity> {
 
     public final NumberPath<Long> preferenceId = createNumber("preferenceId", Long.class);
 
-    public final QUserEntity user;
+    public final QUserEntity userEntity;
 
     public QPreferencesEntity(String variable) {
         this(PreferencesEntity.class, forVariable(variable), INITS);
@@ -46,7 +46,7 @@ public class QPreferencesEntity extends EntityPathBase<PreferencesEntity> {
 
     public QPreferencesEntity(Class<? extends PreferencesEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.user = inits.isInitialized("user") ? new QUserEntity(forProperty("user")) : null;
+        this.userEntity = inits.isInitialized("userEntity") ? new QUserEntity(forProperty("userEntity")) : null;
     }
 
 }

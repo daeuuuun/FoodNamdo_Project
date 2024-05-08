@@ -24,9 +24,9 @@ public class QFavoriteEntity extends EntityPathBase<FavoriteEntity> {
 
     public final NumberPath<Long> favoriteId = createNumber("favoriteId", Long.class);
 
-    public final QRstrEntity restaurant;
+    public final QRstrEntity rstrEntity;
 
-    public final QUserEntity user;
+    public final QUserEntity userEntity;
 
     public QFavoriteEntity(String variable) {
         this(FavoriteEntity.class, forVariable(variable), INITS);
@@ -46,8 +46,8 @@ public class QFavoriteEntity extends EntityPathBase<FavoriteEntity> {
 
     public QFavoriteEntity(Class<? extends FavoriteEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.restaurant = inits.isInitialized("restaurant") ? new QRstrEntity(forProperty("restaurant")) : null;
-        this.user = inits.isInitialized("user") ? new QUserEntity(forProperty("user")) : null;
+        this.rstrEntity = inits.isInitialized("rstrEntity") ? new QRstrEntity(forProperty("rstrEntity")) : null;
+        this.userEntity = inits.isInitialized("userEntity") ? new QUserEntity(forProperty("userEntity")) : null;
     }
 
 }

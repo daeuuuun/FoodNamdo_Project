@@ -11,42 +11,42 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QRstrimgEntity is a Querydsl query type for RstrimgEntity
+ * QRstrImgEntity is a Querydsl query type for RstrImgEntity
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QRstrimgEntity extends EntityPathBase<RstrimgEntity> {
+public class QRstrImgEntity extends EntityPathBase<RstrImgEntity> {
 
-    private static final long serialVersionUID = 1271833400L;
+    private static final long serialVersionUID = -1019165928L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QRstrimgEntity rstrimgEntity = new QRstrimgEntity("rstrimgEntity");
+    public static final QRstrImgEntity rstrImgEntity = new QRstrImgEntity("rstrImgEntity");
 
-    public final QRstrEntity restaurant;
+    public final QRstrEntity rstrEntity;
 
     public final NumberPath<Long> rstrImgId = createNumber("rstrImgId", Long.class);
 
     public final StringPath rstrImgUrl = createString("rstrImgUrl");
 
-    public QRstrimgEntity(String variable) {
-        this(RstrimgEntity.class, forVariable(variable), INITS);
+    public QRstrImgEntity(String variable) {
+        this(RstrImgEntity.class, forVariable(variable), INITS);
     }
 
-    public QRstrimgEntity(Path<? extends RstrimgEntity> path) {
+    public QRstrImgEntity(Path<? extends RstrImgEntity> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QRstrimgEntity(PathMetadata metadata) {
+    public QRstrImgEntity(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QRstrimgEntity(PathMetadata metadata, PathInits inits) {
-        this(RstrimgEntity.class, metadata, inits);
+    public QRstrImgEntity(PathMetadata metadata, PathInits inits) {
+        this(RstrImgEntity.class, metadata, inits);
     }
 
-    public QRstrimgEntity(Class<? extends RstrimgEntity> type, PathMetadata metadata, PathInits inits) {
+    public QRstrImgEntity(Class<? extends RstrImgEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.restaurant = inits.isInitialized("restaurant") ? new QRstrEntity(forProperty("restaurant")) : null;
+        this.rstrEntity = inits.isInitialized("rstrEntity") ? new QRstrEntity(forProperty("rstrEntity")) : null;
     }
 
 }

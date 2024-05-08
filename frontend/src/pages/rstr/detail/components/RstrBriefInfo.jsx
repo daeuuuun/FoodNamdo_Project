@@ -166,7 +166,8 @@ const RstrBriefInfo = ({ rstrInfo }) => {
             <RstrReviewInfo>
                 <RstrIconAndInfo style={{ fontSize: '1rem' }}>
                     <StyledStarIcon style={{ fontSize: '1.8rem' }} />
-                    {`${rstrInfo.rstr_review_rating} (${rstrInfo.rstr_review_count}명)`}
+                    {/* {`${rstrInfo.rstr_review_rating} (${rstrInfo.rstr_review_count}명)`} */}
+                    {`${rstrInfo.rstr_review_rating} (${rstrInfo.review_count}명)`}
                 </RstrIconAndInfo>
                 {
                     rstrInfo.rstr_naver_rating &&
@@ -193,7 +194,7 @@ const RstrBriefInfo = ({ rstrInfo }) => {
             <FavoriteButtonWrapper>
                 <FavoriteButton className='centered-flex' onClick={toggleFavorite}>
                     <div>
-                        {isFavoriate ?
+                        {!isFavoriate ?
                             <StyledBookmarkIcon style={{ fontSize: '2.2rem' }} /> :
                             <StyledBookmarkBorderIcon style={{ fontSize: '2.2rem' }} />
                         }

@@ -22,13 +22,13 @@ public class QUserBadgeEntity extends EntityPathBase<UserBadgeEntity> {
 
     public static final QUserBadgeEntity userBadgeEntity = new QUserBadgeEntity("userBadgeEntity");
 
-    public final QBadgeEntity badge;
+    public final DateTimePath<java.time.LocalDateTime> badgeDate = createDateTime("badgeDate", java.time.LocalDateTime.class);
 
-    public final DateTimePath<java.util.Date> badgeDate = createDateTime("badgeDate", java.util.Date.class);
-
-    public final QUserEntity user;
+    public final QBadgeEntity badgeEntity;
 
     public final NumberPath<Long> userBadgeId = createNumber("userBadgeId", Long.class);
+
+    public final QUserEntity userEntity;
 
     public QUserBadgeEntity(String variable) {
         this(UserBadgeEntity.class, forVariable(variable), INITS);
@@ -48,8 +48,8 @@ public class QUserBadgeEntity extends EntityPathBase<UserBadgeEntity> {
 
     public QUserBadgeEntity(Class<? extends UserBadgeEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.badge = inits.isInitialized("badge") ? new QBadgeEntity(forProperty("badge")) : null;
-        this.user = inits.isInitialized("user") ? new QUserEntity(forProperty("user")) : null;
+        this.badgeEntity = inits.isInitialized("badgeEntity") ? new QBadgeEntity(forProperty("badgeEntity")) : null;
+        this.userEntity = inits.isInitialized("userEntity") ? new QUserEntity(forProperty("userEntity")) : null;
     }
 
 }

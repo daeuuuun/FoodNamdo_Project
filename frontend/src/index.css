@@ -33,18 +33,12 @@ code {
 }
 
 .common-container {
-  /* @media (min-width: 1200px) {
-    width: 1000px;
-  } */
-
+  /* width: 75%; */
   width: 1000px;
-
-  /* background-color: #F9F7F7; */
-  margin: 0 auto;
-  padding: 10px;
+  /* padding: 10px; */
   box-sizing: border-box;
   font-size: 0.9rem;
   /* 나중에 지울 것 */
-  border-left: 1px solid #3F72AF;
-  border-right: 1px solid #3F72AF;
+  /* border-left: 1px solid #3F72AF;
+  border-right: 1px solid #3F72AF; */
 }

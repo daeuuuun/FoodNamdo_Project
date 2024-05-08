@@ -1,4 +1,4 @@
-import mariadb_utils, os, uuid, main
+import mariadb_utils, os, uuid, main, Table
 from tqdm import tqdm
 
 def init(collection, table):
@@ -56,17 +56,17 @@ def img_to_img(rstr_img_collection, review_img_collection, file, file_extension_
         f.write(file.file.read())
 
     query_result = None
-    if table == "rstr_img":
+    if table == Table.searchTable.음식점_이미지:
         query_result = image_search(rstr_img_collection, url, n_results, similarity, table)
-    elif table == "review_img":
+    elif table == Table.searchTable.리뷰_이미지:
         if n_results > review_img_collection.count():
             n_results = review_img_collection.count()
         query_result = image_search(review_img_collection, url, n_results, similarity, table)
     else:
-        query_result = image_search(rstr_img_collection, url, n_results, similarity, "rstr_img")
+        query_result = image_search(rstr_img_collection, url, n_results, similarity, Table.searchTable.음식점_이미지)
         if n_results > review_img_collection.count():
             n_results = review_img_collection.count()
-        query_result += image_search(review_img_collection, url, n_results, similarity, "review_img")
+        query_result += image_search(review_img_collection, url, n_results, similarity, Table.searchTable.리뷰_이미지)
     
     os.remove(url)
     return query_result
@@ -85,9 +85,9 @@ def image_search(collection, url, n_results, similarity, table):
 # 결과 필터링
 def filter_by_condition(query_result, similarity, table):
     query_result = remove_above_threshold(remove_duplicates(query_result), similarity)
-    if(table == "rstr_img"):
+    if table == Table.searchTable.음식점_이미지:
         query_result = insert_rstrimg_rstr_info(query_result)
-    elif(table == "review_img"):
+    elif table == Table.searchTable.리뷰_이미지:
         query_result = insert_reviewimg_rstr_info(query_result)
     return query_result
 

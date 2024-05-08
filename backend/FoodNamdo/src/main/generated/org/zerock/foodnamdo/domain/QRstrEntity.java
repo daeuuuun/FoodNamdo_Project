@@ -20,23 +20,23 @@ public class QRstrEntity extends EntityPathBase<RstrEntity> {
 
     public static final QRstrEntity rstrEntity = new QRstrEntity("rstrEntity");
 
-    public final SetPath<CategoryEntity, QCategoryEntity> categories = this.<CategoryEntity, QCategoryEntity>createSet("categories", CategoryEntity.class, QCategoryEntity.class, PathInits.DIRECT2);
+    public final ListPath<CategoryEntity, QCategoryEntity> categories = this.<CategoryEntity, QCategoryEntity>createList("categories", CategoryEntity.class, QCategoryEntity.class, PathInits.DIRECT2);
 
     public final BooleanPath example = createBoolean("example");
+
+    public final ListPath<FavoriteEntity, QFavoriteEntity> favorites = this.<FavoriteEntity, QFavoriteEntity>createList("favorites", FavoriteEntity.class, QFavoriteEntity.class, PathInits.DIRECT2);
 
     public final ListPath<MenuDescriptionEntity, QMenuDescriptionEntity> menuDescriptions = this.<MenuDescriptionEntity, QMenuDescriptionEntity>createList("menuDescriptions", MenuDescriptionEntity.class, QMenuDescriptionEntity.class, PathInits.DIRECT2);
 
     public final BooleanPath relax = createBoolean("relax");
-
-    public final ListPath<RstrCategoryEntity, QRstrCategoryEntity> restaurantCategories = this.<RstrCategoryEntity, QRstrCategoryEntity>createList("restaurantCategories", RstrCategoryEntity.class, QRstrCategoryEntity.class, PathInits.DIRECT2);
-
-    public final ListPath<RstrimgEntity, QRstrimgEntity> restaurantImages = this.<RstrimgEntity, QRstrimgEntity>createList("restaurantImages", RstrimgEntity.class, QRstrimgEntity.class, PathInits.DIRECT2);
 
     public final ListPath<ReviewEntity, QReviewEntity> reviews = this.<ReviewEntity, QReviewEntity>createList("reviews", ReviewEntity.class, QReviewEntity.class, PathInits.DIRECT2);
 
     public final StringPath rstrAddress = createString("rstrAddress");
 
     public final StringPath rstrBusinessHour = createString("rstrBusinessHour");
+
+    public final ListPath<RstrCategoryEntity, QRstrCategoryEntity> rstrCategories = this.<RstrCategoryEntity, QRstrCategoryEntity>createList("rstrCategories", RstrCategoryEntity.class, QRstrCategoryEntity.class, PathInits.DIRECT2);
 
     public final StringPath rstrClosed = createString("rstrClosed");
 
@@ -45,6 +45,8 @@ public class QRstrEntity extends EntityPathBase<RstrEntity> {
     public final NumberPath<Integer> rstrFavoriteCount = createNumber("rstrFavoriteCount", Integer.class);
 
     public final NumberPath<Long> rstrId = createNumber("rstrId", Long.class);
+
+    public final ListPath<RstrImgEntity, QRstrImgEntity> rstrImages = this.<RstrImgEntity, QRstrImgEntity>createList("rstrImages", RstrImgEntity.class, QRstrImgEntity.class, PathInits.DIRECT2);
 
     public final StringPath rstrIntro = createString("rstrIntro");
 
