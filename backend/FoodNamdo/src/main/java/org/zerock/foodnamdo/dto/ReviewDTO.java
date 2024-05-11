@@ -26,7 +26,7 @@ public class ReviewDTO {
     private double category_rating_price;
     private double category_rating_clean;
     private double category_rating_service;
-    private double category_rating_mood;
+    private double category_rating_amenities;
     private boolean receipt;
     private int like;
     private int dislike;
@@ -44,7 +44,7 @@ public class ReviewDTO {
                 .category_rating_price(entity.getCategoryRatingPrice())
                 .category_rating_clean(entity.getCategoryRatingClean())
                 .category_rating_service(entity.getCategoryRatingService())
-                .category_rating_mood(entity.getCategoryRatingMood())
+                .category_rating_amenities(entity.getCategoryRatingAmenities())
                 .receipt(entity.isReceipt())
                 .like(entity.getLike())
                 .dislike(entity.getDislike())

@@ -22,9 +22,9 @@ public class QReviewEntity extends EntityPathBase<ReviewEntity> {
 
     public static final QReviewEntity reviewEntity = new QReviewEntity("reviewEntity");
 
-    public final NumberPath<Double> categoryRatingClean = createNumber("categoryRatingClean", Double.class);
+    public final NumberPath<Double> categoryRatingAmenities = createNumber("categoryRatingAmenities", Double.class);
 
-    public final NumberPath<Double> categoryRatingMood = createNumber("categoryRatingMood", Double.class);
+    public final NumberPath<Double> categoryRatingClean = createNumber("categoryRatingClean", Double.class);
 
     public final NumberPath<Double> categoryRatingPrice = createNumber("categoryRatingPrice", Double.class);
 

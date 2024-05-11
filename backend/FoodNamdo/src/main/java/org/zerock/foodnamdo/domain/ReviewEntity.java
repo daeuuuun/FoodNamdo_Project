@@ -57,8 +57,8 @@ public class ReviewEntity {
     @Column(name = "category_rating_service", nullable = false)
     private double categoryRatingService;
 
-    @Column(name = "category_rating_mood", nullable = false)
-    private double categoryRatingMood;
+    @Column(name = "category_rating_amenities", nullable = false)
+    private double categoryRatingAmenities;
 
     @Column(name = "receipt", nullable = false)
     private boolean receipt;
