@@ -85,7 +85,7 @@ public class UserManagementController {
 
     @Operation(summary = "아이디중복체크(아이디가 존재할 경우 true, 아닐 경우 false)")
     @GetMapping(value = "/IdDuplication", produces = "application/json")
-    public boolean IdDuplication(@RequestParam("accountId")String accountId){
+    public boolean IdDuplication(@RequestParam("account_id")String accountId){
         UserEntity userEntity = userManagementService.findUserByAccountId(accountId);
         return userEntity != null;
     }
@@ -127,7 +127,7 @@ public class UserManagementController {
 
         Long userId = userManagementService.signUp(signUpDTO);
 
-        String result = name + "님, 회원가입이 완료되었습니다";
+        String result = "id = " + userId + name + "님, 회원가입이 완료되었습니다";
 
         return result;
     }
@@ -197,12 +197,20 @@ public class UserManagementController {
         log.info("findAccountIdByNameAndPhone...." + name + formatPhone + code);
         String savedCode = verificationCodes.get(formatPhone);
         log.info("savedCode....." + savedCode);
+        CoolsmsService coolsmsService = new CoolsmsService();
+        int IdOrPwd = 0;
 
         if (savedCode != null && savedCode.equals(code)) {
             UserEntity userEntity = userManagementService.findAccountIdByNameAndPhone(name, formatPhone);
             if (userEntity != null) {
                 Map<String, String> response = new HashMap<>();
-                response.put("accountId", userEntity.getAccountId());
+                response.put("accountId", "sendId");
+//                response.put("accountId", userEntity.getAccountId());
+                try{
+                    coolsmsService.sendIdOrPwd(formatPhone, userEntity.getAccountId(), IdOrPwd);
+                } catch (Exception e) {
+                return ResponseEntity.notFound().build();
+                }
                 return ResponseEntity.ok(response);
             } else {
                 log.info("ResponseEntity.notFound().build();");
@@ -234,12 +242,20 @@ public class UserManagementController {
         log.info("findAccountIdByNameAndPhone...." + name + formatPhone + code);
         String savedCode = verificationCodes.get(formatPhone);
         log.info("savedCode....." + savedCode);
+        CoolsmsService coolsmsService = new CoolsmsService();
+        int IdOrPwd = 1;
 
         if (savedCode != null && savedCode.equals(code)) {
             UserEntity userEntity = userManagementService.findUserByAccountIdAndNameAndPhone(accountId, name, formatPhone);
             if (userEntity != null) {
                 Map<String, String> response = new HashMap<>();
-                response.put("password", userEntity.getPassword());
+                response.put("password", "sendPassword");
+//                response.put("password", userEntity.getPassword());
+                try{
+                    coolsmsService.sendIdOrPwd(formatPhone, userEntity.getPassword(), IdOrPwd);
+                } catch (Exception e) {
+                    return ResponseEntity.notFound().build();
+                }
                 return ResponseEntity.ok(response);
             } else {
                 log.info("ResponseEntity.notFound().build();");
@@ -341,7 +357,7 @@ public class UserManagementController {
 //    }
     @Operation(summary = "회원삭제")
     @PostMapping("/deleteUser")
-    public String remove(@RequestParam("userId") Long userId, RedirectAttributes redirectAttributes) {
+    public String remove(@RequestParam("user_id") Long userId, RedirectAttributes redirectAttributes) {
         log.info("delete user.." + userId);
 
         userManagementService.deleteUser(userId);

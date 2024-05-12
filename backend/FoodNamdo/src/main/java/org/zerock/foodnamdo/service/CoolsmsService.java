@@ -27,7 +27,31 @@ public class CoolsmsService {
 
         message.setFrom("01045575569");
         message.setTo(cleanphone);
-        message.setText("[FoodNamdo]인증번호는 " + code + " 입니다");
+        message.setText("[FoodNamdo] 인증번호는 " + code + " 입니다");
+
+        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+        System.out.println(response);
+
+    }
+
+    // 아이디 전송하기
+    public void sendIdOrPwd(String phone, String accountId, int IdOrPwd) {
+
+        String cleanphone = phone.replaceAll("[^0-9]", "");
+
+        Message message = new Message();
+
+        String Comment = "";
+
+        if (IdOrPwd == 0){
+            Comment = "아이디는 ";
+        } else {
+            Comment = "비밀번호는 ";
+        }
+
+        message.setFrom("01045575569");
+        message.setTo(cleanphone);
+        message.setText("[FoodNamdo] " + Comment + accountId + " 입니다");
 
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
         System.out.println(response);
