@@ -24,7 +24,6 @@ const Main = () => {
     }];
 
     return (
-
         <>
             <div className={styles.backgroundColor}>
                 <MainTopCategory/>

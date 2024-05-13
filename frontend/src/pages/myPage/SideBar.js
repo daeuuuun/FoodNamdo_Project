@@ -4,6 +4,7 @@ import MyInfo from "./MyInfo";
 import PasswordChange from "./PasswordChange";
 import MyReview from "./MyReview";
 import MyPageDetail from "./MyPageDetail";
+import Mission from "./Mission";
 
 const Sidebar = () => {
     const [currentTabs, setCurrentTabs] = useState(1);
@@ -12,7 +13,7 @@ const Sidebar = () => {
         { id: 2, element: <PasswordChange /> },
         { id: 3, element: <MyInfo /> },
         { id: 4, element: <MyReview /> },
-        { id: 5, element: <MyInfo /> }
+        { id: 5, element: <Mission /> }
     ], []);
 
     const sideBarDiv = useMemo(() => [

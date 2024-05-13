@@ -5,21 +5,26 @@ const PasswordChange = () => {
     return (
         <>
             <div className={styles.background}>
-                <div className={styles.rightContainer}>
-                    안녕 난 지금 과제가 너무 하기 싫어 프로젝트 힝 싫다.
-                    안녕 난 지금 과제가 너무 하기 싫어 프로젝트 왕 싫다.
-                    안녕 난 지금 과제가 너무 하기 싫어 프로젝트 왕 싫다.
-                    안녕 난 지금 과제가 너무 하기 싫어 프로젝트 왕 싫다.
-                    안녕 난 지금 과제가 너무 하기 싫어 프로젝트 왕 싫다.
-                    안녕 난 지금 과제가 너무 하기 싫어 프로젝트 왕 싫다.
-                    안녕 난 지금 과제가 너무 하기 싫어 프로젝트 왕 싫다.
-                    안녕 난 지금 과제가 너무 하기 싫어 프로젝트 왕 싫다.
-                    안녕 난 지금 과제가 너무 하기 싫어 프로젝트 왕 싫다.
-                    안녕 난 지금 과제가 너무 하기 싫어 프로젝트 왕 싫다.
-                    안녕 난 지금 과제가 너무 하기 싫어 프로젝트 왕 싫다.
-                    안녕 난 지금 과제가 너무 하기 싫어 프로젝트 왕 싫다.
-                    안녕 난 지금 과제가 너무 하기 싫어 프로젝트 왕 싫다.
-                    안녕 난 지금 과제가 너무 하기 싫어 프로젝트 왕 싫다.
+                <div className={styles.divBox}>
+                    <div className={styles.pw}>비밀번호</div>
+                    <div className={styles.pwTextDiv}>
+                        <input className={styles.pwText} type={"password"}></input>
+                    </div>
+                </div>
+                <div className={styles.divBox}>
+                    <div className={styles.pw}>새 비밀번호</div>
+                    <div className={styles.pwTextDiv}>
+                        <input className={styles.pwText} type={"password"}></input>
+                    </div>
+                </div>
+                <div className={styles.divBox}>
+                    <div className={styles.pw}>재입력</div>
+                    <div className={styles.pwTextDiv}>
+                        <input className={styles.pwText} type={"password"}></input>
+                    </div>
+                </div>
+                <div className={styles.btnBox}>
+                    <button className={styles.changeBtn}>변경하기</button>
                 </div>
             </div>
         </>
