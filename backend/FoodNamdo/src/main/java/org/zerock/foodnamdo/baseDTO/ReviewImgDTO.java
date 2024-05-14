@@ -1,9 +1,8 @@
-package org.zerock.foodnamdo.dto;
+package org.zerock.foodnamdo.baseDTO;
 
 import lombok.*;
 import org.zerock.foodnamdo.domain.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 

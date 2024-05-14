@@ -24,6 +24,7 @@ public class ReviewEntity {
 
     @ManyToOne
     @JoinColumn(name = "rstr_id")
+//    private Long rstrId;
     private RstrEntity rstrEntity;
 
     @ManyToOne
@@ -69,8 +70,8 @@ public class ReviewEntity {
     @Column(name = "dislike", nullable = false)
     private int dislike = 0;
 
-//    @OneToMany(mappedBy = "review")
-//    private List<ReviewImgEntity> reviewImages;
+    @OneToMany(mappedBy = "reviewEntity")
+    private List<ReviewImgEntity> reviewImages;
 
     // Getters and setters
 }

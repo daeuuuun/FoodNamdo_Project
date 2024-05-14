@@ -1,4 +1,4 @@
-package org.zerock.foodnamdo.dto;
+package org.zerock.foodnamdo.customDTO;
 
 public class LoginResponseDTO {
     private String accessToken;

@@ -1,4 +1,4 @@
-package org.zerock.foodnamdo.dto;
+package org.zerock.foodnamdo.customDTO;
 
 import lombok.Builder;
 import lombok.Getter;

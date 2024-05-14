@@ -1,10 +1,10 @@
-package org.zerock.foodnamdo.dto;
+package org.zerock.foodnamdo.baseDTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.zerock.foodnamdo.domain.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +19,9 @@ public class ReviewDTO {
     private Long rstr_id;
     private Long user_id;
     private String review_text;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime time_of_creation;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime time_of_revision;
     private double rating;
     private double category_rating_taste;
@@ -30,6 +32,7 @@ public class ReviewDTO {
     private boolean receipt;
     private int like;
     private int dislike;
+    private List<ReviewImgDTO> reviewImgs;
 
     public static ReviewDTO fromEntity(ReviewEntity entity) {
         return ReviewDTO.builder()
@@ -48,6 +51,7 @@ public class ReviewDTO {
                 .receipt(entity.isReceipt())
                 .like(entity.getLike())
                 .dislike(entity.getDislike())
+                .reviewImgs(ReviewImgDTO.fromEntities(entity.getReviewImages()))
                 .build();
     }
 

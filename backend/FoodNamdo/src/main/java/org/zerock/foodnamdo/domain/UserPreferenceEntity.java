@@ -1,6 +1,5 @@
 package org.zerock.foodnamdo.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 @Entity
@@ -9,8 +8,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "preferences")
-public class PreferencesEntity {
+@Table(name = "user_preference")
+public class UserPreferenceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "preference_id")
@@ -18,9 +17,9 @@ public class PreferencesEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-//    @JsonBackReference
     private UserEntity userEntity;
 
-    @Column(name = "preference", nullable = false)
-    private String preference;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private CategoryEntity categoryEntity;
 }

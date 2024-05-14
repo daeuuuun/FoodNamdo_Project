@@ -1,8 +1,7 @@
-package org.zerock.foodnamdo.dto;
+package org.zerock.foodnamdo.baseDTO;
 
 
 import lombok.*;
-import org.zerock.foodnamdo.domain.BadgeEntity;
 import org.zerock.foodnamdo.domain.UserBadgeEntity;
 
 import java.time.LocalDateTime;

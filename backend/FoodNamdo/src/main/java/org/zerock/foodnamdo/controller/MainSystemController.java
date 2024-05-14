@@ -8,8 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+import org.zerock.foodnamdo.baseDTO.ReviewDTO;
+import org.zerock.foodnamdo.customDTO.FindReviewByRstrIdDTO;
+import org.zerock.foodnamdo.customDTO.FindRstrByNameDTO;
+import org.zerock.foodnamdo.domain.ReviewEntity;
 import org.zerock.foodnamdo.domain.RstrEntity;
-import org.zerock.foodnamdo.dto.*;
 import org.zerock.foodnamdo.service.MainSystemService;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -122,6 +125,7 @@ public class MainSystemController {
 
     // 전체 결과 수 계산
 
+    @Operation(summary = "음식점이름으로 음식점 검색")
     @GetMapping(value = "/findRstrByName", produces = "application/json")
     @ResponseBody
     public Map<String, Object> findRstrByName(
@@ -156,6 +160,39 @@ public class MainSystemController {
         return response;
     }
 
+    @Operation(summary = "음식점ID로 해당 음식점 전체 리뷰 조회")
+    @GetMapping(value = "/getReviewByRstrId", produces = "application/json")
+    @ResponseBody
+    public Map<String, Object> getReviewByRstrId(
+            @RequestParam("rstr_id") Long rstrId,
+            @RequestParam("page") int page) {
+        log.info("getReviewByRstrId......");
+        int pageSize = 8;
+
+        Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
+        Page<ReviewEntity> reviewPage = mainSystemService.findAllByRstrEntity_RstrId(rstrId, pageable);
+//        Page<RstrEntity> reviewPage = mainSystemService.findAllByRstrId(rstrId, pageable);
+        log.info(reviewPage);
+//        List<FindReviewByRstrIdDTO> findReviewByRstrIdDTOList = reviewPage.getContent().stream()
+//                .map(FindReviewByRstrIdDTO::fromEntity)
+//                .collect(Collectors.toList());
+        List<ReviewDTO> reviewDTOList = reviewPage.getContent().stream()
+                .map(ReviewDTO::fromEntity)
+                .collect(Collectors.toList());
+
+        long totalElements = reviewPage.getTotalElements();
+
+        int totalPages = (int) Math.ceil((double) totalElements / pageSize);
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("page_size", pageSize);
+        response.put("total_pages", totalPages);
+        response.put("page_num", page);
+        response.put("total_review", totalElements);
+        response.put("reviews", reviewDTOList);
+
+        return response;
+    }
 
     // 요청된 식당 이름을 포함하는 모든 식당의 DTO 목록을 가져옴
 //        List<RstrDTO> rstrDTOList = mainSystemService.findAllByRstrNameContains(rstrName, pageable).stream()

@@ -42,6 +42,8 @@ public class QReviewEntity extends EntityPathBase<ReviewEntity> {
 
     public final NumberPath<Long> reviewId = createNumber("reviewId", Long.class);
 
+    public final ListPath<ReviewImgEntity, QReviewImgEntity> reviewImages = this.<ReviewImgEntity, QReviewImgEntity>createList("reviewImages", ReviewImgEntity.class, QReviewImgEntity.class, PathInits.DIRECT2);
+
     public final StringPath reviewText = createString("reviewText");
 
     public final QRstrEntity rstrEntity;

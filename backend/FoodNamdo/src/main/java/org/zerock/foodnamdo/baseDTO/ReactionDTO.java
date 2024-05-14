@@ -1,8 +1,7 @@
-package org.zerock.foodnamdo.dto;
+package org.zerock.foodnamdo.baseDTO;
 
 
 import lombok.*;
-import org.zerock.foodnamdo.domain.FavoriteEntity;
 import org.zerock.foodnamdo.domain.ReactionEntity;
 
 @Getter

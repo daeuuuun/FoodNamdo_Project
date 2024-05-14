@@ -1,12 +1,10 @@
-package org.zerock.foodnamdo.dto;
+package org.zerock.foodnamdo.baseDTO;
 
 import org.zerock.foodnamdo.domain.RstrCategoryEntity;
 
 import lombok.*;
-import org.zerock.foodnamdo.domain.*;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter

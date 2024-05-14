@@ -6,8 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.zerock.foodnamdo.domain.UserEntity;
-import org.zerock.foodnamdo.dto.SignUpDTO;
-import org.zerock.foodnamdo.dto.UserDTO;
+import org.zerock.foodnamdo.customDTO.SignUpDTO;
 import org.zerock.foodnamdo.repository.UserManagementRepository;
 import org.zerock.foodnamdo.util.JWTUtil;
 

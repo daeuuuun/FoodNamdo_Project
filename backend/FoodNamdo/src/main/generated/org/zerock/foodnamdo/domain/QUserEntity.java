@@ -32,7 +32,7 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final StringPath phone = createString("phone");
 
-    public final ListPath<PreferencesEntity, QPreferencesEntity> preferences = this.<PreferencesEntity, QPreferencesEntity>createList("preferences", PreferencesEntity.class, QPreferencesEntity.class, PathInits.DIRECT2);
+    public final ListPath<UserPreferenceEntity, QUserPreferenceEntity> preferences = this.<UserPreferenceEntity, QUserPreferenceEntity>createList("preferences", UserPreferenceEntity.class, QUserPreferenceEntity.class, PathInits.DIRECT2);
 
     public final ListPath<ReactionEntity, QReactionEntity> reactions = this.<ReactionEntity, QReactionEntity>createList("reactions", ReactionEntity.class, QReactionEntity.class, PathInits.DIRECT2);
 

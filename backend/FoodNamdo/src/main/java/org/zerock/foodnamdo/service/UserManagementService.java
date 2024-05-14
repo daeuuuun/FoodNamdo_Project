@@ -1,8 +1,7 @@
 package org.zerock.foodnamdo.service;
 
 import org.zerock.foodnamdo.domain.UserEntity;
-import org.zerock.foodnamdo.dto.SignUpDTO;
-import org.zerock.foodnamdo.dto.UserDTO;
+import org.zerock.foodnamdo.customDTO.SignUpDTO;
 
 //@Service
 public interface UserManagementService {

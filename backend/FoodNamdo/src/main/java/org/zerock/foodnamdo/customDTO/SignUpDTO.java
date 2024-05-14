@@ -1,4 +1,4 @@
-package org.zerock.foodnamdo.dto;
+package org.zerock.foodnamdo.customDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;

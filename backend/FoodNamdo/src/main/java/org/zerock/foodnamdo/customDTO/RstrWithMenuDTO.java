@@ -1,7 +1,7 @@
-package org.zerock.foodnamdo.dto;
+package org.zerock.foodnamdo.customDTO;
 
 import lombok.*;
-import org.zerock.foodnamdo.domain.RstrEntity;
+import org.zerock.foodnamdo.baseDTO.MenuDescriptionDTO;
 
 import java.util.List;
 

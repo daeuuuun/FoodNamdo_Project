@@ -1,19 +1,19 @@
-package org.zerock.foodnamdo.dto;
+package org.zerock.foodnamdo.baseDTO;
 
 import lombok.*;
-import org.zerock.foodnamdo.domain.*;
+import org.zerock.foodnamdo.domain.RstrEntity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Data
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class FindRstrByNameDTO {
-    private String category_name;
+public class RstrDTO {
     private Long rstr_id;
-    private List<RstrImgDTO> rstr_images;
     private int rstr_num;
     private String rstr_region;
     private String rstr_permission;
@@ -23,10 +23,8 @@ public class FindRstrByNameDTO {
     private Double rstr_lo;
     private String rstr_tel;
     private String rstr_intro;
-    private String rstr_naver_rating;
-    private String rstr_review_rating;
-//    private Double rstr_naver_rating;
-//    private Double rstr_review_rating;
+    private Double rstr_naver_rating;
+    private Double rstr_review_rating;
     private boolean example;
     private boolean relax;
     private int rstr_review_count;
@@ -37,23 +35,16 @@ public class FindRstrByNameDTO {
     private String rstr_closed;
     private String rstr_business_hour;
     private boolean rstr_delivery;
-//    private List<RstrCategoryDTO> rstr_categories;
-    private List<ReviewDTO> reviews;
-    private List<MenuDescriptionDTO> menu_descriptions;
+//    private List<RstrCategoryDTO> rstrCategories;
+//    private List<RstrImgDTO> rstrImages;
+//    private List<ReviewDTO> reviews;
+//    private List<MenuDescriptionDTO> menuDescriptions;
 //    private List<CategoryDTO> categories;
-    private List<FavoriteDTO> favorites;
+//    private List<FavoriteDTO> favorites;
 
-    // 생성자를 이용한 변환 메서드
-    public static FindRstrByNameDTO fromEntity(RstrEntity entity) {
-
-        String naverRating = entity.getRstrNaverRating() != null ? String.format("%.2f", entity.getRstrNaverRating()) : null;
-        String reviewRating = entity.getRstrReviewRating() != null ? String.format("%.2f", entity.getRstrReviewRating()) : null;
-
-
-        return FindRstrByNameDTO.builder()
-                .category_name(CategoryDTO.categoryNamesFromEntities(entity.getCategories()))
+    public static RstrDTO fromEntity(RstrEntity entity) {
+        return RstrDTO.builder()
                 .rstr_id(entity.getRstrId())
-                .rstr_images(RstrImgDTO.fromEntities(entity.getRstrImages()))
                 .rstr_num(entity.getRstrNum())
                 .rstr_region(entity.getRstrRegion())
                 .rstr_permission(entity.getRstrPermission())
@@ -63,8 +54,8 @@ public class FindRstrByNameDTO {
                 .rstr_lo(entity.getRstrLo())
                 .rstr_tel(entity.getRstrTel())
                 .rstr_intro(entity.getRstrIntro())
-                .rstr_naver_rating(naverRating)
-                .rstr_review_rating(reviewRating)
+                .rstr_naver_rating(entity.getRstrNaverRating())
+                .rstr_review_rating(entity.getRstrReviewRating())
                 .example(entity.isExample())
                 .relax(entity.isRelax())
                 .rstr_review_count(entity.getRstrReviewCount())
@@ -75,12 +66,12 @@ public class FindRstrByNameDTO {
                 .rstr_closed(entity.getRstrClosed())
                 .rstr_business_hour(entity.getRstrBusinessHour())
                 .rstr_delivery(entity.isRstrDelivery())
-//                .rstr_categories(RstrCategoryDTO.fromEntities(entity.getRstrCategories()))
-                .reviews(ReviewDTO.fromEntities(entity.getReviews()))
-                .menu_descriptions(MenuDescriptionDTO.fromEntities(entity.getMenuDescriptions()))
-//                .categories(CategoryDTO.fromEntities(entity.getCategories()))
-                .favorites(FavoriteDTO.fromEntities(entity.getFavorites()))
                 .build();
     }
-}
 
+    public static List<RstrDTO> fromEntities(List<RstrEntity> entities) {
+        return entities.stream()
+                .map(RstrDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+}

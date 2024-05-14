@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.zerock.foodnamdo.domain.UserEntity;
-import org.zerock.foodnamdo.dto.APIUserDTO;
+import org.zerock.foodnamdo.baseDTO.APIUserDTO;
 import org.zerock.foodnamdo.repository.APIUserRepository;
 
 import java.util.List;

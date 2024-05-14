@@ -1,9 +1,11 @@
-package org.zerock.foodnamdo.dto;
+package org.zerock.foodnamdo.customDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.zerock.foodnamdo.baseDTO.MenuDescriptionDTO;
+import org.zerock.foodnamdo.baseDTO.RstrDTObackup;
 
 import java.util.List;
 @Data

@@ -1,6 +1,5 @@
-package org.zerock.foodnamdo.dto;
+package org.zerock.foodnamdo.baseDTO;
 import lombok.*;
-import org.zerock.foodnamdo.domain.RstrCategoryEntity;
 import org.zerock.foodnamdo.domain.RstrImgEntity;
 
 import java.util.List;

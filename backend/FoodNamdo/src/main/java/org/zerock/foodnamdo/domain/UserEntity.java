@@ -1,6 +1,5 @@
 package org.zerock.foodnamdo.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
@@ -59,7 +58,7 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "userEntity")
 //    @JsonManagedReference
-    private List<PreferencesEntity> preferences;
+    private List<UserPreferenceEntity> preferences;
 
 
     public void changeNickname(String nickname) {

@@ -1,4 +1,4 @@
-package org.zerock.foodnamdo.dto;
+package org.zerock.foodnamdo.baseDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -10,7 +10,6 @@ import org.zerock.foodnamdo.domain.UserEntity;
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.userdetails.User;
 
-import java.util.Collection;
 
 @Data
 @Builder
@@ -36,7 +35,7 @@ public class UserDTO {
     @NotEmpty
     private String password;
 
-    public static UserDTO fromUser(UserEntity user) {
+    public static UserDTO fromEntity(UserEntity user) {
         return new UserDTO(
                 user.getUserId(),
                 user.getName(),
