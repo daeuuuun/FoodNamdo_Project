@@ -15,6 +15,8 @@ public interface MainSystemService {
     Page<ReviewEntity> findAllByRstrEntity_RstrId(Long rstrId, Pageable pageable);
 //    Page<RstrEntity> findAllByRstrId(Long rstrId, Pageable pageable);
 
+    RstrEntity findByRstrId(Long rstrId);
+
     int countAllByRstrNameContains(String rstrName);
 
     long count();

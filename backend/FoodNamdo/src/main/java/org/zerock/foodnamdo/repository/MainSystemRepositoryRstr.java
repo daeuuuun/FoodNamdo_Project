@@ -12,6 +12,8 @@ public interface MainSystemRepositoryRstr extends JpaRepository<RstrEntity, Long
     Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable);
     Page<RstrEntity> findAllByRstrNameContains(String name, Pageable pageable);
 
+    RstrEntity findByRstrId(Long RstrId);
+
 //    Page<RstrEntity> findAllByRstrId(Long rstrId, Pageable pageable);
 
     int countAllByRstrNameContains(String rstrName);

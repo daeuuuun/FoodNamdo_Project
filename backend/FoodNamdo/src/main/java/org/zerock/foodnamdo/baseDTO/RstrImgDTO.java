@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.baseDTO;
 import lombok.*;
+import org.zerock.foodnamdo.domain.CategoryEntity;
 import org.zerock.foodnamdo.domain.RstrImgEntity;
 
 import java.util.List;
@@ -27,5 +28,16 @@ public class RstrImgDTO {
         return entities.stream()
                 .map(RstrImgDTO::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    public static String ImgUrlsFromEntities(List<RstrImgEntity> entities) {
+        if (entities == null || entities.isEmpty()) {
+            return "";
+        }
+
+        return entities.get(0).getRstrImgUrl();
+//        return entities.stream()
+//                .map(RstrImgEntity::getRstrImgUrl)
+//                .collect(Collectors.joining(", "));
     }
 }

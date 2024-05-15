@@ -39,6 +39,9 @@ public class MainSystemServiceImpl implements MainSystemService{
         return mainSystemRepositoryReview.findAllByRstrEntity_RstrId(rstrId, pageable);
     }
 
+    public RstrEntity findByRstrId(Long rstrId) {
+        return mainSystemRepositoryRstr.findByRstrId(rstrId);
+    }
 
 
     public int countAllByRstrNameContains(String rstrName) {
