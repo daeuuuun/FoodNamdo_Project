@@ -58,6 +58,31 @@ const StyledStarIcon = styled(StarRoundedIcon)`
     margin-right: -2px;
 `;
 
+const CertificationMarks = styled.div`
+    display: flex;
+    justify-content: center;
+    color: ${palette.lightblue};
+    height: 30px;
+    div {
+        width: 60px;
+        height: 25px;
+        font-size: 0.7rem;
+        text-align: center;
+        line-height: 1.8rem;
+        margin-right: 2px;
+        margin-bottom: 3px;
+        border-radius: 10px;
+    }
+
+    #example-mark {
+        background-color: #008A50;
+    }
+
+    #relax-mark {
+        background-color: #254871;
+    }
+`;
+
 const RstrCard = ({ rstrInfo }) => {
 
     const navigate = useNavigate();
@@ -67,6 +92,10 @@ const RstrCard = ({ rstrInfo }) => {
         <RstrCardContainer onClick={() => {
             navigate(`/rstr/${rstrInfo.rstr_id}`, { state: { rstrInfo } })
         }}>
+            <CertificationMarks>
+                {rstrInfo.example && <div id='example-mark'>모범식당</div>}
+                {rstrInfo.relax && <div id='relax-mark'>안심식당</div>}
+            </CertificationMarks>
             <ImgContainer>
                 <Img src={imgUrl} alt={'이미지'} />
             </ImgContainer>

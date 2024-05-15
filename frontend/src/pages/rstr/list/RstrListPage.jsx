@@ -12,6 +12,7 @@ import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 
 import { IMAGE_SERVER_URL } from '../../../config/Config';
+import { BACKEND_SERVER_URL } from '../../../config/Config';
 
 const RstrListPageContainer = styled.div`
     display: flex;
@@ -72,6 +73,7 @@ const RstrListContainer = styled.div`
         text-align: right;
     }
     .rstr-loading {
+        margin: 0 auto;
         margin-top: 10%;
         font-size: 1.8rem;
     }
@@ -99,16 +101,19 @@ export const RstrListPage = () => {
     const [checkedRegion, setCheckedRegion] = useState('전체');
     const [checkedCategory, setCheckedCategory] = useState('전체');
 
+    const searchParams = new URLSearchParams(location.search);
+    const search = searchParams.get('search');
+
     useEffect(() => {
         const query = new URLSearchParams(location.search);
         const newPage = parseInt(query.get('page') || '1', 10);
         setPage(newPage);
     }, [location]);
 
-    // 이미지 파일로 검색 시
+    // 검색 시
     useEffect(() => {
         setIsNotInfo(false);
-        const fetchDataWithFile = async () => {
+        const fetchDataWithFile = async () => { // 이미지 검색
             const formData = new FormData();
             formData.append('file', file);
             const params = new URLSearchParams({
@@ -129,7 +134,7 @@ export const RstrListPage = () => {
                         'Content-Type': 'multipart/form-data',
                     }
                 });
-                setRstrList(response.data.rstr); // 음식점 리스트 저장
+                setRstrList(response.data.rstr);
                 setTotalPage(response.data.total_pages);
                 setPageSize(response.data.page_size);
                 setTotalRstr(response.data.total_rstr);
@@ -170,16 +175,44 @@ export const RstrListPage = () => {
             setIsLoading(false);
         };
 
-        if (file && page == 1) {
+        const fetchDataWithName = async () => {
+
+            const params = new URLSearchParams({
+                rstrName: search,
+                page: page,
+            }).toString();
+
+            const url = `${BACKEND_SERVER_URL}/mainsystem/findRstrByName?${params}`;
+
+            try {
+                const response = await axios.get(url);
+                setRstrList(response.data.rstr);
+                setTotalPage(response.data.total_pages);
+                setPageSize(response.data.page_size);
+                setTotalRstr(response.data.total_rstr);
+
+                if (response.data.rstr.length === 0) {
+                    setIsNotInfo(true);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+            setIsLoading(false);
+        };
+        if (file && page == 1) { // 이미지 파일
             setIsLoading(true);
-            console.log('파일 사용', file);
+            // console.log('파일 사용', file);
             fetchDataWithFile();
+        } else if (search) { // 검색어
+            setIsLoading(true);
+            fetchDataWithName();
         } else {
             setIsLoading(true);
             setFile(null);
-            console.log('파일 없음');
+            // console.log('파일 없음');
             fetchDataWithRandom();
         }
+
     }, [file, page, pageSize, checkedRegion, checkedCategory]);
 
 
@@ -272,11 +305,14 @@ export const RstrListPage = () => {
                                         <PaginationItem
                                             component={Link}
                                             // to={`/rstr?page=${item.page}`}
-                                            to={`/${item.page === 1 ? 'rstr' : `rstr?page=${item.page}`}`}
+                                            to={`/${search ?
+                                                `rstr?page=${item.page}&search=${search}`
+                                                : (item.page === 1 ? 'rstr' : `rstr?page=${item.page}`)}`}
                                             {...item}
                                         />
                                     )}
-                                /></>
+                                />
+                            </>
                     )
                 }
             </RstrListContainer>

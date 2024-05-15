@@ -108,7 +108,7 @@ const SearchBar = () => {
 
     // 텍스트 검색
     const handleClickSearch = async () => {
-        // const response = await axios.get(`http/search?search=${search}`)
+        navigate(`/rstr?search=${search}`);
         console.log(search + ' : 텍스트 검색입니다');
     }
 

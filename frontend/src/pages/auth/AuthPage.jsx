@@ -11,6 +11,8 @@ const AuthPage = ({ mode }) => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ account_id: '', name: '', phone: '', code: '' });
 
+    const [isVerified, setIsVerified] = useState(false); // 인증 확인 요청 
+
     const onChange = (e) => {
         const { name, value } = e.target;
         if (name === "phone" || name === "code") {
@@ -27,38 +29,73 @@ const AuthPage = ({ mode }) => {
     );
 
     const handleFind = async () => {
+        if (!formData.name) {
+            alert("이름을 입력해주세요.");
+            return;
+        } else if (!formData.phone) {
+            alert("인증번호 요청을 해주세요.");
+            return;
+        } else if (!formData.code) {
+            alert("코드를 입력해주세요.");
+            return;
+        }
+
         if (mode === 'findId') { // 아이디 찾기
             try {
-                const response = await axios.post('', formData);
-                console.log(response.data);
-                navigate('/login');
+                const response = await axios.post
+                    (BACKEND_SERVER_URL + '/usermanagement/findAccountIdByNameAndPhone', {}, {
+                        params: {
+                            name: formData.name,
+                            phone: formData.phone,
+                            code: formData.code
+                        }
+                    });
+                alert('아이디가 전송되었습니다.');
             } catch (error) {
                 console.log(error);
+                alert('해당 정보를 찾을 수 없습니다.');
             }
-
         } else if (mode === 'findPw') { // 비밀번호 찾기
+            if (!formData.account_id) {
+                alert("아이디를 입력해주세요.");
+                return;
+            }
             try {
-                const response = await axios.post('', formData);
-                console.log(response.data);
-                navigate('/login');
+                const response = await axios.post
+                    (BACKEND_SERVER_URL + '/usermanagement/findPasswordByAccountIdAndNameAndPhone', {}, {
+                        params: {
+                            accountId: formData.account_id,
+                            name: formData.name,
+                            phone: formData.phone,
+                            code: formData.code,
+                        }
+                    });
+                alert('비밀번호가 전송되었습니다.');
             } catch (error) {
                 console.log(error);
+                alert('해당 정보를 찾을 수 없습니다.');
             }
         }
+        navigate('/login');
     };
 
     const handleAuth = async () => {
+        if (!formData.phone) {
+            alert('전화번호를 입력해주세요.');
+            return;
+        };
         try {
             await axios.post(
-                BACKEND_SERVER_URL + '/usermanagement/verify', null, {
+                BACKEND_SERVER_URL + '/usermanagement/verify', {}, {
                 params: { phone: formData.phone }
             });
-            alert('인증 요청 버튼 눌림');
+            setIsVerified(true);
+            alert('인증번호가 전송되었습니다.');
         } catch (error) {
+            alert('인증번호 발송에 실패하였습니다. 다시 시도해주세요.');
             console.log(error);
         }
     }
-
 
     return (
         <div className="auth-form-container centered-flex">
@@ -97,7 +134,7 @@ const AuthPage = ({ mode }) => {
                 />
                 <InputForm
                     type="text"
-                    name="authNum"
+                    name="code"
                     placeholder="인증번호 6자리 숫자 입력"
                     value={formData.code}
                     onChange={onChange}
@@ -106,8 +143,6 @@ const AuthPage = ({ mode }) => {
                 <button
                     className="auth-button"
                     onClick={handleFind}
-                    disabled={!isFormValid()}
-                    style={{ opacity: isFormValid() ? 1 : 0.5 }}
                 >
                     {mode === 'findId' ? '아이디 찾기' : '비밀번호 찾기'}
                 </button>
