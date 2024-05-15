@@ -25,11 +25,13 @@ public class MainSystemServiceImpl implements MainSystemService{
         return rstr;
     }
 
-    public Page<RstrEntity> findAllByRstrNameContains(String name, Pageable pageable) {
-        return mainSystemRepositoryRstr.findAllByRstrNameContains(name, pageable);
-//        Page<RstrEntity> rstr = mainSystemRepository.findAllByRstrNameContains(name, pageable);
-//        return rstr;
+    public Page<RstrEntity> findAllByRstrNameContainsAndFilters(String name, String category, String region, Pageable pageable) {
+        return mainSystemRepositoryRstr.findByRstrNameContainsAndFilters(name, category, region, pageable);
+        //        return mainSystemRepositoryRstr.findAllByRstrNameContains(name, pageable);
     }
+//    public Page<RstrEntity> findAllByRstrNameContains(String name, Pageable pageable) {
+//        return mainSystemRepositoryRstr.findAllByRstrNameContains(name, pageable);
+//    }
 
 //    public Page<RstrEntity> findAllByRstrId(Long rstrId, Pageable pageable) {
 //        return mainSystemRepositoryRstr.findAllByRstrId(rstrId, pageable);
@@ -44,10 +46,23 @@ public class MainSystemServiceImpl implements MainSystemService{
     }
 
 
-    public int countAllByRstrNameContains(String rstrName) {
-        int count = mainSystemRepositoryRstr.countAllByRstrNameContains(rstrName);
-        return count;
-    }
+//    public int countAllByRstrNameContains(String rstrName) {
+//        int count = mainSystemRepositoryRstr.countAllByRstrNameContains(rstrName);
+//        return count;
+//    }
+//    public int countAllByRstrNameContainsAndFilters(String rstrName, String category, String region) {
+//        if (category != null && region != null) {
+//            return mainSystemRepositoryRstr.countByRstrNameContainsAndCategoryAndLocation(rstrName, category, region);
+//        } else if (category != null) {
+//            return mainSystemRepositoryRstr.countByRstrNameContainsAndCategories(rstrName, category);
+//        } else if (region != null) {
+//            return mainSystemRepositoryRstr.countByRstrNameContainsAndLocation(rstrName, region);
+//        } else {
+//            return mainSystemRepositoryRstr.countAllByRstrNameContains(rstrName);
+//        }
+//        //        int count = mainSystemRepositoryRstr.countAllByRstrNameContains(rstrName);
+////        return count;
+//    }
 
     public long count() {
         long count = mainSystemRepositoryRstr.count();

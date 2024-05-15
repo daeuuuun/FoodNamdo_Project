@@ -10,14 +10,16 @@ import java.util.List;
 public interface MainSystemService {
     Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable);
 
-    Page<RstrEntity> findAllByRstrNameContains(String name, Pageable pageable);
+    Page<RstrEntity> findAllByRstrNameContainsAndFilters(String name, String category, String region, Pageable pageable);
+//    Page<RstrEntity> findAllByRstrNameContains(String name, Pageable pageable);
 
     Page<ReviewEntity> findAllByRstrEntity_RstrId(Long rstrId, Pageable pageable);
 //    Page<RstrEntity> findAllByRstrId(Long rstrId, Pageable pageable);
 
     RstrEntity findByRstrId(Long rstrId);
 
-    int countAllByRstrNameContains(String rstrName);
+//    int countAllByRstrNameContainsAndFilters(String rstrName, String category, String location);
+//    int countAllByRstrNameContains(String rstrName);
 
     long count();
 }

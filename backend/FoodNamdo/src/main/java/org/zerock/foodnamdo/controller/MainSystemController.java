@@ -1,6 +1,9 @@
 package org.zerock.foodnamdo.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -131,21 +134,27 @@ public class MainSystemController {
     @ResponseBody
     public Map<String, Object> findRstrByName(
             @RequestParam("rstrName") String rstrName,
-            @RequestParam("page") int page) {
+            @RequestParam("page") int page,
+            @RequestParam(value = "category", required = false)
+            @Parameter(description = "음식점 카테고리",
+                    schema = @Schema(allowableValues = {"한식", "중식", "일식", "카페/제과점", "양식", "치킨/호프", "분식", "식육(숯불구이)"
+                            , "회", "패스트푸드", "푸드트럭", "외국음식전문점", "뷔페식", "기타"})) String category,
+            @RequestParam(value = "region", required = false)
+            @Parameter(description = "지역", schema = @Schema(allowableValues = {"경상남도", "전라남도"})) String region) {
         log.info("findRstrByName......");
 
         int pageSize = 8;
 
-//        Pageable pageable = PageRequest.of(page, pageSize);
         Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
 
-        Page<RstrEntity> rstrPage = mainSystemService.findAllByRstrNameContains(rstrName, pageable);
+        Page<RstrEntity> rstrPage = mainSystemService.findAllByRstrNameContainsAndFilters(rstrName, category, region, pageable);
         log.info(rstrPage);
         List<FindRstrByNameDTO> findRstrByNameDTOList = rstrPage.getContent().stream()
                 .map(FindRstrByNameDTO::fromEntity)
                 .collect(Collectors.toList());
 
-        int totalResults = mainSystemService.countAllByRstrNameContains(rstrName);
+        int totalResults = (int) rstrPage.getTotalElements();
+//        int totalResults = mainSystemService.countAllByRstrNameContainsAndFilters(rstrName, category, region);
         // 전체 페이지 수 계산
         int totalPages = (int) Math.ceil((double) totalResults / pageSize);
 
