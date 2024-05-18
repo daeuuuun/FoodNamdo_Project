@@ -142,6 +142,4 @@ def insert_chromaDB_review_image(collection, review_img_id):
     img_saving(collection, save_path, table, data, columns)
 
 def delete_review_image(collection, review_img_id):
-    collection.delete(
-    ids=[str(review_img_id)]
-    )
+    collection.delete(ids=[str(review_img_id)])
