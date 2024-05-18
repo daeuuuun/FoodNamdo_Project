@@ -132,3 +132,16 @@ def insert_reviewimg_rstr_info(query_result):
         for i in range(len(rstr_column_array)):
             item[rstr_column_array[i]] = data[0][i]
     return query_result
+
+def insert_chromaDB_review_image(collection, review_img_id):
+    table = "review_img"
+    query = f"SELECT review_img_id, {table}.review_id as review_id, review_img_url, rstr_id FROM {table} JOIN review ON {table}.review_id = review.review_id WHERE {table}.review_img_id = {review_img_id}"
+    save_path = "./img/"
+    data = mariadb_utils.select_from_db_data(query)
+    columns = mariadb_utils.select_from_db_column(query)
+    img_saving(collection, save_path, table, data, columns)
+
+def delete_review_image(collection, review_img_id):
+    collection.delete(
+    ids=[str(review_img_id)]
+    )
