@@ -1,6 +1,6 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException, Query
+from fastapi import FastAPI, File, UploadFile, HTTPException, Query, Response
 from contextlib import asynccontextmanager
-import chromadb_utils, chromadb, os, copy, SortBy, Category, Region, plyvel, leveldb_utils, json, Table
+import chromadb_utils, chromadb, os, SortBy, Category, Region, plyvel, leveldb_utils, json, Table, recommend_utils, time, threading
 from chromadb.utils.embedding_functions import OpenCLIPEmbeddingFunction
 from chromadb.utils.data_loaders import ImageLoader
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,12 +24,32 @@ review_img_collection = client.get_or_create_collection(
 #LevelDB 생성 혹은 가져오기
 levelDB = plyvel.DB("./levelDB_data/", create_if_missing=True)
 
+# 추천 모델
+model = None
+review_data = None
+UPDATE_INTERVAL = 3600  # 1시간마다 업데이트
+# 종료 조건을 위한 전역 변수
+terminate_thread = False
+
+def update_model():
+    global terminate_thread, model, review_data
+    while not terminate_thread:
+        model, review_data = recommend_utils.init()
+        time.sleep(UPDATE_INTERVAL)
+
+update_thread = threading.Thread(target=update_model)
+update_thread.start()
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    global terminate_thread
     if not chromaDB_exists:
         chromadb_utils.init(rstr_img_collection, "rstr_img")
         chromadb_utils.init(review_img_collection, "review_img")
     yield
+    terminate_thread = True
+    update_thread.join()
+    del model
     levelDB.close()
     print("FastAPI application is shutting down!")
 
@@ -106,3 +126,18 @@ def remove_final(query_result, category: Category.rstrCategory, region: Region.r
     if region != Region.rstrRegion.전체:
         query_result = [item for item in query_result if item["rstr_region"] == region.value]
     return query_result
+
+@app.get("/recommend/{user_id}")
+async def recommend(user_id: int, num_recommendations: int = Query(5, ge=1, le=10)):
+    global model, review_data
+    return recommend_utils.rstr(user_id, num_recommendations, model, review_data)
+
+@app.post('/review_image/{review_img_id}')
+async def insert_review_image(review_img_id: int):
+    chromadb_utils.insert_chromaDB_review_image(review_img_collection, review_img_id)
+    return Response(status_code=200)
+
+@app.delete('/review_image/{review_img_id}')
+async def delete_review_image(review_img_id):
+    chromadb_utils.delete_review_image(review_img_collection, review_img_id)
+    return Response(status_code=200)
