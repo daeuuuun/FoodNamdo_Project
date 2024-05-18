@@ -2,15 +2,19 @@ package org.zerock.foodnamdo.baseDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.zerock.foodnamdo.customDTO.FindReviewByRstrIdDTO;
+import org.zerock.foodnamdo.domain.RstrEntity;
 import org.zerock.foodnamdo.domain.UserEntity;
+
+import java.util.List;
+import java.util.stream.Collectors;
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.userdetails.User;
 
 
+@Getter
+@Setter
 @Data
 @Builder
 @AllArgsConstructor
@@ -44,6 +48,12 @@ public class UserDTO {
                 user.getAccountId(),
                 user.getPassword()
         );
+    }
+
+    public static List<UserDTO> fromEntities(List<UserEntity> entities) {
+        return entities.stream()
+                .map(UserDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 //    public static UserDTO fromEntity(UserEntity entity) {
 //        return UserDTO.builder()

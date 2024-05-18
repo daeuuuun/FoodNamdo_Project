@@ -87,7 +87,7 @@ public class UserManagementController {
 
     @Operation(summary = "회원가입")
     @PostMapping("/signUp")
-    public String signUp(
+    public ResponseEntity<String> signUp(
             @RequestParam("name")String name,
             @RequestParam("nickname") String nickname,
             @RequestParam("phone") String phone,
@@ -102,22 +102,23 @@ public class UserManagementController {
 //
 //            return redirectAttributes.toString();
 //        }
+        String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
 
         SignUpDTO signUpDTO = SignUpDTO.builder()
                 .name(name)
                 .nickname(nickname)
-                .phone(phone)
+                .phone(formatPhone)
                 .accountId(accountId)
                 .password(password)
                 .build();
 
         log.info(signUpDTO);
 
-        Long userId = userManagementService.signUp(signUpDTO);
+        userManagementService.signUp(signUpDTO);
 
-        String result = "id = " + userId + name + "님, 회원가입이 완료되었습니다";
+//        String result = "id = " + userId + name + "님, 회원가입이 완료되었습니다";
 
-        return result;
+        return ResponseEntity.ok("Signup successfully");
     }
 
 //    @Operation(summary = "로그인")
@@ -345,14 +346,14 @@ public class UserManagementController {
 //    }
     @Operation(summary = "회원삭제")
     @PostMapping("/deleteUser")
-    public String remove(@RequestParam("user_id") Long userId, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<String> remove(@RequestParam("user_id") Long userId) {
         log.info("delete user.." + userId);
 
         userManagementService.deleteUser(userId);
 
-        redirectAttributes.addFlashAttribute("result", "deleted");
+//        redirectAttributes.addFlashAttribute("result", "deleted");
 
-        return redirectAttributes.toString();
+        return ResponseEntity.ok("delete userId" + userId + " successfully");
     }
 
 

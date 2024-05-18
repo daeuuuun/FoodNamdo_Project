@@ -7,7 +7,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.foodnamdo.baseDTO.ReviewDTO;
 import org.zerock.foodnamdo.baseDTO.RstrDTO;
 import org.zerock.foodnamdo.baseDTO.FavoriteDTO;
@@ -33,15 +36,75 @@ public class MyPageController {
 
     private final MyPageService myPageService;
 
-//    @Operation(summary = "내정보 조회")
-//    @GetMapping("/myInfo")
-//    public void myInfo(){
+    @Operation(summary = "내정보 조회")
+    @GetMapping(value = "/myInfo", produces = "application/json")
+//    public UserEntity myInfo(@RequestParam("user_id") Long userId){
+    public UserDTO myInfo(@RequestParam("user_id") Long userId){
+        log.info("myInfo......");
+        UserEntity userEntity = myPageService.findByUserId(userId);
+//        UserDTO userDTO = myPageService.findByUserId(userId);
+
+//        return userEntity;
+        return UserDTO.fromEntity(userEntity);
+    }
 //
-//    }
+    @Operation(summary = "닉네임 변경")
+    @PostMapping("/changeNickname")
+    public ResponseEntity<String> changeNickname(
+            @RequestParam("user_id") Long userId,
+            @RequestParam("nickname") String nickname) {
+        log.info("changeNickname......");
+        myPageService.changeNickname(userId, nickname);
+        return ResponseEntity.ok("Nickname changed successfully");
+    }
+
+    @Operation(summary = "비밀번호 변경")
+    @PostMapping("/changePassword")
+    public ResponseEntity<String> changePassword(
+            @RequestParam("user_id") Long userId,
+            @RequestParam("password") String password) {
+        log.info("changeNickname......");
+        myPageService.changePassword(userId, password);
+        return ResponseEntity.ok("Password changed successfully");
+    }
+
+    @Operation(summary = "사용자id로 리뷰 불러오기")
+    @GetMapping(value = "/getReview", produces = "application/json")
+    public List<ReviewDTO> getReview(
+            @RequestParam("user_id") Long userId) {
+        log.info("getReview......");
+        List<ReviewEntity> reviewEntity = myPageService.findReviewByUserId(userId);
+        return reviewEntity.stream()
+                .map(ReviewDTO::fromEntity)
+                .toList();
+    }
+
+//    @PostMapping
+//    public String modify(PageRequestDTO pageRequestDTO,
+//                         @Valid UserDTO userDTO,
+//                         BindingResult bindingResult,
+//                         RedirectAttributes redirectAttributes) {
+//        log.info("user modify post.........." + userDTO);
 //
-//    @Operation(summary = "닉네임 수정")
-//    @PostMapping("/changeNickname")
-//    public void changeNickname() {
+//        if (bindingResult.hasErrors()) {
+//            log.info("has errors.......");
+//
+//            String link = pageRequestDTO.getLink();
+//
+//            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+//
+//            redirectAttributes.addAttribute("userId", userDTO.getUserId());
+//
+//            return "redirect:/user/modify?" + link;
+//        }
+//
+//        userManagementService.modify(userDTO);
+//
+//        redirectAttributes.addFlashAttribute("result", "modified");
+//
+//        redirectAttributes.addAttribute("userId", userDTO.getUserId());
+//
+//        return "redirect:/user/read";
 //
 //    }
 //

@@ -22,4 +22,6 @@ public interface MainSystemService {
 //    int countAllByRstrNameContains(String rstrName);
 
     long count();
+
+    void deleteByReviewId(Long reviewID);
 }

@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.service;
 
+import org.zerock.foodnamdo.baseDTO.UserDTO;
 import org.zerock.foodnamdo.domain.UserEntity;
 import org.zerock.foodnamdo.customDTO.SignUpDTO;
 
@@ -10,7 +11,7 @@ public interface UserManagementService {
 
 //    UserDTO readOne(Long userId);
 
-//    void modify(UserDTO userDTO);
+    void modify(UserDTO userDTO);
 
     void deleteUser(Long userId);
 

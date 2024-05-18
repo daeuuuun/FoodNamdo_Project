@@ -10,7 +10,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.foodnamdo.baseDTO.ReviewDTO;
 import org.zerock.foodnamdo.customDTO.FindReviewByRstrIdDTO;
 import org.zerock.foodnamdo.customDTO.FindRstrByNameDTO;
@@ -20,6 +22,8 @@ import org.zerock.foodnamdo.domain.RstrEntity;
 import org.zerock.foodnamdo.service.MainSystemService;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -137,11 +141,14 @@ public class MainSystemController {
             @RequestParam("page") int page,
             @RequestParam(value = "category", required = false)
             @Parameter(description = "음식점 카테고리",
-                    schema = @Schema(allowableValues = {"한식", "중식", "일식", "카페/제과점", "양식", "치킨/호프", "분식", "식육(숯불구이)"
+                    schema = @Schema(allowableValues = {"전체", "한식", "중식", "일식", "카페/제과점", "양식", "치킨/호프", "분식", "식육(숯불구이)"
                             , "회", "패스트푸드", "푸드트럭", "외국음식전문점", "뷔페식", "기타"})) String category,
             @RequestParam(value = "region", required = false)
-            @Parameter(description = "지역", schema = @Schema(allowableValues = {"경상남도", "전라남도"})) String region) {
+            @Parameter(description = "지역", schema = @Schema(allowableValues = {"전체", "경상남도", "전라남도"})) String region) {
         log.info("findRstrByName......");
+
+        category = "전체".equals(category) ? null : category;
+        region = "전체".equals(region) ? null : region;
 
         int pageSize = 8;
 
@@ -179,9 +186,8 @@ public class MainSystemController {
 
 
         RstrEntity rstrEntity = mainSystemService.findByRstrId(rstrId);
-        RstrDetailDTO rstrDetailDTO = RstrDetailDTO.fromEntity(rstrEntity);
 
-        return rstrDetailDTO;
+        return RstrDetailDTO.fromEntity(rstrEntity);
     }
 
     @Operation(summary = "음식점ID로 해당 음식점 전체 리뷰 조회")
@@ -218,6 +224,50 @@ public class MainSystemController {
         return response;
     }
 
+    @Operation(summary = "리뷰등록")
+    @PostMapping("/ReviewRegister")
+    public String ReviewRegister(
+            @RequestParam("rstr_id") Long rstrId,
+            @RequestParam("user_id") Long userId,
+            @RequestParam("review_text") String reviewText,
+            @RequestParam("time_of_creation") @Parameter(description = "날짜와 시간", schema = @Schema(type = "string", format = "date-time"))
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime timeOfCreation,
+            @RequestParam("category_rating_taste") double categoryRatingTaste,
+            @RequestParam("category_rating_price") double categoryRatingPrice,
+            @RequestParam("category_rating_clean") double categoryRatingClean,
+            @RequestParam("category_rating_service") double categoryRatingService,
+            @RequestParam("category_rating_amenities") double categoryRatingAmenities,
+//            @RequestParam("receipt") boolean receipt,
+//            @RequestParam("like") int like,
+//            @RequestParam("dislike") int dislike,
+            RedirectAttributes redirectAttributes) {
+        log.info("ReviewRegister.." + rstrId);
 
+        DecimalFormat df = new DecimalFormat("#.##");
+        double rating = (categoryRatingTaste + categoryRatingPrice + categoryRatingClean
+                + categoryRatingService + categoryRatingAmenities) / 5;
+        rating = Double.parseDouble(df.format(rating));
+        boolean receipt = false;
+        int like = 0;
+        int dislike = 0;
+
+//        mainSystemService.deleteByReviewId(reviewId);
+
+        redirectAttributes.addFlashAttribute("result", "created");
+
+        return redirectAttributes.toString();
+    }
+
+    @Operation(summary = "리뷰삭제")
+    @PostMapping("/deleteReview")
+    public String deleteReview(@RequestParam("review_id") Long reviewId, RedirectAttributes redirectAttributes) {
+        log.info("delete user.." + reviewId);
+
+        mainSystemService.deleteByReviewId(reviewId);
+
+        redirectAttributes.addFlashAttribute("result", "deleted");
+
+        return redirectAttributes.toString();
+    }
 
 }

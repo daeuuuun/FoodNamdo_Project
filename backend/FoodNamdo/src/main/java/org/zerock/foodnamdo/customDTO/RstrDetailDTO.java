@@ -23,9 +23,14 @@ public class RstrDetailDTO {
     private boolean example;
     private boolean relax;
     private String rstr_name;
-    private Double rstr_review_rating;
+    private String rstr_review_rating;
+//    private Double rstr_review_rating;
     private int rstr_review_count;
+    private String rstr_naver_rating;
+//    private Double rstr_naver_rating;
     private String rstr_address;
+    private String rstr_tel;
+    private int rstr_favorite_count;
     private String rstr_intro;
     private String rstr_business_hour;
     private String rstr_closed;
@@ -40,9 +45,6 @@ public class RstrDetailDTO {
 
 
 //    private String rstr_permission;
-//    private String rstr_tel;
-//    private Double rstr_naver_rating;
-//    private int rstr_favorite_count;
 //    private List<RstrCategoryDTO> rstrCategories;
 //    private List<RstrImgDTO> rstrImages;
 //    private List<ReviewDTO> reviews;
@@ -50,6 +52,8 @@ public class RstrDetailDTO {
 //    private List<FavoriteDTO> favorites;
 
     public static RstrDetailDTO fromEntity(RstrEntity entity) {
+        String reviewRating = entity.getRstrReviewRating() != null ? String.format("%.2f", entity.getRstrReviewRating()) : null;
+        String naverRating = entity.getRstrNaverRating() != null ? String.format("%.2f", entity.getRstrNaverRating()) : null;
         return RstrDetailDTO.builder()
                 .rstr_region(entity.getRstrRegion())
                 .category_name(CategoryDTO.categoryNamesFromEntities(entity.getCategories()))
@@ -57,9 +61,12 @@ public class RstrDetailDTO {
                 .example(entity.isExample())
                 .relax(entity.isRelax())
                 .rstr_name(entity.getRstrName())
-                .rstr_review_rating(entity.getRstrReviewRating())
+                .rstr_review_rating(reviewRating)
                 .rstr_review_count(entity.getRstrReviewCount())
+                .rstr_naver_rating(naverRating)
                 .rstr_address(entity.getRstrAddress())
+                .rstr_tel(entity.getRstrTel())
+                .rstr_favorite_count(entity.getRstrFavoriteCount())
                 .rstr_intro(entity.getRstrIntro())
                 .rstr_business_hour(entity.getRstrBusinessHour())
                 .rstr_closed(entity.getRstrClosed())
@@ -78,11 +85,8 @@ public class RstrDetailDTO {
 //                .rstr_id(entity.getRstrId())
 //                .rstr_num(entity.getRstrNum())
 //                .rstr_permission(entity.getRstrPermission())
-//                .rstr_tel(entity.getRstrTel())
-//                .rstr_naver_rating(entity.getRstrNaverRating())
 //                .example(entity.isExample())
 //                .relax(entity.isRelax())
-//                .rstr_favorite_count(entity.getRstrFavoriteCount())
                 .build();
     }
 

@@ -12,6 +12,8 @@ import org.zerock.foodnamdo.repository.search.UserSearch;
 
 @Repository
 public interface MyPageRepositoryFavorite extends JpaRepository<FavoriteEntity, Long>{
-    @Query("SELECT f.rstrEntity FROM FavoriteEntity f WHERE f.userEntity.userId = :userId")
-    Page<RstrEntity> findAllByUserEntity_UserId(Long userId, Pageable pageable);
+//    @Query("SELECT f.rstrEntity FROM FavoriteEntity f WHERE f.userEntity.userId = :userId")
+//    Page<RstrEntity> findAllByUserEntity_UserId(Long userId, Pageable pageable);
+
+    Page<FavoriteEntity> findAllByUserEntity_UserId(Long userId, Pageable pageable);
 }

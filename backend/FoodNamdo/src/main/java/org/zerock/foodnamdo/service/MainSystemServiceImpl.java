@@ -68,4 +68,9 @@ public class MainSystemServiceImpl implements MainSystemService{
         long count = mainSystemRepositoryRstr.count();
         return count;
     }
+
+    @Override
+    public void deleteByReviewId(Long reviewId) {
+        mainSystemRepositoryReview.deleteByReviewId(reviewId);
+    }
 }

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.zerock.foodnamdo.baseDTO.UserDTO;
 import org.zerock.foodnamdo.domain.UserEntity;
 import org.zerock.foodnamdo.customDTO.SignUpDTO;
 import org.zerock.foodnamdo.repository.UserManagementRepository;
@@ -117,17 +118,17 @@ public class UserManagementServiceImpl implements UserManagementService {
 //        return userDTO;
 //    }
 //
-//    @Override
-//    public void modify(UserDTO userDTO) {
-//
-//        Optional<User> result = userManagementRepository.findById(userDTO.getUserId());
-//
-//        User user = result.orElseThrow();
-//
-//        user.changeNickname(userDTO.getNickname());
-//
-//        userManagementRepository.save(user);
-//    }
+    @Override
+    public void modify(UserDTO userDTO) {
+
+        Optional<UserEntity> result = userManagementRepository.findById(userDTO.getUser_id());
+
+        UserEntity user = result.orElseThrow();
+
+        user.changeNickname(userDTO.getNickname());
+
+        userManagementRepository.save(user);
+    }
 
     @Override
     public void deleteUser(Long userId) {
