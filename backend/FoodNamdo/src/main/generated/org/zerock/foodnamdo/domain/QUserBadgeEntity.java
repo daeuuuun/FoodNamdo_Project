@@ -26,6 +26,10 @@ public class QUserBadgeEntity extends EntityPathBase<UserBadgeEntity> {
 
     public final QBadgeEntity badgeEntity;
 
+    public final BooleanPath badgeOnOff = createBoolean("badgeOnOff");
+
+    public final NumberPath<Integer> badgeSequence = createNumber("badgeSequence", Integer.class);
+
     public final NumberPath<Long> userBadgeId = createNumber("userBadgeId", Long.class);
 
     public final QUserEntity userEntity;

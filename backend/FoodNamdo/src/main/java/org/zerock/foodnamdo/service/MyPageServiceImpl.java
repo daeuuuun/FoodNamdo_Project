@@ -9,13 +9,11 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.zerock.foodnamdo.baseDTO.ReviewDTO;
 import org.zerock.foodnamdo.baseDTO.UserDTO;
-import org.zerock.foodnamdo.domain.FavoriteEntity;
-import org.zerock.foodnamdo.domain.ReviewEntity;
-import org.zerock.foodnamdo.domain.RstrEntity;
-import org.zerock.foodnamdo.domain.UserEntity;
+import org.zerock.foodnamdo.domain.*;
 import org.zerock.foodnamdo.repository.MyPageRepository;
 import org.zerock.foodnamdo.repository.MyPageRepositoryFavorite;
 import org.zerock.foodnamdo.repository.MyPageRepositoryReview;
+import org.zerock.foodnamdo.repository.MyPageRepositoryUserBadge;
 
 import java.util.List;
 
@@ -27,6 +25,7 @@ public class MyPageServiceImpl implements MyPageService{
     private final MyPageRepository myPageRepository;
     private final MyPageRepositoryFavorite myPageRepositoryFavorite;
     private final MyPageRepositoryReview myPageRepositoryReview;
+    private final MyPageRepositoryUserBadge myPageRepositoryUserBadge;
 
 //    public Page<RstrEntity> findAllByUserEntity_UserId(Long userId, Pageable pageable){
 //        return myPageRepository.findByFavoriteEntities_UserEntity_UserId(userId, pageable);
@@ -54,4 +53,10 @@ public class MyPageServiceImpl implements MyPageService{
     public List<ReviewEntity> findReviewByUserId(Long userId){
         return myPageRepositoryReview.findByUserEntity_UserId(userId);
     }
+
+    public List<UserBadgeEntity> findUserBadgeByUserId(Long userId){
+        return myPageRepositoryUserBadge.findByUserEntity_UserId(userId);
+    }
+
+
 }

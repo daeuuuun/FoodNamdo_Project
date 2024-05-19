@@ -5,10 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.zerock.foodnamdo.baseDTO.ReviewDTO;
 import org.zerock.foodnamdo.baseDTO.UserDTO;
-import org.zerock.foodnamdo.domain.FavoriteEntity;
-import org.zerock.foodnamdo.domain.ReviewEntity;
-import org.zerock.foodnamdo.domain.RstrEntity;
-import org.zerock.foodnamdo.domain.UserEntity;
+import org.zerock.foodnamdo.domain.*;
 
 import java.util.List;
 
@@ -20,6 +17,8 @@ public interface MyPageService {
     void changeNickname(Long userId, String nickname);
 
     void changePassword(Long userId, String password);
+
+    List<UserBadgeEntity> findUserBadgeByUserId(Long userId);
 
     List<ReviewEntity> findReviewByUserId(Long userId);
 

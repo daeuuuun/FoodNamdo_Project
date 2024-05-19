@@ -33,4 +33,10 @@ public class UserBadgeEntity {
     @Column(name = "badge_date", nullable = false)
 //    @JsonBackReference
     private LocalDateTime badgeDate;
+
+    @Column(name = "badge_on_off")
+    private Boolean badgeOnOff;
+
+    @Column(name = "badge_sequence")
+    private int badgeSequence;
 }

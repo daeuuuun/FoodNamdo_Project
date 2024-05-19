@@ -11,15 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.zerock.foodnamdo.baseDTO.ReviewDTO;
-import org.zerock.foodnamdo.baseDTO.RstrDTO;
-import org.zerock.foodnamdo.baseDTO.FavoriteDTO;
-import org.zerock.foodnamdo.baseDTO.UserDTO;
+import org.zerock.foodnamdo.baseDTO.*;
 import org.zerock.foodnamdo.customDTO.FavoriteTestDTO;
-import org.zerock.foodnamdo.domain.FavoriteEntity;
-import org.zerock.foodnamdo.domain.ReviewEntity;
-import org.zerock.foodnamdo.domain.RstrEntity;
-import org.zerock.foodnamdo.domain.UserEntity;
+import org.zerock.foodnamdo.domain.*;
 import org.zerock.foodnamdo.service.MyPageService;
 
 import java.util.LinkedHashMap;
@@ -109,18 +103,23 @@ public class MyPageController {
 //    }
 //
 //
-//    @Operation(summary = "비밀번호 변경")
-//    @PostMapping("/changePassword")
-//    public void changePassword() {
-//
-//    }
+
 //
 //
-//    @Operation(summary = "뱃지 확인")
-//    @GetMapping("/myBadge")
-//    public void myBadge() {
-//
-//    }
+    @Operation(summary = "뱃지 확인")
+    @GetMapping(value = "/myBadge", produces = "application/json")
+    public List<UserBadgeDTO> myBadge(@RequestParam("user_id") Long userId) {
+        log.info("getReview......");
+        List<UserBadgeEntity> userBadgeEntity = myPageService.findUserBadgeByUserId(userId);
+
+        List<UserBadgeDTO> userBadgeDTOList = userBadgeEntity.stream()
+                .map(UserBadgeDTO::fromEntity)
+                .toList();
+        return userBadgeDTOList;
+//        return userBadgeEntity.stream()
+//                .map(UserBadgeDTO::fromEntity)
+//                .toList();
+    }
 
     @Operation(summary = "찜한 음식점 조회")
     @GetMapping(value = "/getFavoriteRstr", produces = "application/json")
