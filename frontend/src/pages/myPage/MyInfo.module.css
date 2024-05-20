@@ -66,3 +66,7 @@
     padding: 2%;
     font-family: 'Gmarket Sans Medium';
 }
+
+.userBtn:hover {
+    cursor: pointer;
+}
