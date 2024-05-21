@@ -7,10 +7,11 @@ const PasswordChange = () => {
     const nextPwRef = useRef(null)
     const reTryPwRef = useRef(null)
     const changePw = () => {
-        nextPwRef.current.value === reTryPwRef.current.value ? defaultInstance.post('/mypage/changePassword', {
-            user_id : 1,
-            password : nextPwRef.current.value
-        }):console.log("err")
+        if (nextPwRef.current.value === reTryPwRef.current.value) {
+            defaultInstance.post(`/mypage/changePassword?user_id=${1}&password=${nextPwRef.current.value}`)
+                .then(resp => console.log(resp))
+                .catch(err => console.log(err))
+        }
     }
     return (
         <>
