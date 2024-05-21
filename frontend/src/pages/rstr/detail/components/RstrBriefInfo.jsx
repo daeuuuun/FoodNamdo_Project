@@ -147,6 +147,7 @@ const StyledBookmarkIcon = styled(BookmarkIcon)`
 
 const RstrBriefInfo = ({ rstrInfo }) => {
     const [isFavoriate, setIsFavoriate] = useState(true);
+
     const MoveToTop = () => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
     }
@@ -166,8 +167,7 @@ const RstrBriefInfo = ({ rstrInfo }) => {
             <RstrReviewInfo>
                 <RstrIconAndInfo style={{ fontSize: '1rem' }}>
                     <StyledStarIcon style={{ fontSize: '1.8rem' }} />
-                    {/* {`${rstrInfo.rstr_review_rating} (${rstrInfo.rstr_review_count}명)`} */}
-                    {`${rstrInfo.rstr_review_rating} (${rstrInfo.review_count}명)`}
+                    {`${rstrInfo.rstr_review_rating} (${rstrInfo.rstr_review_count}명)`}
                 </RstrIconAndInfo>
                 {
                     rstrInfo.rstr_naver_rating &&

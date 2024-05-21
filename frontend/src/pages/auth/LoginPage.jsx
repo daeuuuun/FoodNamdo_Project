@@ -40,19 +40,6 @@ const LoginPage = () => {
     const handleLogin = async () => {
         setIsLoginAttempted(true); // 로그인 시도 상태를 true로 설정
 
-        // try {
-        //     // const response = await axios.post('url', loginForm, { withCredentials: true });
-
-        //     // setLoginForm({
-        //     //     account_id: '',
-        //     //     password: '',
-        //     // })
-
-        //     // navigate('/'); // 메인페이지로 이동
-        // } catch (error) {
-        //     console.error('로그인 에러:', error);
-        // }
-
         try {
             const response = await axios.get(
                 'http://foodnamdo.iptime.org:7999/');

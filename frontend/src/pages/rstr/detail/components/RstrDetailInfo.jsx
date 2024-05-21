@@ -45,31 +45,7 @@ const MenuTable = styled.div`
     }
 `;
 
-//
-
-const AdditionInfoContainer = styled.div`
-    display: flex;
-    justify-content: flex-start;
-`;
-
-const AdditionInfoContent = styled.div`
-    width: 5.2rem;
-    height: 5.2rem;
-    margin-right: 20px;
-    border: 1px solid ${palette.darkblue1};
-    border-radius: 50%;
-    text-align: center;
-     box-shadow: 2px 1px 2px ${palette.gray};
-`;
-const AdditionInfoLabel = styled.div`
-    font-family: 'Gmarket Sans Medium';
-    margin: 0 0.6rem 0 0.6rem;
-    font-size: 0.8rem;
-`;
-const RstrDetailInfo = () => {
-
-    const location = useLocation();
-    const { rstrInfo } = location.state;
+const RstrDetailInfo = ({ rstrInfo }) => {
 
     return (
         <RstrDetailInfoContainer>
@@ -87,7 +63,7 @@ const RstrDetailInfo = () => {
             <InfoContainer>
                 <InfoTitle>메뉴정보</InfoTitle>
                 <InfoContent>
-                    {rstrInfo.menu_description[0]?.menu_description_id ? (
+                    {rstrInfo.menuDescriptions[0]?.menu_description_id ? (
                         <MenuTable className='menu-table-container'>
                             <table className='menu-table'>
                                 <tr>
@@ -95,7 +71,7 @@ const RstrDetailInfo = () => {
                                     <th>메뉴명</th>
                                     <th>가격</th>
                                 </tr>
-                                {rstrInfo.menu_description.map((menu) => (
+                                {rstrInfo.menuDescriptions.map((menu) => (
                                     <tr key={menu.menu_description_id}>
                                         <td>{menu.menu_category_sub != 'null' ? menu.menu_category_sub : ''}</td>
                                         <td>{menu.menu_name}</td>

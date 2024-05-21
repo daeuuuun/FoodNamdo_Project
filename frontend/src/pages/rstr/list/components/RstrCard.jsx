@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const RstrCardContainer = styled.div`
     margin: 5px 8px;
     padding: 0.5rem;
-    width: 167px;
+    width: 190px;
     border-radius: 10px;
     border: 1px solid ${palette.lightblue};
     box-shadow: 2px 1px 2px ${palette.gray};
@@ -86,7 +86,7 @@ const CertificationMarks = styled.div`
 const RstrCard = ({ rstrInfo }) => {
 
     const navigate = useNavigate();
-    const imgUrl = rstrInfo.rstr_img_url;
+    // const imgUrl = rstrInfo.rstr_img_url;
 
     return (
         <RstrCardContainer onClick={() => {
@@ -97,7 +97,11 @@ const RstrCard = ({ rstrInfo }) => {
                 {rstrInfo.relax && <div id='relax-mark'>안심식당</div>}
             </CertificationMarks>
             <ImgContainer>
-                <Img src={imgUrl} alt={'이미지'} />
+                {rstrInfo.rstr_img_url ? (
+                    <Img src={rstrInfo.rstr_img_url} alt='이미지' />
+                ) : (
+                    <Img src="/img/noimage.png" alt='이미지 없음' />
+                )}
             </ImgContainer>
             <RstrInfo className='title'>
                 {rstrInfo.rstr_name.length > 8 ? rstrInfo.rstr_name.slice(0, 8) + '...' : rstrInfo.rstr_name}
@@ -113,7 +117,7 @@ const RstrCard = ({ rstrInfo }) => {
                 <div className='centered-flex rating'>
                     <StyledStarIcon />
                     <div style={{ marginTop: '1px' }}>
-                        {`${rstrInfo.rstr_review_rating} (${rstrInfo.review_count}명)`}
+                        {`${rstrInfo.rstr_review_rating} (${rstrInfo.rstr_review_count}명)`}
                     </div>
                 </div>
             </RstrInfo>

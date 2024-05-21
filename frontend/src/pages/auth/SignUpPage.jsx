@@ -35,7 +35,7 @@ const SignUpPage = () => {
 		nickname: '',
 		phone: '',
 	});
-	const [authNum, setAuthNum] = useState('');
+	const [code, setCode] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
 
 	const { account_id, password, name, nickname, phone } = signUpForm;
@@ -45,6 +45,8 @@ const SignUpPage = () => {
 
 	const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
 	const [isCheckedNickname, setIsCheckedNickname] = useState(false);
+
+	const [isVerified, setIsVerified] = useState(false);
 
 	const onChange = e => {
 		const userSignUpForm = {
@@ -61,17 +63,13 @@ const SignUpPage = () => {
 				...signUpForm,
 				phone: value
 			});
-		} else {
-			alert('숫자를 입력해 주세요.');
 		}
 	}
 
-	const onChangeAuthNum = e => {
+	const onChangeCode = e => {
 		const value = e.target.value;
 		if (value === '' || (/^[0-9]+$/.test(value) && value.length <= 6)) {
-			setAuthNum(value);
-		} else {
-			alert('인증번호는 6자리 숫자여야 합니다.');
+			setCode(value);
 		}
 	}
 
@@ -133,15 +131,55 @@ const SignUpPage = () => {
 				console.error(error);
 			}
 		} else {
-			alert('아이디를 입력해주세요.');
+			alert('닉네임을 입력해주세요.');
 		}
 	}
 
-	const handleSignUp = async () => {
-		console.log(`아이디 중복 확인 : ${isCheckedId}`);
-		console.log(`닉네임 중복 확인 : ${isCheckedNickname}`);
+
+	const handleAuth = async () => {
+		if (!phone) {
+			alert('전화번호를 입력해주세요.');
+			return;
+		};
 		try {
-			// const response = await axios.post("https://localhost:8080", signUpForm);
+			await axios.post(
+				BACKEND_SERVER_URL + '/usermanagement/verify', {}, {
+				params: { phone: phone }
+			});
+			setIsVerified(true);
+			alert('인증번호가 전송되었습니다.');
+		} catch (error) {
+			alert('인증번호 발송에 실패하였습니다. 다시 시도해주세요.');
+			console.log(error);
+		}
+	};
+
+	const handleSignUp = async () => {
+		if (!isCheckedId) {
+			alert("아이디 중복 확인을 해주세요.");
+		} else if (!password) {
+			alert("비밀번호를 입력해주세요.");
+		} else if (!name) {
+			alert("이름을 입력해주세요.");
+		} else if (!isCheckedNickname) {
+			alert("닉네임 중복 확인을 해주세요.");
+		} else if (!isVerified) {
+			alert("전화번호 인증을 해주세요.");
+		} else if (!code) {
+			alert("인증번호를 입력해주세요.");
+		}
+
+		try {
+			const response = await axios.post
+				(BACKEND_SERVER_URL + '/usermanagement/signUp', {}, {
+					params: {
+						accountId: account_id,
+						password: password,
+						name: name,
+						nickname: nickname,
+						phone: phone
+					}
+				});
 			console.log(signUpForm);
 			setSignUpForm({
 				account_id: '',
@@ -150,8 +188,9 @@ const SignUpPage = () => {
 				nickname: '',
 				phone: '',
 			})
-			// alert("푸드남도 회원가입을 축하합니다!");
-			// navigate('/');
+			setCode('');
+			alert("푸드남도 회원가입을 축하합니다!");
+			navigate('/');
 		} catch (error) {
 			console.error(error);
 		}
@@ -162,11 +201,11 @@ const SignUpPage = () => {
 	}
 
 	// 모든 필드가 채워져 있는지 확인하는 함수
-	const isFormValid = () => {
-		return (
-			account_id && password && name && nickname && phone && authNum.length === 6
-		);
-	};
+	// const isFormValid = () => {
+	// 	return (
+	// 		account_id && password && name && nickname && phone && authNum.length === 6
+	// 	);
+	// };
 
 	return (
 		<div className="auth-form-container centered-flex">
@@ -252,18 +291,18 @@ const SignUpPage = () => {
 						onBlur={() => setFocused(null)}
 						maxLength={11}
 					/>
-					<div className="btn">
+					<div className="btn" onClick={handleAuth}>
 						인증요청
 					</div>
 				</div>
-				<div className={`input-form ${focused === 'authNum' ? 'input-focus-form' : ''}`}>
+				<div className={`input-form ${focused === 'code' ? 'input-focus-form' : ''}`}>
 					<input
 						type="text"
 						placeholder="인증번호 6자리 숫자 입력"
-						name="authNum"
-						value={authNum}
-						onChange={onChangeAuthNum}
-						onFocus={() => setFocused('authNum')}
+						name="code"
+						value={code}
+						onChange={onChangeCode}
+						onFocus={() => setFocused('code')}
 						onBlur={() => setFocused(null)}
 						maxLength={6}
 					/>

@@ -8,8 +8,8 @@ const AdditionInfoContainer = styled.div`
 `;
 
 const AdditionInfoContent = styled.div`
-    width: 5.2rem;
-    height: 5.2rem;
+    width: 90px;
+    height: 90px;
     margin-right: 20px;
     border: 1px solid ${palette.darkblue1};
     border-radius: 50%;
@@ -19,8 +19,8 @@ const AdditionInfoContent = styled.div`
 
 const AdditionInfoLabel = styled.div`
     font-family: 'Gmarket Sans Medium';
-    margin: 0 0.6rem 0 0.6rem;
-    font-size: 0.8rem;
+    margin: 0 10px;
+    font-size: 0.9rem;
 `;
 
 const AdditionInfo = ({ rstrInfo }) => {
@@ -32,16 +32,10 @@ const AdditionInfo = ({ rstrInfo }) => {
         "배달서비스": rstrInfo.rstr_delivery,
     }
 
-    // const addInfo = {
-    //     "주차가능": true,
-    //     "놀이방보유": true,
-    //     "반려동물 입장가능": true,
-    //     "배달서비스": true,
-    // }
     return (
         <AdditionInfoContainer style={{ justifyContent: 'flex-start' }}>
             {Object.entries(addInfo).map(([key, value]) => (
-                (value !== 0) && (
+                (value) && (
                     <AdditionInfoContent className='centered-flex' key={key}>
                         <AdditionInfoLabel>{key}</AdditionInfoLabel>
                     </AdditionInfoContent>
