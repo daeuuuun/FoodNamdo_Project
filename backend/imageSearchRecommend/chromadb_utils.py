@@ -24,8 +24,7 @@ def img_saving(collection, save_path, table, data, columns):
 
         local_save_path = save_path + table + "/" + str(attribute[0]) + "." + file_extension_name
 
-        if not os.path.exists(local_save_path):
-            os.system('curl "' + str(attribute[2]) + '" > ' + local_save_path)      # 이미지가 존재하지 않다면 로컬에 이미지 저장
+        os.system('curl "' + str(attribute[2]) + '" > ' + local_save_path)      # 로컬에 이미지 저장
 
         # 메타 데이터 저장
         metadata = {"table": table}
