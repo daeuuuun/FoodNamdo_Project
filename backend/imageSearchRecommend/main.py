@@ -34,13 +34,6 @@ async def lifespan(app: FastAPI):
     print("FastAPI application is shutting down!")
 
 app = FastAPI(lifespan=lifespan)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # 모든 출처 허용
-    allow_credentials=True,
-    allow_methods=["*"],  # 모든 HTTP 메서드 허용
-    allow_headers=["*"]   # 모든 헤더 허용
-)
 
 # 허용 확장자
 ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg'}
