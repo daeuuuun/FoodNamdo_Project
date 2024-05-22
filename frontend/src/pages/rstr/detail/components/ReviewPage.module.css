@@ -1,0 +1,43 @@
+.reviewPageContainer {
+
+}
+
+.insertBtnDiv {
+    position: relative;
+    display: flex;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+
+.insertBtn {
+    position: absolute;
+    left: 85%;
+    justify-content: center;
+    align-items: center;
+    font-family: "Gmarket Sans Medium";
+    font-size: 20px;
+    padding: 1%;
+    border: none;
+    border-radius: 10px;
+    width: 15%;
+    background: #DBE2EF;
+}
+
+.insertBtn:hover {
+    cursor: pointer;
+}
+
+.radioBoxDiv {
+    display: flex;
+    flex-direction: row;
+}
+
+.radioBox {
+
+}
+
+.rableBtn {
+    margin-left: 2%;
+    margin-bottom: 1%;
+    font-size: 20px;
+}

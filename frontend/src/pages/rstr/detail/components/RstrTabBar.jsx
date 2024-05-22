@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import palette from '../../../../styles/palette';
 import RstrDetailInfo from './RstrDetailInfo';
+import ReviewPage from './ReviewPage';
 
 const TabsContainer = styled.div`
     margin-top: 3rem;
@@ -35,7 +36,7 @@ const RstrTabBar = ({ rstrInfo }) => {
             },
             {
                 title: '리뷰',
-                component: <RstrDetailInfo rstrInfo={rstrInfo} />
+                component: <ReviewPage rstrInfo={rstrInfo} />
             },
         ]);
     }, [rstrInfo]);

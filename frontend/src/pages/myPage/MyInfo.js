@@ -1,13 +1,13 @@
 import React, {useState, useEffect, useRef} from "react";
 import styles from '../myPage/MyInfo.module.css';
-import {defaultInstance} from '../../utils/axiosInstance';
+import {defaultBackInstance} from '../../utils/axiosInstance';
 
 const MyInfo = () => {
     const [myInfo, setMyInfo] = useState({});
     const user_id = 1
     const nickRef = useRef(null)
     const getMyInfo = () => {
-        defaultInstance.get(`/mypage/myInfo?user_id=${user_id}`
+        defaultBackInstance.get(`/mypage/myInfo?user_id=${user_id}`
         )
             .then((res)=> {
                 setMyInfo(res.data)
@@ -16,7 +16,7 @@ const MyInfo = () => {
             .catch(err => {console.log(err)})
     }
     const changeNick = () => {
-        defaultInstance.post(`/mypage/changeNickname?user_id=${user_id}&nickname=${nickRef.current.value}`
+        defaultBackInstance.post(`/mypage/changeNickname?user_id=${user_id}&nickname=${nickRef.current.value}`
         )
             .then(res => console.log(res))
             .catch(err => console.log(err))

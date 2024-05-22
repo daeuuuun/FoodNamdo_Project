@@ -1,6 +1,8 @@
 import axios from 'axios'
+import {BACKEND_SERVER_URL, IMAGE_SERVER_URL} from "../config/Config";
 
-const BASE_URL = 'http://localhost:8080'
+const backBaseUrl = BACKEND_SERVER_URL
+const imageBaseUrl = IMAGE_SERVER_URL
 
 const axiosApi = (url, options) => {
     return axios.create({baseURL: url, ...options})
@@ -15,5 +17,7 @@ const axiosAuthApi = (url, options) => {
     })
 }
 
-export const defaultInstance = axiosApi(BASE_URL)
-export const authInstance = axiosAuthApi(BASE_URL)
+export const defaultBackInstance = axiosApi(backBaseUrl)
+export const authBackInstance = axiosAuthApi(backBaseUrl)
+export const defaultImageInstance = axiosApi(imageBaseUrl)
+export const authImageInstance = axiosAuthApi(imageBaseUrl)

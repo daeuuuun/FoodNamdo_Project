@@ -1,6 +1,6 @@
 import React, {useRef} from "react";
 import styles from '../myPage/PasswordChange.module.css';
-import {defaultInstance} from "../../utils/axiosInstance";
+import {defaultBackInstance} from "../../utils/axiosInstance";
 
 const PasswordChange = () => {
     const currentPwRef = useRef(null)
@@ -8,7 +8,7 @@ const PasswordChange = () => {
     const reTryPwRef = useRef(null)
     const changePw = () => {
         if (nextPwRef.current.value === reTryPwRef.current.value) {
-            defaultInstance.post(`/mypage/changePassword?user_id=${1}&password=${nextPwRef.current.value}`)
+            defaultBackInstance.post(`/mypage/changePassword?user_id=${1}&password=${nextPwRef.current.value}`)
                 .then(resp => console.log(resp))
                 .catch(err => console.log(err))
         }

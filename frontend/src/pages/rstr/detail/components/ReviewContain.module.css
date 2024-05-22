@@ -1,0 +1,80 @@
+.reviewContainer {
+    margin-top: 1%;
+    background: #DBE2EF;
+    border: 1px #112D4E;
+    border-radius: 10px;
+}
+
+.infoDiv {
+    display: flex;
+    flex-direction: row;
+    font-size: 20px;
+}
+
+.nicknameText {
+    margin: 1%;
+    display: flex;
+    justify-content: center;
+    flex: 2;
+}
+
+.reviewCount {
+    margin: 1%;
+    display: flex;
+    justify-content: right;
+    font-family: "Gmarket Sans Light";
+    font-size: 18px;
+    flex: 2;
+}
+
+.badge {
+    margin: 1%;
+    display: flex;
+    justify-content: left;
+    flex: 1;
+}
+
+.reviewTime {
+    margin: 1%;
+    display: flex;
+    justify-content: right;
+    font-family: "Gmarket Sans Light";
+    font-size: 15px;
+    padding-right: 1%;
+    padding-bottom: 1%;
+}
+
+.heartReview {
+    margin: 1%;
+    display: flex;
+    justify-content: right;
+    flex: 1;
+}
+
+.icons {
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+.icons:hover {
+    cursor: pointer;
+}
+
+.reviewTextDiv {
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-bottom: 1%;
+    font-size: 20px;
+}
+
+.nullDiv {
+    display: flex;
+    flex: 4;
+}
+
+.textDiv {
+    padding: 1%;
+    margin: 1%;
+    background: #F9F7F7;
+    border-radius: 10px;
+}
