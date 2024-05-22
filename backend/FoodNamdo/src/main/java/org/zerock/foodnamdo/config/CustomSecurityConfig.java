@@ -70,10 +70,10 @@ public class CustomSecurityConfig {
         http.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         http.addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil), TokenCheckFilter.class);
-        http.cors(cors -> {
-            CorsConfigurationSource source = corsConfigurationSource();
-            cors.configurationSource(source);
-        });
+        // http.cors(cors -> {
+        //     CorsConfigurationSource source = corsConfigurationSource();
+        //     cors.configurationSource(source);
+        // });
         http.csrf(config -> config.disable());
         http.sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();

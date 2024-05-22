@@ -1,13 +1,18 @@
-version: '1'
+version: '3.8'
+
 services:
-  image_search_recommend:
-    build: ./backend/imageSearchRecommend
-    volumes:
-      - ./backend/imageSearchRecommend:/usr/src/app
+  nginx:
+    image: nginx:latest
     ports:
-      - "8000:8000"
-    env_file: .env
-    restart: always
+      - "80:80"
+    volumes:
+      - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro  # 읽기 전용으로 마운트
+    depends_on:
+      - frontend
+      - food_namdo
+      - image_search_recommend
+    networks:
+      - foodnamdo_network
 
   frontend:
     build: ./frontend
@@ -22,6 +27,8 @@ services:
       - food_namdo
     stdin_open: true
     restart: always
+    networks:
+      - foodnamdo_network
 
   food_namdo:
     build: ./backend/FoodNamdo
@@ -31,3 +38,20 @@ services:
       - image_search_recommend
     env_file: .env
     restart: always
+    networks:
+      - foodnamdo_network
+
+  image_search_recommend:
+    build: ./backend/imageSearchRecommend
+    volumes:
+      - ./backend/imageSearchRecommend:/usr/src/app
+    ports:
+      - "8000:8000"
+    env_file: .env
+    restart: always
+    networks:
+      - foodnamdo_network
+
+networks:
+  foodnamdo_network:
+    driver: bridge
