@@ -11,6 +11,7 @@ services:
       - frontend
       - food_namdo
       - image_search_recommend
+    restart: always
 
   frontend:
     build: ./frontend
