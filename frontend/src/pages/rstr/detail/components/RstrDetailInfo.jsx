@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import palette from '../../../../styles/palette';
 import AdditionInfo from './AdditionInfo';
 import RstrMap from './RstrMap';
-import { useLocation } from 'react-router-dom';
 
 const RstrDetailInfoContainer = styled.div`
     padding: 10px;
@@ -15,14 +14,14 @@ const InfoContainer = styled.div`
 `;
 
 const InfoTitle = styled.div`
-    font-family: 'Gmarket Sans Medium';
-    font-size: 1.5rem;
-    color: ${palette.darkblue2}
+    font-family: 'Gmarket Sans Bold';
+    font-size: 1.6rem;
+    color: ${palette.darkblue1};
 `;
 
 const InfoContent = styled.div`
     margin-top: 0.8rem;
-    font-size: 1rem;
+    font-size: 1.1rem;
     line-height: 25px;
 `;
 
@@ -35,7 +34,7 @@ const MenuTable = styled.div`
         border: 1px solid black;
         padding: 3px;
         text-align: left;
-        font-size: 0.9rem;
+        font-size: 1.1rem;
     }
     th {
         background-color: #f2f2f2;

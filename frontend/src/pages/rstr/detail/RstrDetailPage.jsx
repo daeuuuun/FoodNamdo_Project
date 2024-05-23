@@ -41,7 +41,7 @@ const RstrDetailPage = () => {
     return (
         <div style={{ padding: '0 3rem' }}>
             <RstrDetailMainContainer>
-                <div style={{ margin: '5px 50px', fontSize: '0.9rem' }}>
+                <div style={{ margin: '5px 50px', fontSize: '1rem' }}>
                     <span>{rstrDetails.rstr_region}</span>
                     <span> | </span>
                     <span>{rstrDetails.category_name}</span>

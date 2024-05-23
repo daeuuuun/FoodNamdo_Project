@@ -16,6 +16,7 @@ const TabsHeader = styled.div`
 
 const Tab = styled.div`
     font-family: 'Gmarket Sans Medium';
+    font-size: 1.1rem;
     width: 50%;
     border-radius: 10px 10px 0 0;
     padding: 0.7rem;

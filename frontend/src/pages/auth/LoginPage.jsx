@@ -41,8 +41,12 @@ const LoginPage = () => {
         setIsLoginAttempted(true); // 로그인 시도 상태를 true로 설정
 
         try {
-            const response = await axios.get(
-                'http://foodnamdo.iptime.org:7999/');
+            const response = await axios.post(
+                'http://foodnamdo.iptime.org:7999/', {
+                account_id: account_id,
+                password: password,
+            }, { "Content-Type": 'application/json', withCredentials: true });
+
             console.log(response.data);
             alert('인증 요청 버튼 눌림');
         } catch (error) {
