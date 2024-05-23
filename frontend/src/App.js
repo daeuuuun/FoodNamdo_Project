@@ -14,6 +14,7 @@ import FindPwPage from './pages/auth/FindPwPage';
 import { FileProvider } from './data/FileContext'; // 이미지 파일 전역 관리
 import Header from './pages/header/Header';
 import MyPage from "./pages/myPage/MyPage";
+import ReviewInsert from "./pages/review/ReviewInsert";
 
 function App() {
   return (
@@ -43,6 +44,8 @@ function App() {
           } />
 
           <Route path="/mypage" element={<MyPage />} />
+
+          <Route path="/review/insert" element={<ReviewInsert />} />
         </Routes>
       </Router>
       {/* <UpArrow /> */}

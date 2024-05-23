@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import styles from './ReviewPage.module.css'
 import ReviewContainer from "./ReviewContainer";
+import {Link} from "react-router-dom";
 
 const ReviewPage = () => {
     const [selectOption, setSelectOption] = useState()
@@ -13,7 +14,7 @@ const ReviewPage = () => {
         <>
             <div className={styles.reviewPageContainer}>
                 <div className={styles.insertBtnDiv}>
-                    <button className={styles.insertBtn}>리뷰 작성</button>
+                    <button className={styles.insertBtn}><Link to = "/review/insert">리뷰 작성</Link></button>
                 </div>
                 <div className={styles.radioBoxDiv}>
                     <div className={styles.rableBtn}>

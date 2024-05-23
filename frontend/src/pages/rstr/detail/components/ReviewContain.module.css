@@ -1,6 +1,6 @@
 .reviewContainer {
     margin-top: 1%;
-    background: #DBE2EF;
+    background: #F9F7F7;
     border: 1px #112D4E;
     border-radius: 10px;
 }
@@ -75,6 +75,6 @@
 .textDiv {
     padding: 1%;
     margin: 1%;
-    background: #F9F7F7;
+    background: #DBE2EF;
     border-radius: 10px;
 }
