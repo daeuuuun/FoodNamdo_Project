@@ -66,6 +66,33 @@ public class CustomSecurityConfig {
                 .addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil), TokenCheckFilter.class);
 
+<<<<<<< HEAD
+=======
+        authenticationManagerBuilder
+                .userDetailsService(apiUserDetailsService)
+                .passwordEncoder(passwordEncoder());
+
+        AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
+
+        http.authenticationManager(authenticationManager);
+        APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
+        apiLoginFilter.setAuthenticationManager(authenticationManager);
+
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil);
+        apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
+
+        http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+
+        http.addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil), TokenCheckFilter.class);
+        // http.cors(cors -> {
+        //     CorsConfigurationSource source = corsConfigurationSource();
+        //     cors.configurationSource(source);
+        // });
+        http.csrf(config -> config.disable());
+        http.sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+>>>>>>> a2a71ab70f483efda05179e42e4c56c905afd505
         return http.build();
     }
 

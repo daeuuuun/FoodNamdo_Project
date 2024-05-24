@@ -29,10 +29,17 @@ const AuthPage = ({ mode }) => {
     );
 
     const handleFind = async () => {
+        if (mode === 'findPw') {
+            if (!formData.account_id) {
+                alert("아이디를 입력해주세요.");
+                return;
+            }
+        };
+
         if (!formData.name) {
             alert("이름을 입력해주세요.");
             return;
-        } else if (!formData.phone) {
+        } else if (!isVerified) {
             alert("인증번호 요청을 해주세요.");
             return;
         } else if (!formData.code) {
@@ -51,15 +58,18 @@ const AuthPage = ({ mode }) => {
                         }
                     });
                 alert('아이디가 전송되었습니다.');
+                navigate('/login');
             } catch (error) {
                 console.log(error);
                 alert('해당 정보를 찾을 수 없습니다.');
+                setFormData(prevState => ({
+                    ...prevState,
+                    name: '',
+                    phone: '',
+                    code: '',
+                }));
             }
         } else if (mode === 'findPw') { // 비밀번호 찾기
-            if (!formData.account_id) {
-                alert("아이디를 입력해주세요.");
-                return;
-            }
             try {
                 const response = await axios.post
                     (BACKEND_SERVER_URL + '/usermanagement/findPasswordByAccountIdAndNameAndPhone', {}, {
@@ -71,12 +81,18 @@ const AuthPage = ({ mode }) => {
                         }
                     });
                 alert('비밀번호가 전송되었습니다.');
+                navigate('/login');
             } catch (error) {
-                console.log(error);
                 alert('해당 정보를 찾을 수 없습니다.');
+                setFormData(prevState => ({
+                    ...prevState,
+                    account_id: '',
+                    name: '',
+                    phone: '',
+                    code: '',
+                }));
             }
         }
-        navigate('/login');
     };
 
     const handleAuth = async () => {

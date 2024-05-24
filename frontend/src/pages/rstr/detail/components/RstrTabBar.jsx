@@ -1,18 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import palette from '../../../../styles/palette';
 import RstrDetailInfo from './RstrDetailInfo';
-import MainPage from '../../../main/MainPage';
-const menuItemList = [
-    {
-        title: '상세정보',
-        component: <RstrDetailInfo />
-    },
-    {
-        title: '리뷰',
-        component: < RstrDetailInfo />
-    },
-];
+import ReviewPage from './ReviewPage';
 
 const TabsContainer = styled.div`
     margin-top: 3rem;
@@ -26,6 +16,7 @@ const TabsHeader = styled.div`
 
 const Tab = styled.div`
     font-family: 'Gmarket Sans Medium';
+    font-size: 1.1rem;
     width: 50%;
     border-radius: 10px 10px 0 0;
     padding: 0.7rem;
@@ -34,8 +25,23 @@ const Tab = styled.div`
     color: ${(props) => props.isActive ? `black` : `${palette.darygray}`};
 `;
 
-const RstrTabBar = () => {
-    const [activeTab, setActiveTab] = useState(menuItemList[0].title);
+const RstrTabBar = ({ rstrInfo }) => {
+    const [activeTab, setActiveTab] = useState('상세정보');
+    const [menuItemList, setMenuItemList] = useState([]);
+
+    useEffect(() => {
+        setMenuItemList([
+            {
+                title: '상세정보',
+                component: <RstrDetailInfo rstrInfo={rstrInfo} />
+            },
+            {
+                title: '리뷰',
+                component: <ReviewPage rstrInfo={rstrInfo} />
+            },
+        ]);
+    }, [rstrInfo]);
+
     return (
         <TabsContainer>
             <TabsHeader>

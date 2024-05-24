@@ -1,0 +1,8 @@
+.my-favorite-container {
+	padding: 20px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	overflow-y: auto;
+	max-height: 100vh;
+}

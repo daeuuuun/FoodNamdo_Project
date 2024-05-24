@@ -53,25 +53,7 @@ const Img = styled.img`
     object-fit: cover;
 `;
 
-const rstrImageInfo = [
-    {
-        id: 1,
-        src: require('../img/cat1.jpg'),
-        name: '첫번째 고양이'
-    },
-    {
-        id: 2,
-        src: require('../img/cat2.jpg'),
-        name: '두번째 고양이'
-    },
-    {
-        id: 3,
-        src: require('../img/cat3.jpg'),
-        name: '세번째 고양이'
-    }
-];
-
-const RstrImgCarusel = () => {
+const RstrImgCarusel = ({ rstrImg }) => {
     const settings = {
         dots: true,
         fade: true,
@@ -81,13 +63,24 @@ const RstrImgCarusel = () => {
         slidesToScroll: 1,
         waitForAnimate: false,
     };
+
+    if (rstrImg.length === 0) {
+        return (
+            <Container>
+                <ImageWrapper>
+                    <Img src="/img/noimage.png" alt='이미지 없음' />
+                </ImageWrapper>
+            </Container>
+        );
+    }
+
     return (
         <Container>
             <StyledSlider {...settings}>
-                {rstrImageInfo.map(info => (
-                    <div key={info.id}>
+                {rstrImg.map(info => (
+                    <div key={info.rstr_img_id}>
                         <ImageWrapper>
-                            <Img src={info.src} alt={info.name} />
+                            <Img src={info.rstr_img_url} alt={info.rstr_id} />
                         </ImageWrapper>
                     </div>
                 ))}

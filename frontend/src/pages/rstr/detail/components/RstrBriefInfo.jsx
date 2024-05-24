@@ -22,18 +22,18 @@ const RstrBriefInfoContainer = styled.div`
 
 const RstrName = styled.div`
     font-family: 'Gmarket Sans Bold';
-    font-size: 2.2rem;
+    font-size: 2.5rem;
 `
 
 const RstrReviewInfo = styled.div`
     & > div {
         margin-bottom: 0.3rem;
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 
     & > div > span {
         font-family: 'Gmarket Sans Bold';
-        font-size: 1rem;
+        font-size: 1.1rem;
         margin-right: 0.3rem;
         color: #03c75a;
     }
@@ -51,7 +51,7 @@ const RstrInfos = styled.div`
         width: 100px;
         height: 30px;
 
-        font-size: 0.75rem;
+        font-size: 0.9rem;
         box-shadow: 2px 1px 2px ${palette.gray};
     }
 
@@ -69,11 +69,11 @@ const CertificationMarks = styled.div`
     display: flex;
     color: #ffffff;
     div {
-        width: 4rem;
-        height: 1.8rem;
-        font-size: 0.8rem;
+        width: 70px;
+        height: 30px;
+        font-size: 0.9rem;
         text-align: center;
-        line-height: 1.9rem;
+        line-height: 30px;
         margin-right: 7px;
         border-radius: 10px;
     }
@@ -110,7 +110,7 @@ const RstrIconAndInfo = styled.div`
     align-items: center;
 
     div {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 `;
 
@@ -147,6 +147,7 @@ const StyledBookmarkIcon = styled(BookmarkIcon)`
 
 const RstrBriefInfo = ({ rstrInfo }) => {
     const [isFavoriate, setIsFavoriate] = useState(true);
+
     const MoveToTop = () => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
     }
@@ -164,10 +165,9 @@ const RstrBriefInfo = ({ rstrInfo }) => {
             </CertificationMarks>
             <RstrName>{rstrInfo.rstr_name}</RstrName>
             <RstrReviewInfo>
-                <RstrIconAndInfo style={{ fontSize: '1rem' }}>
-                    <StyledStarIcon style={{ fontSize: '1.8rem' }} />
-                    {/* {`${rstrInfo.rstr_review_rating} (${rstrInfo.rstr_review_count}명)`} */}
-                    {`${rstrInfo.rstr_review_rating} (${rstrInfo.review_count}명)`}
+                <RstrIconAndInfo style={{ fontSize: '1.1rem' }}>
+                    <StyledStarIcon style={{ fontSize: '1.7rem' }} />
+                    {`${rstrInfo.rstr_review_rating} (${rstrInfo.rstr_review_count}명)`}
                 </RstrIconAndInfo>
                 {
                     rstrInfo.rstr_naver_rating &&

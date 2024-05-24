@@ -113,6 +113,31 @@ export const RstrListPage = () => {
     // 검색 시
     useEffect(() => {
         setIsNotInfo(false);
+        const fetchAllRestaurants = async () => {
+            setIsNotInfo(false);
+            const params = new URLSearchParams({
+                page,
+                // region: checkedRegion,
+                // category: checkedCategory
+            }).toString();
+            const url = `${BACKEND_SERVER_URL}/mainsystem/findAll?${params}`;
+
+            try {
+                const response = await axios.get(url);
+                setRstrList(response.data.rstr);
+                setTotalPage(response.data.total_pages);
+                setPageSize(response.data.page_size);
+                setTotalRstr(response.data.total_rstr);
+
+                if (response.data.rstr.length === 0) {
+                    setIsNotInfo(true);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+            setIsLoading(false);
+        };
+
         const fetchDataWithFile = async () => { // 이미지 검색
             const formData = new FormData();
             formData.append('file', file);
@@ -176,10 +201,11 @@ export const RstrListPage = () => {
         };
 
         const fetchDataWithName = async () => {
-
             const params = new URLSearchParams({
                 rstrName: search,
                 page: page,
+                category: checkedCategory,
+                region: checkedRegion,
             }).toString();
 
             const url = `${BACKEND_SERVER_URL}/mainsystem/findRstrByName?${params}`;
@@ -194,14 +220,20 @@ export const RstrListPage = () => {
                 if (response.data.rstr.length === 0) {
                     setIsNotInfo(true);
                 }
+                console.log(response.data);
             } catch (error) {
                 console.log(error);
             }
             setIsLoading(false);
+
+            sessionStorage.removeItem('random');
         };
-        if (file && page == 1) { // 이미지 파일
+
+        if (!file && !search && !sessionStorage.getItem('random')) {
             setIsLoading(true);
-            // console.log('파일 사용', file);
+            fetchAllRestaurants();
+        } else if (file && page == 1) { // 이미지 파일
+            setIsLoading(true);
             fetchDataWithFile();
         } else if (search) { // 검색어
             setIsLoading(true);
@@ -209,10 +241,8 @@ export const RstrListPage = () => {
         } else {
             setIsLoading(true);
             setFile(null);
-            // console.log('파일 없음');
             fetchDataWithRandom();
         }
-
     }, [file, page, pageSize, checkedRegion, checkedCategory]);
 
 
@@ -232,11 +262,6 @@ export const RstrListPage = () => {
     const handleCheckboxChange = (e) => {
         setCheckedCategory(e.target.checked ? e.target.name : null);
     }
-
-    useEffect(() => {
-        // console.log(checkedCategory);
-        // console.log(random);
-    }, []);
 
     return (
         <RstrListPageContainer>
@@ -297,14 +322,13 @@ export const RstrListPage = () => {
                                     </RstrCards>
                                 </div>
                                 <Pagination
-                                    style={{ margin: '0 auto' }}
+                                    style={{ margin: '30px auto' }}
                                     page={page}
                                     count={totalPage}
                                     color="primary"
                                     renderItem={(item) => (
                                         <PaginationItem
                                             component={Link}
-                                            // to={`/rstr?page=${item.page}`}
                                             to={`/${search ?
                                                 `rstr?page=${item.page}&search=${search}`
                                                 : (item.page === 1 ? 'rstr' : `rstr?page=${item.page}`)}`}

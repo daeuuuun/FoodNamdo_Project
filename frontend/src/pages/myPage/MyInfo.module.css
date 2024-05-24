@@ -14,7 +14,7 @@
 }
 
 .text {
-    width: 30%;
+    flex: 3;
     margin: 2%;
     display: flex;
     justify-content: center;
@@ -22,7 +22,7 @@
 }
 
 .userText {
-    width: 70%;
+    flex: 7;
     margin: 2%;
     display: flex;
     justify-content: center;
@@ -36,7 +36,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 10%;
+    flex: 1;
     height: 90%;
     left: 89%;
     top: 5%;
@@ -65,4 +65,26 @@
     font-size: 20px;
     padding: 2%;
     font-family: 'Gmarket Sans Medium';
+}
+
+.userBtn:hover {
+    cursor: pointer;
+}
+
+.nicknameInput {
+    border: 3px solid #DBE2EF;
+    font-size: 30px;
+    background-color: #F9F7F7;
+    font-family: 'Gmarket Sans Medium';
+    outline: none;
+    border-radius: 10px;
+    width: 75%;
+    padding: 1%;
+}
+
+.sizeDiv {
+    flex: 7;
+    display: flex;
+    justify-content: left;
+    align-items: center;
 }

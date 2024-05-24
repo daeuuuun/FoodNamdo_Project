@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import palette from '../../../../styles/palette';
 import AdditionInfo from './AdditionInfo';
 import RstrMap from './RstrMap';
-import { useLocation } from 'react-router-dom';
 
 const RstrDetailInfoContainer = styled.div`
     padding: 10px;
@@ -15,14 +14,14 @@ const InfoContainer = styled.div`
 `;
 
 const InfoTitle = styled.div`
-    font-family: 'Gmarket Sans Medium';
-    font-size: 1.5rem;
-    color: ${palette.darkblue2}
+    font-family: 'Gmarket Sans Bold';
+    font-size: 1.6rem;
+    color: ${palette.darkblue1};
 `;
 
 const InfoContent = styled.div`
     margin-top: 0.8rem;
-    font-size: 1rem;
+    font-size: 1.1rem;
     line-height: 25px;
 `;
 
@@ -35,7 +34,7 @@ const MenuTable = styled.div`
         border: 1px solid black;
         padding: 3px;
         text-align: left;
-        font-size: 0.9rem;
+        font-size: 1.1rem;
     }
     th {
         background-color: #f2f2f2;
@@ -45,31 +44,7 @@ const MenuTable = styled.div`
     }
 `;
 
-//
-
-const AdditionInfoContainer = styled.div`
-    display: flex;
-    justify-content: flex-start;
-`;
-
-const AdditionInfoContent = styled.div`
-    width: 5.2rem;
-    height: 5.2rem;
-    margin-right: 20px;
-    border: 1px solid ${palette.darkblue1};
-    border-radius: 50%;
-    text-align: center;
-     box-shadow: 2px 1px 2px ${palette.gray};
-`;
-const AdditionInfoLabel = styled.div`
-    font-family: 'Gmarket Sans Medium';
-    margin: 0 0.6rem 0 0.6rem;
-    font-size: 0.8rem;
-`;
-const RstrDetailInfo = () => {
-
-    const location = useLocation();
-    const { rstrInfo } = location.state;
+const RstrDetailInfo = ({ rstrInfo }) => {
 
     return (
         <RstrDetailInfoContainer>
@@ -87,7 +62,7 @@ const RstrDetailInfo = () => {
             <InfoContainer>
                 <InfoTitle>메뉴정보</InfoTitle>
                 <InfoContent>
-                    {rstrInfo.menu_description[0]?.menu_description_id ? (
+                    {rstrInfo.menuDescriptions[0]?.menu_description_id ? (
                         <MenuTable className='menu-table-container'>
                             <table className='menu-table'>
                                 <tr>
@@ -95,7 +70,7 @@ const RstrDetailInfo = () => {
                                     <th>메뉴명</th>
                                     <th>가격</th>
                                 </tr>
-                                {rstrInfo.menu_description.map((menu) => (
+                                {rstrInfo.menuDescriptions.map((menu) => (
                                     <tr key={menu.menu_description_id}>
                                         <td>{menu.menu_category_sub != 'null' ? menu.menu_category_sub : ''}</td>
                                         <td>{menu.menu_name}</td>

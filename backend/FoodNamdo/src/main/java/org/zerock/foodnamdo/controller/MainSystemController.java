@@ -27,7 +27,11 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+<<<<<<< HEAD
 //@CrossOrigin(origins = "http://localhost:3000")
+=======
+// @CrossOrigin(origins = "http://localhost:3000")
+>>>>>>> a2a71ab70f483efda05179e42e4c56c905afd505
 @RestController
 @RequestMapping("/mainsystem")
 @Tag(name = "MainSystemAPI", description =

@@ -26,7 +26,11 @@ import org.zerock.foodnamdo.util.JWTUtil;
 import java.util.HashMap;
 import java.util.Map;
 
+<<<<<<< HEAD
 //@CrossOrigin(origins = "http://localhost:3000")
+=======
+// @CrossOrigin(origins = "http://localhost:3000")
+>>>>>>> a2a71ab70f483efda05179e42e4c56c905afd505
 @RestController
 @RequestMapping("/usermanagement")
 @Tag(name = "UserManagementAPI", description = "회원가입, 로그인, 로그아웃, 아이디찾기, 비밀번호 찾기, 회원 탈퇴")
