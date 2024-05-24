@@ -14,6 +14,8 @@ import org.zerock.foodnamdo.security.exception.AccessTokenException;
 import org.zerock.foodnamdo.util.JWTUtil;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @Log4j2
@@ -30,7 +32,19 @@ public class TokenCheckFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        if(!path.startsWith("/api/")) {
+//        if(!path.startsWith("/api/")) {
+//        if(!path.startsWith("/usermanagement/")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+
+        // 필터를 적용할 경로들
+        List<String> filterPaths = Arrays.asList("/usermanagement/deleteUser", "/mainsystem/**", "/mypage");
+
+        // 필터를 적용할 경로 검사
+        boolean isFiltered = filterPaths.stream().anyMatch(path::startsWith);
+
+        if (!isFiltered) {
             filterChain.doFilter(request, response);
             return;
         }

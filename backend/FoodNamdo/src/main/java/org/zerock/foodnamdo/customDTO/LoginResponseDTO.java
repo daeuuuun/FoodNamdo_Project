@@ -1,18 +1,13 @@
 package org.zerock.foodnamdo.customDTO;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
 public class LoginResponseDTO {
     private String accessToken;
-
-    public LoginResponseDTO(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
+    private String refreshToken;
 }
 

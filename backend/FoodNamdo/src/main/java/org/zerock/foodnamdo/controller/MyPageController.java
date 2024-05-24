@@ -8,9 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.foodnamdo.baseDTO.*;
 import org.zerock.foodnamdo.customDTO.FavoriteTestDTO;
 import org.zerock.foodnamdo.domain.*;
@@ -30,6 +28,8 @@ public class MyPageController {
 
     private final MyPageService myPageService;
 
+
+
     @Operation(summary = "내정보 조회")
     @GetMapping(value = "/myInfo", produces = "application/json")
 //    public UserEntity myInfo(@RequestParam("user_id") Long userId){
@@ -42,15 +42,30 @@ public class MyPageController {
         return UserDTO.fromEntity(userEntity);
     }
 //
+//    @Operation(summary = "닉네임 변경")
+//    @PostMapping("/changeNickname")
+//    public ResponseEntity<String> changeNickname(
+//            @RequestParam("user_id") Long userId,
+//            @RequestParam("nickname") String nickname) {
+//        log.info("changeNickname......");
+//        myPageService.changeNickname(userId, nickname);
+//        return ResponseEntity.ok("Nickname changed successfully");
+//    }
+
     @Operation(summary = "닉네임 변경")
     @PostMapping("/changeNickname")
     public ResponseEntity<String> changeNickname(
-            @RequestParam("user_id") Long userId,
+            @RequestHeader("user_id") Long userId,
             @RequestParam("nickname") String nickname) {
-        log.info("changeNickname......");
+
+        // "Bearer " 부분을 제거하여 실제 토큰 값만 추출
+//        String jwt = token.substring(7);
+//        Long userId = jwtUtil.extractUserId(jwt);
+
         myPageService.changeNickname(userId, nickname);
         return ResponseEntity.ok("Nickname changed successfully");
     }
+
 
     @Operation(summary = "비밀번호 변경")
     @PostMapping("/changePassword")

@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,16 +16,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.zerock.foodnamdo.security.APIUserDetailsService;
 import org.zerock.foodnamdo.security.filter.APILoginFilter;
 import org.zerock.foodnamdo.security.filter.RefreshTokenFilter;
 import org.zerock.foodnamdo.security.filter.TokenCheckFilter;
+import org.zerock.foodnamdo.security.APIUserDetailsService;
 import org.zerock.foodnamdo.security.handler.APILoginSuccessHandler;
 import org.zerock.foodnamdo.util.JWTUtil;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 
 @Log4j2
 @Configuration
@@ -49,45 +45,41 @@ public class CustomSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers(
+                                "/generateToken",
+                                "/refreshToken",
+                                "/swagger-ui/**",
+                                "/files/apiLogin.html",
+                                "/files/refreshTest.html",
+                                "/usermanagement/**",
+//                                "/mypage/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
+//                        .requestMatchers("/usermanagement/deleteUser", "/mainsystem/**", "/mypage/myInfo").authenticated()
+                        .anyRequest().authenticated())
+                .addFilterBefore(apiLoginFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class))), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil), TokenCheckFilter.class);
 
-        authenticationManagerBuilder
-                .userDetailsService(apiUserDetailsService)
-                .passwordEncoder(passwordEncoder());
-
-        AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
-
-        http.authenticationManager(authenticationManager);
-        APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
-        apiLoginFilter.setAuthenticationManager(authenticationManager);
-
-        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil);
-        apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
-
-        http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
-
-        http.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-
-        http.addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil), TokenCheckFilter.class);
-        http.cors(cors -> {
-            CorsConfigurationSource source = corsConfigurationSource();
-            cors.configurationSource(source);
-        });
-        http.csrf(config -> config.disable());
-        http.sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*"); // 주소 허용
-        configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
-        configuration.addAllowedHeader("*"); // 모든 헤더 허용
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    private APILoginFilter apiLoginFilter(AuthenticationManager authenticationManager) {
+        APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
+        apiLoginFilter.setAuthenticationManager(authenticationManager);
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil);
+        apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
+        return apiLoginFilter;
     }
 
     private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil) {

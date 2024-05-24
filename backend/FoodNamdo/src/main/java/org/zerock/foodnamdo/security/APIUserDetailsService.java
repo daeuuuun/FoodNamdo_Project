@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.zerock.foodnamdo.domain.UserEntity;
 import org.zerock.foodnamdo.baseDTO.APIUserDTO;
 import org.zerock.foodnamdo.repository.APIUserRepository;
+import org.zerock.foodnamdo.repository.UserManagementRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,18 +19,25 @@ import java.util.Optional;
 @Log4j2
 @RequiredArgsConstructor
 public class APIUserDetailsService implements UserDetailsService {
-    private final APIUserRepository apiUserRepository;
+//    private final APIUserRepository apiUserRepository;
+    private final UserManagementRepository userManagementRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> result = apiUserRepository.findById(username);
+    public UserDetails loadUserByUsername(String accountId) throws UsernameNotFoundException {
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<UserEntity> result = userManagementRepository.findByAccountId(accountId);
+//        Optional<APIUser> result = apiUserRepository.findById(username);
 
-        UserEntity UserEntity = result.orElseThrow(() -> new UsernameNotFoundException("Cannot find mid"));
+        UserEntity userEntity = result.orElseThrow(() -> new UsernameNotFoundException("Cannot find accountId"));
+//        APIUser apiUser = result.orElseThrow(() -> new UsernameNotFoundException("Cannot find mid"));
+
 
         log.info("APIUserDetailsService apiUser----------------------------------");
         APIUserDTO dto = new APIUserDTO(
-                UserEntity.getAccountId(),
-                UserEntity.getPassword(),
+                userEntity.getAccountId(),
+//                apiUser.getMid(),
+                userEntity.getPassword(),
+//                apiUser.getMpw(),
                 List.of(new SimpleGrantedAuthority("ROLE_USER"))
         );
 

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import org.zerock.foodnamdo.domain.UserEntity;
 import org.zerock.foodnamdo.repository.search.UserSearch;
 
+import java.util.Optional;
+
 @Repository
 public interface UserManagementRepository extends JpaRepository<UserEntity, Long>, UserSearch {
 //public interface UserManagementRepository extends JpaRepository<UserEntity, Long> {
@@ -26,4 +28,6 @@ public interface UserManagementRepository extends JpaRepository<UserEntity, Long
     UserEntity findUserByAccountId(String accountId);
 
     UserEntity findUserByNickname(String nickname);
+
+    Optional<UserEntity> findByAccountId(String accountId);
 }

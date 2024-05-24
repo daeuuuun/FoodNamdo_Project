@@ -15,9 +15,9 @@ public class APIUserDTO extends User {
     private String accountId;
     private String password;
 
-    public APIUserDTO(String username, String password, Collection<GrantedAuthority> authorities) {
-        super(username, password, authorities);
-        this.accountId = username;
+    public APIUserDTO(String accountId, String password, Collection<GrantedAuthority> authorities) {
+        super(accountId, password, authorities);
+        this.accountId = accountId;
         this.password = password;
     }
 }

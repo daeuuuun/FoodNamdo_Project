@@ -11,10 +11,13 @@ import org.zerock.foodnamdo.domain.UserPreferenceEntity;
 import org.zerock.foodnamdo.repository.search.UserSearch;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MyPageRepository extends JpaRepository<UserEntity, Long> {
 //    Page<FavoriteEntity> findAllByUserEntity_UserId(Long userId, Pageable pageable);
 
     UserEntity findByUserId(Long userId);
+
+
 }

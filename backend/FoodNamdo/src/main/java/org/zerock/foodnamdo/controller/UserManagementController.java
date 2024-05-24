@@ -2,24 +2,31 @@ package org.zerock.foodnamdo.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.foodnamdo.customDTO.LoginRequestDTO;
+import org.zerock.foodnamdo.customDTO.LoginResponseDTO;
 import org.zerock.foodnamdo.domain.UserEntity;
 import org.zerock.foodnamdo.customDTO.SignUpDTO;
 import org.zerock.foodnamdo.service.UserManagementService;
 import org.zerock.foodnamdo.service.CoolsmsService;
-import org.zerock.foodnamdo.util.JWTUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.zerock.foodnamdo.util.JWTUtil;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/usermanagement")
 @Tag(name = "UserManagementAPI", description = "회원가입, 로그인, 로그아웃, 아이디찾기, 비밀번호 찾기, 회원 탈퇴")
@@ -27,13 +34,22 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserManagementController {
 
-//    private final AuthenticationManager authenticationManager;
+
+//    private final CustomUserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
-
-
     private final UserManagementService userManagementService;
-
+    private final PasswordEncoder passwordEncoder;
     private Map<String, String> verificationCodes = new HashMap<>();
+
+    //    private final AuthenticationManager authenticationManager;
+//    private final JwtUtil jwtUtil;
+//    private final JWTUtilPrev jwtUtil;
+
+
+//    private final UserManagementService userManagementService;
+
+//    private Map<String, String> verificationCodes = new HashMap<>();
 
 //    @GetMapping("/list")
 //    public void list(PageRequestDTO pageRequestDTO, Model model) {
@@ -88,37 +104,61 @@ public class UserManagementController {
     @Operation(summary = "회원가입")
     @PostMapping("/signUp")
     public ResponseEntity<String> signUp(
-            @RequestParam("name")String name,
-            @RequestParam("nickname") String nickname,
-            @RequestParam("phone") String phone,
-            @RequestParam("accountId") String accountId,
-            @RequestParam("password") String password
-//            BindingResult bindingResult, RedirectAttributes redirectAttributes
+//            @RequestParam("name")String name,
+//            @RequestParam("nickname") String nickname,
+//            @RequestParam("phone") String phone,
+//            @RequestParam("accountId") String accountId,
+//            @RequestParam("password") String password
+            @Valid @RequestBody SignUpDTO signUpDTO
     ) {
-//        log.info("user signUp........");
-//        if (bindingResult.hasErrors()) {
-//            log.info("has errors.....");
-//            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-//
-//            return redirectAttributes.toString();
-//        }
-        String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
 
-        SignUpDTO signUpDTO = SignUpDTO.builder()
-                .name(name)
-                .nickname(nickname)
-                .phone(formatPhone)
-                .accountId(accountId)
-                .password(password)
-                .build();
+        String phone = signUpDTO.getPhone();
+        String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
+        signUpDTO.setPhone(formatPhone);
+
+        String encodedPassword = passwordEncoder.encode(signUpDTO.getPassword());
+        signUpDTO.setPassword(encodedPassword);
+//        String encodedPassword = passwordEncoder.encode(password);
+
+//        SignUpDTO signUpDTO = SignUpDTO.builder()
+//                .name(name)
+//                .nickname(nickname)
+//                .phone(formatPhone)
+//                .accountId(accountId)
+//                .password(encodedPassword)
+//                .build();
 
         log.info(signUpDTO);
 
         userManagementService.signUp(signUpDTO);
 
-//        String result = "id = " + userId + name + "님, 회원가입이 완료되었습니다";
-
         return ResponseEntity.ok("Signup successfully");
+    }
+
+    @Operation(summary = "로그인")
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequestDTO.getAccountId(),
+                            loginRequestDTO.getPassword()
+                    )
+            );
+
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("sub", authentication.getName());
+            claims.put("roles", authentication.getAuthorities());
+
+            String accessToken = jwtUtil.generateToken(claims, 1); // 1 day for access token
+            String refreshToken = jwtUtil.generateToken(claims, 30); // 30 days for refresh token
+
+            LoginResponseDTO loginResponse = new LoginResponseDTO(accessToken, refreshToken);
+
+            return ResponseEntity.ok(loginResponse);
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(401).build();
+        }
     }
 
 //    @Operation(summary = "로그인")
@@ -137,11 +177,12 @@ public class UserManagementController {
 //        return ResponseEntity.ok(new LoginResponseDTO(accessToken));
 //    }
 
-    @Operation(summary = "로그아웃")
-    @PostMapping("/logout")
-    public void logout() {
+//    @Operation(summary = "로그아웃")
+//    @PostMapping("/logout")
+//    public void logout() {
+//
+//    }
 
-    }
 
 //    @Override
 //    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

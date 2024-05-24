@@ -31,7 +31,8 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info(authentication);
         log.info(authentication.getName());
 
-        Map<String, Object> cliam = Map.of("mid", authentication.getName());
+        Map<String, Object> cliam = Map.of("accountId", authentication.getName());
+//        Map<String, Object> cliam = Map.of("mid", authentication.getName());
 
         String accessToken = jwtUtil.generateToken(cliam, 1);
         String refreshToken = jwtUtil.generateToken(cliam, 30);
