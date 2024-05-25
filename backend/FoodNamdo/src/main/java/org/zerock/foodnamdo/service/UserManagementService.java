@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.service;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.zerock.foodnamdo.baseDTO.UserDTO;
 import org.zerock.foodnamdo.domain.UserEntity;
 import org.zerock.foodnamdo.customDTO.SignUpDTO;
@@ -18,6 +19,7 @@ public interface UserManagementService {
     UserEntity findUserByAccountId(String accountId);
 
 
+
     UserEntity findUserByNickname(String nickname);
 
     UserEntity findAccountIdByNameAndPhone(String name, String phone);
@@ -25,7 +27,11 @@ public interface UserManagementService {
 
     UserEntity findUserByPhone(String phone);
 
+    UserEntity findByUserId(Long userId);
+
     String generateVerificationCode();
+
+//    UserDetails findUserByUserId(String userId);
 
 //    PageResponseDTO<UserDTO> list(PageRequestDTO pageRequestDTO);
 }

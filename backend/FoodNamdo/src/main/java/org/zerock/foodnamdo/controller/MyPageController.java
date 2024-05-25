@@ -1,6 +1,7 @@
 package org.zerock.foodnamdo.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -8,11 +9,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.foodnamdo.baseDTO.*;
 import org.zerock.foodnamdo.customDTO.FavoriteTestDTO;
 import org.zerock.foodnamdo.domain.*;
 import org.zerock.foodnamdo.service.MyPageService;
+import org.zerock.foodnamdo.util.JWTUtil;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,18 +32,42 @@ import java.util.stream.Collectors;
 public class MyPageController {
 
     private final MyPageService myPageService;
+    private final JWTUtil jwtUtil;
 
 
 
-    @Operation(summary = "내정보 조회")
+    @Operation(summary = "내정보 조회", security = @SecurityRequirement(name = "jwtAuth"))
     @GetMapping(value = "/myInfo", produces = "application/json")
-//    public UserEntity myInfo(@RequestParam("user_id") Long userId){
     public UserDTO myInfo(@RequestParam("user_id") Long userId){
         log.info("myInfo......");
         UserEntity userEntity = myPageService.findByUserId(userId);
-//        UserDTO userDTO = myPageService.findByUserId(userId);
+        return UserDTO.fromEntity(userEntity);
+    }
 
-//        return userEntity;
+    @Operation(summary = "내정보 조회", security = @SecurityRequirement(name = "jwtAuth"))
+    @GetMapping(value = "/myInfo2", produces = "application/json")
+//    public UserDTO myInfo(@RequestHeader("Authorization") String token) {
+    public UserDTO myInfo2() {
+        log.info("myInfo......");
+
+
+//        String userIdStr = userDetails.getUsername();
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
+        log.info(userDetails);
+//        String username = userDetails.getUsername(); // user_id 로 사용됨
+//        String username = userDetails.getUsername(); // user_id 로 사용됨
+
+//        log.info(username);
+//        Long userId = Long.valueOf(userIdStr);
+//        Long userId = Long.valueOf(username);
+        log.info(userId);
+//        String actualToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+//        log.info(actualToken);
+//        Long userId = jwtUtil.extractUserId(actualToken);
+//        log.info(userId);
+
+        UserEntity userEntity = myPageService.findByUserId(userId);
         return UserDTO.fromEntity(userEntity);
     }
 //

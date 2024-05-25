@@ -16,11 +16,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.zerock.foodnamdo.repository.UserManagementRepository;
 import org.zerock.foodnamdo.security.filter.APILoginFilter;
 import org.zerock.foodnamdo.security.filter.RefreshTokenFilter;
 import org.zerock.foodnamdo.security.filter.TokenCheckFilter;
-import org.zerock.foodnamdo.security.APIUserDetailsService;
-import org.zerock.foodnamdo.security.handler.APILoginSuccessHandler;
+import org.zerock.foodnamdo.security.service.APIUserDetailsService;
+//import org.zerock.foodnamdo.security.handler.APILoginSuccessHandler;
 import org.zerock.foodnamdo.util.JWTUtil;
 
 @Log4j2
@@ -30,6 +31,7 @@ import org.zerock.foodnamdo.util.JWTUtil;
 @EnableWebSecurity
 public class CustomSecurityConfig {
 
+    private final UserManagementRepository userManagementRepository;
     private final APIUserDetailsService apiUserDetailsService;
     private final JWTUtil jwtUtil;
 
@@ -56,43 +58,19 @@ public class CustomSecurityConfig {
                                 "/swagger-ui/**",
                                 "/files/apiLogin.html",
                                 "/files/refreshTest.html",
+                                "/files/sendJWT.html",
                                 "/usermanagement/**",
-//                                "/mypage/**",
+                                "/mypage/**",
+                                "/mainsystem/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
 //                        .requestMatchers("/usermanagement/deleteUser", "/mainsystem/**", "/mypage/myInfo").authenticated()
                         .anyRequest().authenticated())
-                .addFilterBefore(apiLoginFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class))), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(apiLoginFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class))), UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(tokenCheckFilter(jwtUtil, apiUserDetailsService, userManagementRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil), TokenCheckFilter.class);
 
-<<<<<<< HEAD
-=======
-        authenticationManagerBuilder
-                .userDetailsService(apiUserDetailsService)
-                .passwordEncoder(passwordEncoder());
-
-        AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
-
-        http.authenticationManager(authenticationManager);
-        APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
-        apiLoginFilter.setAuthenticationManager(authenticationManager);
-
-        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil);
-        apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
-
-        http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
-
-        http.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-
-        http.addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil), TokenCheckFilter.class);
-        // http.cors(cors -> {
-        //     CorsConfigurationSource source = corsConfigurationSource();
-        //     cors.configurationSource(source);
-        // });
-        http.csrf(config -> config.disable());
-        http.sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
->>>>>>> a2a71ab70f483efda05179e42e4c56c905afd505
         return http.build();
     }
 
@@ -101,15 +79,18 @@ public class CustomSecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    private APILoginFilter apiLoginFilter(AuthenticationManager authenticationManager) {
-        APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
-        apiLoginFilter.setAuthenticationManager(authenticationManager);
-        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil);
-        apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
-        return apiLoginFilter;
-    }
+//    private APILoginFilter apiLoginFilter(AuthenticationManager authenticationManager) {
+//        APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
+//        apiLoginFilter.setAuthenticationManager(authenticationManager);
+//        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil);
+//        apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
+//        return apiLoginFilter;
+//    }
 
-    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil) {
-        return new TokenCheckFilter(jwtUtil);
+    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil, APIUserDetailsService apiUserDetailsService, UserManagementRepository userManagementRepository) {
+        return new TokenCheckFilter(jwtUtil, apiUserDetailsService, userManagementRepository);
     }
+//    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil) {
+//        return new TokenCheckFilter(jwtUtil);
+//    }
 }

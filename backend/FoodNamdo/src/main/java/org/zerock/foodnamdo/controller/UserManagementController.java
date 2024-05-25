@@ -1,6 +1,8 @@
 package org.zerock.foodnamdo.controller;
 
+import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +13,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.zerock.foodnamdo.customDTO.LoginRequestDTO;
-import org.zerock.foodnamdo.customDTO.LoginResponseDTO;
+import org.zerock.foodnamdo.customDTO.*;
 import org.zerock.foodnamdo.domain.UserEntity;
-import org.zerock.foodnamdo.customDTO.SignUpDTO;
+import org.zerock.foodnamdo.security.service.TokenBlacklistService;
 import org.zerock.foodnamdo.service.UserManagementService;
 import org.zerock.foodnamdo.service.CoolsmsService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,11 +28,11 @@ import org.zerock.foodnamdo.util.JWTUtil;
 import java.util.HashMap;
 import java.util.Map;
 
-<<<<<<< HEAD
-//@CrossOrigin(origins = "http://localhost:3000")
-=======
-// @CrossOrigin(origins = "http://localhost:3000")
->>>>>>> a2a71ab70f483efda05179e42e4c56c905afd505
+//<<<<<<< HEAD
+////@CrossOrigin(origins = "http://localhost:3000")
+//=======
+//// @CrossOrigin(origins = "http://localhost:3000")
+//>>>>>>> a2a71ab70f483efda05179e42e4c56c905afd505
 @RestController
 @RequestMapping("/usermanagement")
 @Tag(name = "UserManagementAPI", description = "회원가입, 로그인, 로그아웃, 아이디찾기, 비밀번호 찾기, 회원 탈퇴")
@@ -43,6 +45,7 @@ public class UserManagementController {
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
     private final UserManagementService userManagementService;
+    private final TokenBlacklistService tokenBlacklistService;
     private final PasswordEncoder passwordEncoder;
     private Map<String, String> verificationCodes = new HashMap<>();
 
@@ -140,8 +143,9 @@ public class UserManagementController {
     }
 
     @Operation(summary = "로그인")
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
+    @PostMapping(value = "/login", produces = "application/json")
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO) {
+//    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -150,19 +154,74 @@ public class UserManagementController {
                     )
             );
 
+
+            String accountId = authentication.getName();
+            UserEntity userEntity = userManagementService.findUserByAccountId(accountId);
+            Long userId = userEntity.getUserId();
+
             Map<String, Object> claims = new HashMap<>();
-            claims.put("sub", authentication.getName());
+            claims.put("userId", userId);
             claims.put("roles", authentication.getAuthorities());
 
-            String accessToken = jwtUtil.generateToken(claims, 1); // 1 day for access token
-            String refreshToken = jwtUtil.generateToken(claims, 30); // 30 days for refresh token
+            String accessToken = jwtUtil.generateAccessToken(claims); // 3 minute for access token
+            String refreshToken = jwtUtil.generateRefreshToken(claims); // 7 days for refresh token
 
             LoginResponseDTO loginResponse = new LoginResponseDTO(accessToken, refreshToken);
 
             return ResponseEntity.ok(loginResponse);
         } catch (AuthenticationException e) {
+            log.error("AuthenticationException: ", e);
+            return ResponseEntity.status(401).build();
+        } catch (Exception e) {
+            log.error("Exception: ", e);
+            return ResponseEntity.status(500).build();
+        }
+    }
+    @Operation(summary = "토큰 갱신", security = @SecurityRequirement(name = "jwtAuth"))
+    @PostMapping(value = "/refreshToken", produces = "application/json")
+//    public ResponseEntity<Map<String, String>> refreshToken(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, String>> refreshToken(@RequestBody AccessRefreshTokenRequestDTO request) {
+        String refreshToken = request.getRefreshToken();
+//        String refreshToken = request.get("refreshToken");
+        try {
+            Map<String, Object> claims = jwtUtil.validateToken(refreshToken);
+            int userIdint = (int) claims.get("userId");
+            Long userId = (long) userIdint;
+            log.info(userId);
+//            Long userId = userIdstr.t
+//            String userId = (String) claims.get("sub");
+//            String accountId = (String) claims.get("sub");
+
+            UserEntity userEntity = userManagementService.findByUserId(userId);
+//            UserEntity userEntity = userManagementService.findUserByAccountId(accountId);
+            if (userEntity == null) {
+                throw new UsernameNotFoundException("User not found");
+            }
+
+            Map<String, Object> newClaims = new HashMap<>();
+            newClaims.put("userId", userEntity.getUserId());
+            newClaims.put("roles", claims.get("roles"));
+
+            String newAccessToken = jwtUtil.generateAccessToken(newClaims); // new access token
+//            String newAccessToken = jwtUtil.generateToken(newClaims, 1); // 1 day for new access token
+            Map<String, String> tokens = new HashMap<>();
+            tokens.put("accessToken", newAccessToken);
+            tokens.put("refreshToken", refreshToken); // Optionally, generate a new refresh token
+
+            return ResponseEntity.ok(tokens);
+        } catch (JwtException e) {
             return ResponseEntity.status(401).build();
         }
+    }
+
+    @Operation(summary = "로그아웃")
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestBody RefreshTokenRequestDTO request) {
+//    public ResponseEntity<Void> logout(@RequestBody Map<String, String> request) {
+        String refreshToken = request.getRefreshToken();
+//        String refreshToken = request.get("refreshToken");
+        tokenBlacklistService.blacklistToken(refreshToken);
+        return ResponseEntity.ok().build();
     }
 
 //    @Operation(summary = "로그인")
@@ -181,11 +240,6 @@ public class UserManagementController {
 //        return ResponseEntity.ok(new LoginResponseDTO(accessToken));
 //    }
 
-//    @Operation(summary = "로그아웃")
-//    @PostMapping("/logout")
-//    public void logout() {
-//
-//    }
 
 
 //    @Override

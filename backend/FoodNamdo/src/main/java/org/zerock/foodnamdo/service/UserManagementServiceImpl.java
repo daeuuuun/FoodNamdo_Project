@@ -70,6 +70,9 @@ public class UserManagementServiceImpl implements UserManagementService {
         return null;
     }
 
+    public UserEntity findByUserId(Long userId){
+        return userManagementRepository.findByUserId(userId);
+    }
 //        Optional<User> userOptional = Optional.ofNullable(userManagementRepository.findAccountIdByNameAndPhone(name, phone));
 //        if (userOptional.isPresent()) {
 //            // 인증번호 생성 및 저장
@@ -140,6 +143,8 @@ public class UserManagementServiceImpl implements UserManagementService {
         UserEntity user = userManagementRepository.findUserByAccountId(accountId);
         return user;
     }
+
+
 
     @Override
     public UserEntity findUserByNickname(String nickname){

@@ -30,4 +30,8 @@ public interface UserManagementRepository extends JpaRepository<UserEntity, Long
     UserEntity findUserByNickname(String nickname);
 
     Optional<UserEntity> findByAccountId(String accountId);
+
+    UserEntity findUserByUserId(Long userId);
+
+    UserEntity findByUserId(Long userId);
 }

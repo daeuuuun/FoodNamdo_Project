@@ -86,20 +86,31 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         log.info("expTime: " + expTime);
         log.info("gap: " + gapTime );
 
+        // Claims 객체에서 userId를 추출하고 자료형을 로그에 출력
+        Object userId = refreshClaims.get("userId");
+        log.info("userId value: " + userId);
+        log.info("userId type: " + userId.getClass().getName());
+
 //        String mid = (String)refreshClaims.get("mid");
-        String accountId = (String)refreshClaims.get("accountId");
+//        String accountId = (String)refreshClaims.get("accountId");
+//        String userId = (String)refreshClaims.get("userId");
+//        String userId = (String)refreshClaims.get("userId");
 
         //이상태까지 오면 무조건 AccessToken은 새로 생성
-        String accessTokenValue = jwtUtil.generateToken(Map.of("accountId", accountId), 1);
+        String accessTokenValue = jwtUtil.generateAccessToken(Map.of("userId", userId));
+//        String accessTokenValue = jwtUtil.generateToken(Map.of("userId", userId), 3);
+//        String accessTokenValue = jwtUtil.generateToken(Map.of("accountId", accountId), 1);
 //        String accessTokenValue = jwtUtil.generateToken(Map.of("mid", mid), 1);
 
         String refreshTokenValue = tokens.get("refreshToken");
 
         //RefrshToken이 3일도 안남았다면..
-        if(gapTime < (1000 * 60  * 3  ) ){
-            //if(gapTime < (1000 * 60 * 60 * 24 * 3  ) ){
+//        if(gapTime < (1000 * 60  * 3  ) ){
+        if(gapTime < (1000 * 60 * 60 * 24 * 3  ) ){
             log.info("new Refresh Token required...  ");
-            refreshTokenValue = jwtUtil.generateToken(Map.of("accountId", accountId), 30);
+            refreshTokenValue = jwtUtil.generateRefreshToken(Map.of("userId", userId));
+//            refreshTokenValue = jwtUtil.generateToken(Map.of("userId", userId), 10080);
+//            refreshTokenValue = jwtUtil.generateToken(Map.of("accountId", accountId), 30);
 //            refreshTokenValue = jwtUtil.generateToken(Map.of("mid", mid), 30);
         }
 

@@ -38,6 +38,7 @@
 
 
         axios.post('http://localhost:8080/refreshToken',
+            // {refreshToken: oldRefreshToken})
             {accessToken: oldAccessToken, refreshToken: oldRefreshToken})
             .then(res => {
                 console.log(res.data)
@@ -50,6 +51,8 @@
                 document.querySelector(".refreshResult").innerHTML =
                     oldRefreshToken !== newRefreshToken?newRefreshToken:'OLD'
 
+                localStorage.setItem("accessToken", newAccessToken);
+                localStorage.setItem("refreshToken", newRefreshToken);
 
             })
             .catch(error => {

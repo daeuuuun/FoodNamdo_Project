@@ -1,4 +1,4 @@
-package org.zerock.foodnamdo.security;
+package org.zerock.foodnamdo.security.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -19,29 +19,44 @@ import java.util.Optional;
 @Log4j2
 @RequiredArgsConstructor
 public class APIUserDetailsService implements UserDetailsService {
-//    private final APIUserRepository apiUserRepository;
     private final UserManagementRepository userManagementRepository;
 
     @Override
+//    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
     public UserDetails loadUserByUsername(String accountId) throws UsernameNotFoundException {
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> result = userManagementRepository.findByAccountId(accountId);
-//        Optional<APIUser> result = apiUserRepository.findById(username);
 
-        UserEntity userEntity = result.orElseThrow(() -> new UsernameNotFoundException("Cannot find accountId"));
-//        APIUser apiUser = result.orElseThrow(() -> new UsernameNotFoundException("Cannot find mid"));
+//        Optional<UserEntity> result = userManagementRepository.findByAccountId(accountId);
+//        Optional<UserEntity> result = userManagementRepository.findById(Long.parseLong(userId));
+//        log.info("Loading user by userId: {}", userId);
+
+//        UserEntity userEntity = result.orElseThrow(() -> new UsernameNotFoundException("Cannot find accountId"));
+//        UserEntity userEntity = result.orElseThrow(() -> new UsernameNotFoundException("Cannot find userId"));
+
+//        Optional<UserEntity> result = userManagementRepository.findById(Long.parseLong(userId));
+//        if (result.isEmpty()) {
+//            log.warn("User not found with userId: {}", userId);
+//            throw new UsernameNotFoundException("Cannot find userId");
+//        }
+
+        Optional<UserEntity> result = userManagementRepository.findByAccountId(accountId);
+        if (result.isEmpty()) {
+            log.warn("User not found with accountId: {}", accountId);
+            throw new UsernameNotFoundException("Cannot find accountId");
+        }
+
+        UserEntity userEntity = result.get();
+        log.info("Found user: {}", userEntity);
 
 
         log.info("APIUserDetailsService apiUser----------------------------------");
         APIUserDTO dto = new APIUserDTO(
+                userEntity.getUserId(),
                 userEntity.getAccountId(),
-//                apiUser.getMid(),
                 userEntity.getPassword(),
-//                apiUser.getMpw(),
                 List.of(new SimpleGrantedAuthority("ROLE_USER"))
         );
 
-        log.info(dto);
+        log.info("Returning UserDetails: {}", dto);
         return dto;
     }
 }
