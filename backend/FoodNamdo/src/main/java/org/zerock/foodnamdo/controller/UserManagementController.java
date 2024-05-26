@@ -18,21 +18,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.foodnamdo.customDTO.*;
 import org.zerock.foodnamdo.domain.UserEntity;
+import org.zerock.foodnamdo.security.service.EncryptionService;
 import org.zerock.foodnamdo.security.service.TokenBlacklistService;
 import org.zerock.foodnamdo.service.UserManagementService;
 import org.zerock.foodnamdo.service.CoolsmsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.zerock.foodnamdo.util.AESUtil;
 import org.zerock.foodnamdo.util.JWTUtil;
 
 import java.util.HashMap;
 import java.util.Map;
 
-//<<<<<<< HEAD
-////@CrossOrigin(origins = "http://localhost:3000")
-//=======
-//// @CrossOrigin(origins = "http://localhost:3000")
-//>>>>>>> a2a71ab70f483efda05179e42e4c56c905afd505
 @RestController
 @RequestMapping("/usermanagement")
 @Tag(name = "UserManagementAPI", description = "회원가입, 로그인, 로그아웃, 아이디찾기, 비밀번호 찾기, 회원 탈퇴")
@@ -47,6 +44,7 @@ public class UserManagementController {
     private final UserManagementService userManagementService;
     private final TokenBlacklistService tokenBlacklistService;
     private final PasswordEncoder passwordEncoder;
+    private final EncryptionService encryptionService;
     private Map<String, String> verificationCodes = new HashMap<>();
 
     //    private final AuthenticationManager authenticationManager;
@@ -58,41 +56,7 @@ public class UserManagementController {
 
 //    private Map<String, String> verificationCodes = new HashMap<>();
 
-//    @GetMapping("/list")
-//    public void list(PageRequestDTO pageRequestDTO, Model model) {
-//        PageResponseDTO<UserDTO> responseDTO = userManagementService.list(pageRequestDTO);
-//
-//        log.info(responseDTO);
-//
-//        model.addAttribute("responseDTO", responseDTO);
-//    }
 
-//    @GetMapping("/signUp")
-//    public void registerGET() {
-//
-//    }
-
-
-//    @Operation(summary = "회원가입")
-//    @PostMapping("/signUp")
-//    public String signUp(@RequestParam("SignUpDTO") @Valid SignUpDTO signUpDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-//        log.info("user signUp........");
-//
-//        if (bindingResult.hasErrors()) {
-//            log.info("has errors.....");
-//            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-//
-//            return redirectAttributes.toString();
-//        }
-//
-//        log.info(signUpDTO);
-//
-//        Long userId = userManagementService.signUp(signUpDTO);
-//
-//        redirectAttributes.addFlashAttribute("result", userId);
-//
-//        return redirectAttributes.toString();
-//    }
 
     @Operation(summary = "아이디중복체크(아이디가 존재할 경우 true, 아닐 경우 false)")
     @GetMapping(value = "/IdDuplication", produces = "application/json")
@@ -111,11 +75,6 @@ public class UserManagementController {
     @Operation(summary = "회원가입")
     @PostMapping("/signUp")
     public ResponseEntity<String> signUp(
-//            @RequestParam("name")String name,
-//            @RequestParam("nickname") String nickname,
-//            @RequestParam("phone") String phone,
-//            @RequestParam("accountId") String accountId,
-//            @RequestParam("password") String password
             @Valid @RequestBody SignUpDTO signUpDTO
     ) {
 
@@ -123,17 +82,16 @@ public class UserManagementController {
         String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
         signUpDTO.setPhone(formatPhone);
 
-        String encodedPassword = passwordEncoder.encode(signUpDTO.getPassword());
-        signUpDTO.setPassword(encodedPassword);
-//        String encodedPassword = passwordEncoder.encode(password);
+//        String encodedPassword = passwordEncoder.encode(signUpDTO.getPassword());
+//        signUpDTO.setPassword(encodedPassword);
 
-//        SignUpDTO signUpDTO = SignUpDTO.builder()
-//                .name(name)
-//                .nickname(nickname)
-//                .phone(formatPhone)
-//                .accountId(accountId)
-//                .password(encodedPassword)
-//                .build();
+        try {
+            String encryptedPassword = encryptionService.encrypt(signUpDTO.getPassword());
+            signUpDTO.setPassword(encryptedPassword);
+        } catch (Exception e) {
+            log.error("Error encrypting password", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during encryption");
+        }
 
         log.info(signUpDTO);
 
@@ -177,6 +135,7 @@ public class UserManagementController {
             return ResponseEntity.status(500).build();
         }
     }
+
     @Operation(summary = "토큰 갱신", security = @SecurityRequirement(name = "jwtAuth"))
     @PostMapping(value = "/refreshToken", produces = "application/json")
 //    public ResponseEntity<Map<String, String>> refreshToken(@RequestBody Map<String, String> request) {
@@ -224,76 +183,24 @@ public class UserManagementController {
         return ResponseEntity.ok().build();
     }
 
-//    @Operation(summary = "로그인")
-//    @PostMapping("/logIn")
-//    public ResponseEntity<LoginResponseDTO> logIn(@RequestBody LoginRequestDTO loginRequest) {
-//        // 사용자 인증
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-//
-//        // 인증이 성공하면 JWT 토큰 생성
-//        String accessToken = jwtUtil.generateToken(authentication.getName(), 1);
-//
-////        String accessToken = jwtUtil.generateToken(authentication.getName(), 1);
-//
-//        // 응답으로 JWT 토큰 반환
-//        return ResponseEntity.ok(new LoginResponseDTO(accessToken));
-//    }
-
-
-
-//    @Override
-//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        log.info("login post..........");
-//
-//        String mid = req.getParameter("mid");
-//        String mpw = req.getParameter("mpw");
-//
-//        String auto = req.getParameter("auto");
-//        boolean rememberMe = auto != null && auto.equals("on");
-//
-//        try {
-//            UserDTO userDTO = userManagementService.INSTANCE.login(mid, mpw);
-//            if (rememberMe) {
-//                String uuid = UUID.randomUUID().toString();
-//                userManagementService.INSTANCE.updateUuid(mid, uuid);
-//                userDTO.setUuid(uuid);
-//
-//                Cookie rememberCookie = new Cookie("remember-me", uuid);
-//                rememberCookie.setMaxAge(60 * 60 * 24);
-//                rememberCookie.setPath("/");
-//                resp.addCookie(rememberCookie);
-//            }
-//            HttpSession session = req.getSession();
-//            session.setAttribute("loginInfo", userDTO);
-//            resp.sendRedirect("/todo/list");
-//        } catch (Exception e) {
-//            resp.sendRedirect("/login?result=error");
-//        }
-//    }
-
     @Operation(summary = "이름, 전화번호를 이용해 아이디 찾기")
     @PostMapping(value = "/findAccountIdByNameAndPhone", produces = "application/json")
     @ResponseBody
-//    public UserDTO findAccountIdByNameAndPhone(
     public ResponseEntity<Object> findAccountIdByNameAndPhone(
-            @RequestParam("name") String name,
-            @RequestParam("phone") String phone,
-            @RequestParam("code") String code
+            @RequestBody findAccountIdDTO request
     ) {
-        String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
-        log.info("findAccountIdByNameAndPhone...." + name + formatPhone + code);
+        String formatPhone = request.getPhone().substring(0, 3) + "-" + request.getPhone().substring(3, 7) + "-" + request.getPhone().substring(7);
+        log.info("findAccountIdByNameAndPhone...." + request.getName() + formatPhone + request.getCode());
         String savedCode = verificationCodes.get(formatPhone);
         log.info("savedCode....." + savedCode);
         CoolsmsService coolsmsService = new CoolsmsService();
         int IdOrPwd = 0;
 
-        if (savedCode != null && savedCode.equals(code)) {
-            UserEntity userEntity = userManagementService.findAccountIdByNameAndPhone(name, formatPhone);
+        if (savedCode != null && savedCode.equals(request.getCode())) {
+            UserEntity userEntity = userManagementService.findAccountIdByNameAndPhone(request.getName(), formatPhone);
             if (userEntity != null) {
                 Map<String, String> response = new HashMap<>();
                 response.put("accountId", "sendId");
-//                response.put("accountId", userEntity.getAccountId());
                 try{
                     coolsmsService.sendIdOrPwd(formatPhone, userEntity.getAccountId(), IdOrPwd);
                 } catch (Exception e) {
@@ -309,39 +216,31 @@ public class UserManagementController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-//        if (savedCode != null && savedCode.equals(code)) {
-//            UserDTO userDTO = UserDTO.fromUser(userManagementService.findAccountIdByNameAndPhone(name, formatPhone));
-//            System.out.println(userManagementService.findAccountIdByNameAndPhone(name, formatPhone));
-//            if(userDTO == null) return null;
-//            return userDTO;
-//        } else {
-//            return null;
-//        }
 
     @Operation(summary = "아이디, 이름, 전화번호를 이용해 비밀번호 찾기")
     @PostMapping(value = "/findPasswordByAccountIdAndNameAndPhone", produces = "application/json")
-//    public UserDTO findPasswordByAccountIdAndNameAndPhone(
     public ResponseEntity<Object> findPasswordByAccountIdAndNameAndPhone(
-            @RequestParam("accountId") String accountId,
-            @RequestParam("name") String name,
-            @RequestParam("phone") String phone,
-            @RequestParam("code") String code) {
-        String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
-        log.info("findAccountIdByNameAndPhone...." + name + formatPhone + code);
+            @RequestBody findPasswordDTO request)
+    {
+        String formatPhone = request.getPhone().substring(0, 3) + "-" + request.getPhone().substring(3, 7) + "-" + request.getPhone().substring(7);
+        log.info("findPasswordByAccountIdAndNameAndPhone...." + request.getAccountId() + request.getName() + formatPhone + request.getCode());
         String savedCode = verificationCodes.get(formatPhone);
         log.info("savedCode....." + savedCode);
         CoolsmsService coolsmsService = new CoolsmsService();
         int IdOrPwd = 1;
 
-        if (savedCode != null && savedCode.equals(code)) {
-            UserEntity userEntity = userManagementService.findUserByAccountIdAndNameAndPhone(accountId, name, formatPhone);
+        if (savedCode != null && savedCode.equals(request.getCode())) {
+            UserEntity userEntity = userManagementService.findUserByAccountIdAndNameAndPhone(request.getAccountId(), request.getName(), formatPhone);
             if (userEntity != null) {
                 Map<String, String> response = new HashMap<>();
-                response.put("password", "sendPassword");
-//                response.put("password", userEntity.getPassword());
+//                response.put("password", "sendPassword");
                 try{
-                    coolsmsService.sendIdOrPwd(formatPhone, userEntity.getPassword(), IdOrPwd);
+                    String decryptedPassword = encryptionService.decrypt(userEntity.getPassword());
+                    response.put("password", "sendPassword");
+                    coolsmsService.sendIdOrPwd(formatPhone, decryptedPassword, IdOrPwd);
+//                    coolsmsService.sendIdOrPwd(formatPhone, userEntity.getPassword(), IdOrPwd);
                 } catch (Exception e) {
+                    log.error("Error decrypting password", e);
                     return ResponseEntity.notFound().build();
                 }
                 return ResponseEntity.ok(response);
@@ -353,27 +252,7 @@ public class UserManagementController {
             log.info("ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-//        log.info(savedCode);
-
-//        if (savedCode != null && savedCode.equals(code)) {
-//            UserDTO userDTO = UserDTO.fromUser(userManagementService.findUserByAccountIdAndNameAndPhone(accountId, name, formatPhone));
-//            System.out.println(userManagementService.findUserByAccountIdAndNameAndPhone(accountId, name, formatPhone));
-//            if(userDTO == null) return null;
-//            return userDTO;
-//        } else {
-//            return null;
-//        }
     }
-
-//        if (userDTO != null) {
-//            String verificationCode = userManagementService.generateVerificationCode();
-//            verificationCodes.put(formatPhone, verificationCode);
-////            coolsmsService.sendSMS(userDTO.getPhone(),verificationCode);
-//            //        UserDTO userDTO = UserDTO.fromUser(userManagementService.findUserByPhone(formatPhone));
-//            return true;
-//        } else {
-//            return false;
-//        }
 
     @Operation(summary = "인증번호 요청")
     @PostMapping(value = "/verify", produces = "application/json")
