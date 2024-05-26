@@ -19,7 +19,7 @@ import AuthLogo from './components/AuthLogo';
 import { BACKEND_SERVER_URL } from "../../config/Config";
 
 const StyledLink = styled(Link)({
-	fontSize: '0.75rem',
+	fontSize: '0.9rem',
 	fontFamily: 'Gmarket Sans Medium',
 	color: `${palette.darygray}`,
 	marginRight: '16px',

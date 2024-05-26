@@ -31,10 +31,9 @@
     align-items: center;
     margin: 0.3rem 0;
     width: 90%;
-    height: 35px;
+    height: 40px;
     border-radius: 15px;
     padding: 0 0.8rem;
-    /* background-color: #F9F7F7; */
     border: 1px solid #BEBEBE;
 
     &:hover {
@@ -57,18 +56,17 @@
 }
 
 .input-form .icons {
-    font-size: 1.25rem;
+    font-size: 1.4rem;
     margin-right: 0.3rem;
     color: #BEBEBE;
 }
 
 .input-form input {
     width: 80%;
-    height: 32px;
+    height: 38px;
     border: none;
     outline: none;
-    font-size: 0.8rem;
-    /* background-color: #F9F7F7; */
+    font-size: 1rem;
     font-family: 'Gmarket Sans Medium';
 
     &:hover {
@@ -81,13 +79,15 @@
 }
 
 .btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 0 5px;
     font-family: 'Gmarket Sans Medium';
-    font-size: 0.7rem;
+    font-size: 0.9rem;
     font-weight: 300;
-    width: 80px;
+    width: 100px;
     height: 28px;
-    line-height: 28px;
     border-radius: 15px;
     border: 1px solid #3F72AF;
     color: #3F72AF;
@@ -101,14 +101,13 @@
 
 .auth-button {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 2.5rem;
     width: 99%;
     border-radius: 15px;
     background-color: #3F72AF;
-    font-size: 0.8rem;
+    font-size: 1rem;
     margin-top: 0.9rem;
     color: #ffffff;
     border: none;

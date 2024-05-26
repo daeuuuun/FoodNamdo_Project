@@ -70,28 +70,29 @@ const AuthPage = ({ mode }) => {
                 }));
             }
         } else if (mode === 'findPw') { // 비밀번호 찾기
-            try {
-                const response = await axios.post
-                    (BACKEND_SERVER_URL + '/usermanagement/findPasswordByAccountIdAndNameAndPhone', {}, {
-                        params: {
-                            accountId: formData.account_id,
-                            name: formData.name,
-                            phone: formData.phone,
-                            code: formData.code,
-                        }
-                    });
-                alert('비밀번호가 전송되었습니다.');
-                navigate('/login');
-            } catch (error) {
-                alert('해당 정보를 찾을 수 없습니다.');
-                setFormData(prevState => ({
-                    ...prevState,
-                    account_id: '',
-                    name: '',
-                    phone: '',
-                    code: '',
-                }));
-            }
+            navigate('/reset-pw')
+            // try {
+            //     const response = await axios.post
+            //         (BACKEND_SERVER_URL + '/usermanagement/findPasswordByAccountIdAndNameAndPhone', {}, {
+            //             params: {
+            //                 accountId: formData.account_id,
+            //                 name: formData.name,
+            //                 phone: formData.phone,
+            //                 code: formData.code,
+            //             }
+            //         });
+            //     alert('비밀번호가 전송되었습니다.');
+            //     navigate('/login');
+            // } catch (error) {
+            //     alert('해당 정보를 찾을 수 없습니다.');
+            //     setFormData(prevState => ({
+            //         ...prevState,
+            //         account_id: '',
+            //         name: '',
+            //         phone: '',
+            //         code: '',
+            //     }));
+            // }
         }
     };
 
@@ -160,7 +161,7 @@ const AuthPage = ({ mode }) => {
                     className="auth-button"
                     onClick={handleFind}
                 >
-                    {mode === 'findId' ? '아이디 찾기' : '비밀번호 찾기'}
+                    {mode === 'findId' ? '아이디 찾기' : '다음'}
                 </button>
             </div>
         </div>

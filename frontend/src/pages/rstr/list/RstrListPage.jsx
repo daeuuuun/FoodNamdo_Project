@@ -112,7 +112,7 @@ export const RstrListPage = () => {
 
     // 검색 시
     useEffect(() => {
-        setIsNotInfo(false);
+
         const fetchAllRestaurants = async () => {
             setIsNotInfo(false);
             const params = new URLSearchParams({
@@ -229,21 +229,22 @@ export const RstrListPage = () => {
             sessionStorage.removeItem('random');
         };
 
-        if (!file && !search && !sessionStorage.getItem('random')) {
+        const loadData = () => {
             setIsLoading(true);
-            fetchAllRestaurants();
-        } else if (file && page == 1) { // 이미지 파일
-            setIsLoading(true);
-            fetchDataWithFile();
-        } else if (search) { // 검색어
-            setIsLoading(true);
-            fetchDataWithName();
-        } else {
-            setIsLoading(true);
-            setFile(null);
-            fetchDataWithRandom();
-        }
-    }, [file, page, pageSize, checkedRegion, checkedCategory]);
+            setIsNotInfo(false);
+
+            if (!file && !search && !sessionStorage.getItem('random')) {
+                fetchAllRestaurants();
+            } else if (file && page === 1) { // 이미지 파일
+                fetchDataWithFile();
+            } else if (search) { // 검색어
+                fetchDataWithName();
+            } else {
+                fetchDataWithRandom();
+            }
+        };
+        loadData();
+    }, [file, page, search, checkedRegion, checkedCategory]);
 
 
     const regionOptions = [

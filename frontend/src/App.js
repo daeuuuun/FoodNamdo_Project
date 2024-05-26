@@ -15,6 +15,7 @@ import { FileProvider } from './data/FileContext'; // 이미지 파일 전역 �
 import Header from './pages/header/Header';
 import MyPage from "./pages/myPage/MyPage";
 import ReviewInsert from "./pages/review/ReviewInsert";
+import ResetPwPage from './pages/auth/ResetPwPage';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/find-pw" element={<FindPwPage />} />
           <Route path="/find-id" element={<FindIdPage />} />
+          <Route path='/reset-pw' element={<ResetPwPage />} />
 
           {/* 음식점 페이지들 */}
           <Route path="/rstr/:rstrId" element={<RstrDetailPage />} />

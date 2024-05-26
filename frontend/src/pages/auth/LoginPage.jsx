@@ -9,7 +9,7 @@ import palette from '../../styles/palette';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 const StyledLink = styled(Link)({
-    fontSize: '0.75rem',
+    fontSize: '0.9rem',
     fontFamily: 'Gmarket Sans Medium',
     color: `${palette.darygray}`,
     marginRight: '16px',
