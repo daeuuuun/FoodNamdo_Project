@@ -50,12 +50,10 @@ const AuthPage = ({ mode }) => {
         if (mode === 'findId') { // 아이디 찾기
             try {
                 const response = await axios.post
-                    (BACKEND_SERVER_URL + '/usermanagement/findAccountIdByNameAndPhone', {}, {
-                        params: {
-                            name: formData.name,
-                            phone: formData.phone,
-                            code: formData.code
-                        }
+                    (BACKEND_SERVER_URL + '/usermanagement/findAccountIdByNameAndPhone', {
+                        name: formData.name,
+                        phone: formData.phone,
+                        code: formData.code
                     });
                 alert('아이디가 전송되었습니다.');
                 navigate('/login');
@@ -103,9 +101,12 @@ const AuthPage = ({ mode }) => {
         };
         try {
             await axios.post(
-                BACKEND_SERVER_URL + '/usermanagement/verify', {}, {
-                params: { phone: formData.phone }
-            });
+                BACKEND_SERVER_URL + '/usermanagement/verify', {},
+                {
+                    params: {
+                        phone: formData.phone
+                    }
+                });
             setIsVerified(true);
             alert('인증번호가 전송되었습니다.');
         } catch (error) {

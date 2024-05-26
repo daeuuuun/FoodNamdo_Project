@@ -120,9 +120,9 @@
 }
 
 .auth-form .error-text {
-    font-size: 0.7rem;
+    font-size: 0.9rem;
     color: #D50136;
-    margin-top: 5px;
-    margin-left: -50%;
+    margin-top: 10px;
+    margin-left: -45%;
     line-height: 15px;
 }

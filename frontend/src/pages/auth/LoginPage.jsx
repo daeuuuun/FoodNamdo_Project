@@ -7,7 +7,9 @@ import { styled } from '@mui/system';
 import AuthLogo from './components/AuthLogo';
 import palette from '../../styles/palette';
 import { useNavigate } from 'react-router-dom';
+import { BACKEND_SERVER_URL } from '../../config/Config';
 import axios from 'axios';
+
 const StyledLink = styled(Link)({
     fontSize: '0.9rem',
     fontFamily: 'Gmarket Sans Medium',
@@ -41,14 +43,17 @@ const LoginPage = () => {
         setIsLoginAttempted(true); // 로그인 시도 상태를 true로 설정
 
         try {
-            const response = await axios.post(
-                'http://foodnamdo.iptime.org:7999/', {
-                account_id: account_id,
-                password: password,
-            }, { "Content-Type": 'application/json', withCredentials: true });
+            const response = await axios.post
+                (BACKEND_SERVER_URL + '/usermanagement/login', {
+                    accountId: account_id,
+                    password: password
+                }, { withCredentials: true });
 
-            console.log(response.data);
-            alert('인증 요청 버튼 눌림');
+            if (response.status === 200) {
+                navigate('/');
+                localStorage.setItem('accessToken', response.data.accessToken);
+                localStorage.setItem('refreshToken', response.data.refreshToken);
+            }
         } catch (error) {
             console.log(error);
         }

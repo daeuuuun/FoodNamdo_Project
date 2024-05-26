@@ -143,8 +143,8 @@ const SignUpPage = () => {
 		};
 		try {
 			await axios.post(
-				BACKEND_SERVER_URL + '/usermanagement/verify', {}, {
-				params: { phone: phone }
+				BACKEND_SERVER_URL + '/usermanagement/verify', {
+				phone: phone
 			});
 			setIsVerified(true);
 			alert('인증번호가 전송되었습니다.');
@@ -171,14 +171,12 @@ const SignUpPage = () => {
 
 		try {
 			const response = await axios.post
-				(BACKEND_SERVER_URL + '/usermanagement/signUp', {}, {
-					params: {
-						accountId: account_id,
-						password: password,
-						name: name,
-						nickname: nickname,
-						phone: phone
-					}
+				(BACKEND_SERVER_URL + '/usermanagement/signUp', {
+					accountId: account_id,
+					password: password,
+					name: name,
+					nickname: nickname,
+					phone: phone
 				});
 			console.log(signUpForm);
 			setSignUpForm({

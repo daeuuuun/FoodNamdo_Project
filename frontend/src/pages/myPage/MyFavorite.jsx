@@ -9,8 +9,17 @@ const MyFavorite = () => {
 
 	const getFavoriteRstr = async () => {
 		const url = `${BACKEND_SERVER_URL}/mypage/getFavoriteRstr?user_id=${1}&page=${1}`;
+
+		const token = localStorage.getItem('accessToken');
+
 		try {
-			const response = await axios.get(url);
+			const response = await axios.get(url,
+				{
+					headers: {
+						'Authorization': `Bearer ${token}`
+					}
+				}
+			);
 			setRstr(response.data);
 
 		} catch (error) {
