@@ -1,4 +1,4 @@
-.categoryDiv {
+.container {
     display: flex;
     flex-direction: row;
 }
@@ -42,4 +42,16 @@
 
 .icons:hover {
     cursor: pointer;
+}
+
+.ratingButton {
+    border: none;
+    font-family: "Gmarket Sans Medium";
+    border-radius: 10px;
+}
+
+.ratingOption {
+    border: none;
+    font-family: "Gmarket Sans Medium";
+    border-radius: 10px;
 }
