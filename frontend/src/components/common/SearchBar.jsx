@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import palette from '../../styles/palette';
 import SearchIcon from '@mui/icons-material/Search';
 import ImageSearchIcon from '@mui/icons-material/ImageSearch';
-import axios from 'axios';
 //모달창 관련
 import PhotoSizeSelectActualOutlinedIcon from '@mui/icons-material/PhotoSizeSelectActualOutlined';
 import Box from '@mui/material/Box';
@@ -108,8 +107,10 @@ const SearchBar = () => {
 
     // 텍스트 검색
     const handleClickSearch = async () => {
+        sessionStorage.removeItem('random');
+        setFile(null);
         navigate(`/rstr?search=${search}`);
-        console.log(search + ' : 텍스트 검색입니다');
+        setSearch('');
     }
 
     // 이미지 검색
@@ -124,6 +125,7 @@ const SearchBar = () => {
             navigate('/rstr'); // 페이지 이동
         }
         console.log('이미지 검색입니다');
+        handleClose();
     }
 
     return (

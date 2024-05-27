@@ -23,34 +23,29 @@ function App() {
       <Helmet>
         <title>푸드남도</title>
       </Helmet>
-      <Router>
-        <Routes>
-          <Route path="/" element={
-            <FileProvider>
-              <MainPage />
-            </FileProvider>
-          } />
-          {/* 회원 인증 페이지들 */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/find-pw" element={<FindPwPage />} />
-          <Route path="/find-id" element={<FindIdPage />} />
-          <Route path='/reset-pw' element={<ResetPwPage />} />
+      <FileProvider>
+        <Router>
+          <Header />
+          <Routes>
+            <Route path="/" element={<MainPage />} />
 
-          {/* 음식점 페이지들 */}
-          <Route path="/rstr/:rstrId" element={<RstrDetailPage />} />
-          <Route path="/rstr/:page?" element={
-            <FileProvider>
-              <RstrListPage />
-            </FileProvider>
-          } />
+            {/* 회원 인증 페이지들 */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/find-id" element={<FindIdPage />} />
+            <Route path="/find-pw" element={<FindPwPage />} />
+            <Route path='/reset-pw' element={<ResetPwPage />} />
 
-          <Route path="/mypage" element={<MyPage />} />
+            {/* 음식점 페이지들 */}
+            <Route path="/rstr/:rstrId" element={<RstrDetailPage />} />
+            <Route path="/rstr/:page?" element={<RstrListPage />} />
 
-          <Route path="/review/insert" element={<ReviewInsert />} />
-        </Routes>
-      </Router>
-      {/* <UpArrow /> */}
+            <Route path="/mypage" element={<MyPage />} />
+
+            <Route path="/review/insert" element={<ReviewInsert />} />
+          </Routes>
+        </Router>
+      </FileProvider>
     </div>
   );
 }

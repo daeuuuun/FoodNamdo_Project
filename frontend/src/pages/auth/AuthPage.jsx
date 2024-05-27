@@ -117,7 +117,7 @@ const AuthPage = ({ mode }) => {
 
     return (
         <div className="auth-form-container centered-flex">
-            <AuthLogo />
+            {/* <AuthLogo /> */}
             <div className="auth-form">
                 {
                     mode === 'findPw' && (

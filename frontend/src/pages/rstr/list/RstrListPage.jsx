@@ -209,7 +209,6 @@ export const RstrListPage = () => {
             }).toString();
 
             const url = `${BACKEND_SERVER_URL}/mainsystem/findRstrByName?${params}`;
-
             try {
                 const response = await axios.get(url);
                 setRstrList(response.data.rstr);

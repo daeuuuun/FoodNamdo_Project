@@ -198,16 +198,9 @@ const SignUpPage = () => {
 		setShowPassword(!showPassword);
 	}
 
-	// 모든 필드가 채워져 있는지 확인하는 함수
-	// const isFormValid = () => {
-	// 	return (
-	// 		account_id && password && name && nickname && phone && authNum.length === 6
-	// 	);
-	// };
-
 	return (
 		<div className="auth-form-container centered-flex">
-			<AuthLogo />
+			{/* <AuthLogo /> */}
 			<div className="auth-form">
 				<div className={`input-form ${focused === 'account_id' ? 'input-focus-form' : ''}`}>
 					<PersonOutlinedIcon className="icons" />

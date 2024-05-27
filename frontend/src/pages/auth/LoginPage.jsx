@@ -67,7 +67,7 @@ const LoginPage = () => {
 
     return (
         <div className='auth-form-container centered-flex'>
-            <AuthLogo />
+            {/* <AuthLogo /> */}
             <div className="auth-form">
                 <div className={`input-form ${focused === 'account_id' ? 'input-focus-form' : ''}`}>
                     <PersonOutlinedIcon className="icons" />
