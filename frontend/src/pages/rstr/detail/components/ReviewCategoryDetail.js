@@ -3,7 +3,7 @@ import styles from "./ReviewCategory.module.css";
 import { FaRegStar, FaStar } from "react-icons/fa";
 
 const ReviewCategoryDetail = ({ items, onRatingChange }) => {
-    const [rating, setRating] = useState(0);
+    const [rating, setRating] = useState(null);
     const [showOptions, setShowOptions] = useState(false);
     const ratings = [0, 1, 2, 3, 4, 5];
 

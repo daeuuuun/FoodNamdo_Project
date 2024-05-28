@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import styles from "./ReviewInsert.module.css";
 import ReviewCategory from "../rstr/detail/components/ReviewCategory";
 

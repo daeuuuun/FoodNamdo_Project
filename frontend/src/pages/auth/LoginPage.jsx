@@ -9,6 +9,7 @@ import palette from '../../styles/palette';
 import { useNavigate } from 'react-router-dom';
 import { BACKEND_SERVER_URL } from '../../config/Config';
 import axios from 'axios';
+import {defaultBackInstance} from "../../utils/axiosInstance";
 
 const StyledLink = styled(Link)({
     fontSize: '0.9rem',
@@ -43,11 +44,11 @@ const LoginPage = () => {
         setIsLoginAttempted(true); // 로그인 시도 상태를 true로 설정
 
         try {
-            const response = await axios.post
+            const response = await defaultBackInstance.post
                 (BACKEND_SERVER_URL + '/usermanagement/login', {
                     accountId: account_id,
                     password: password
-                }, { withCredentials: true });
+                } ).then(response => console.log(response)).catch(err => console.log(err))
 
             if (response.status === 200) {
                 navigate('/');

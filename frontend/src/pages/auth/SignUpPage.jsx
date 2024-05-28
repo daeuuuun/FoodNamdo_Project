@@ -17,6 +17,7 @@ import { styled } from '@mui/system';
 import AuthLogo from './components/AuthLogo';
 
 import { BACKEND_SERVER_URL } from "../../config/Config";
+import {defaultBackInstance} from "../../utils/axiosInstance";
 
 const StyledLink = styled(Link)({
 	fontSize: '0.9rem',
@@ -76,7 +77,7 @@ const SignUpPage = () => {
 	const checkIdDuplicate = async () => {
 		if (account_id) {
 			try {
-				const response = await axios.get(
+				const response = await defaultBackInstance.get(
 					BACKEND_SERVER_URL + '/usermanagement/IdDuplication',
 					{
 						params: { account_id: account_id }
@@ -107,7 +108,7 @@ const SignUpPage = () => {
 	const checkNicknameDuplicate = async () => {
 		if (nickname) {
 			try {
-				const response = await axios.get(
+				const response = await defaultBackInstance.get(
 					BACKEND_SERVER_URL + '/usermanagement/NicknameDuplication',
 					{
 						params: { nickname: nickname }
@@ -142,7 +143,7 @@ const SignUpPage = () => {
 			return;
 		};
 		try {
-			await axios.post(
+			await defaultBackInstance.post(
 				BACKEND_SERVER_URL + '/usermanagement/verify', {
 				phone: phone
 			});
@@ -170,7 +171,7 @@ const SignUpPage = () => {
 		}
 
 		try {
-			const response = await axios.post
+			const response = await defaultBackInstance.post
 				(BACKEND_SERVER_URL + '/usermanagement/signUp', {
 					accountId: account_id,
 					password: password,

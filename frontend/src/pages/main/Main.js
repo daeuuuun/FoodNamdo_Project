@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import MainTopCategory from './MainTopCategory';
 import MainBottomButton from './MainBottomButton';
 import styles from '../main/Main.module.css';
@@ -8,6 +8,7 @@ import cafe2 from '../main/cafe2.jpg';
 import cafe3 from '../main/cafe3.jpg';
 import style1 from '../main/Recommend.module.css';
 import style2 from '../main/Best.module.css';
+import {AppContext} from "../../utils/loginContext";
 
 
 
