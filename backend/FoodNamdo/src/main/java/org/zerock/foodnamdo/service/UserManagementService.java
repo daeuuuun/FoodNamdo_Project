@@ -31,6 +31,8 @@ public interface UserManagementService {
 
     String generateVerificationCode();
 
+    void changePassword(Long userId, String newPassword);
+
 //    UserDetails findUserByUserId(String userId);
 
 //    PageResponseDTO<UserDTO> list(PageRequestDTO pageRequestDTO);

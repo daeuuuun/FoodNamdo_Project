@@ -20,8 +20,6 @@ public class QBadgeEntity extends EntityPathBase<BadgeEntity> {
 
     public static final QBadgeEntity badgeEntity = new QBadgeEntity("badgeEntity");
 
-    public final StringPath badgeComment = createString("badgeComment");
-
     public final NumberPath<Long> badgeId = createNumber("badgeId", Long.class);
 
     public final StringPath badgeName = createString("badgeName");

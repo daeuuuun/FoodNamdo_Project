@@ -64,28 +64,6 @@ public class FindRstrByNameDTO {
                 .category_name(CategoryDTO.categoryNamesFromEntities(entity.getCategories()))
                 .rstr_review_rating(reviewRating)
                 .rstr_review_count(entity.getRstrReviewCount())
-
-
-//                .rstr_num(entity.getRstrNum())
-//                .rstr_permission(entity.getRstrPermission())
-//                .rstr_address(entity.getRstrAddress())
-//                .rstr_la(entity.getRstrLa())
-//                .rstr_lo(entity.getRstrLo())
-//                .rstr_tel(entity.getRstrTel())
-//                .rstr_intro(entity.getRstrIntro())
-//                .rstr_naver_rating(naverRating)
-//                .rstr_favorite_count(entity.getRstrFavoriteCount())
-//                .rstr_parking(entity.isRstrParking())
-//                .rstr_play(entity.isRstrPlay())
-//                .rstr_pet(entity.isRstrPet())
-//                .rstr_closed(entity.getRstrClosed())
-//                .rstr_business_hour(entity.getRstrBusinessHour())
-//                .rstr_delivery(entity.isRstrDelivery())
-////                .rstr_categories(RstrCategoryDTO.fromEntities(entity.getRstrCategories()))
-//                .reviews(ReviewDTO.fromEntities(entity.getReviews()))
-//                .menu_descriptions(MenuDescriptionDTO.fromEntities(entity.getMenuDescriptions()))
-////                .categories(CategoryDTO.fromEntities(entity.getCategories()))
-//                .favorites(FavoriteDTO.fromEntities(entity.getFavorites()))
                 .build();
     }
 }

@@ -29,14 +29,13 @@ public class UserBadgeEntity {
 //    @JsonBackReference
     private BadgeEntity badgeEntity;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "badge_date", nullable = false)
-//    @JsonBackReference
-    private LocalDateTime badgeDate;
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @Column(name = "badge_date", nullable = false)
+//    private LocalDateTime badgeDate;
 
     @Column(name = "badge_on_off")
     private Boolean badgeOnOff;
 
-    @Column(name = "badge_sequence")
-    private int badgeSequence;
+//    @Column(name = "badge_sequence")
+//    private int badgeSequence;
 }

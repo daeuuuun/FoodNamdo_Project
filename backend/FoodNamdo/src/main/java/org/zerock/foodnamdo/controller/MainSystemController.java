@@ -11,12 +11,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.foodnamdo.baseDTO.APIUserDTO;
 import org.zerock.foodnamdo.baseDTO.ReviewDTO;
-import org.zerock.foodnamdo.customDTO.FindReviewByRstrIdDTO;
-import org.zerock.foodnamdo.customDTO.FindRstrByNameDTO;
-import org.zerock.foodnamdo.customDTO.RstrDetailDTO;
+import org.zerock.foodnamdo.customDTO.*;
 import org.zerock.foodnamdo.domain.ReviewEntity;
 import org.zerock.foodnamdo.domain.RstrEntity;
 import org.zerock.foodnamdo.service.MainSystemService;
@@ -230,38 +233,103 @@ public class MainSystemController {
         return response;
     }
 
+    @Operation(summary = "음식점 찜하기")
+    @PostMapping("/RstrFavoriteRegister")
+    public void RstrFavoriteRegister(@RequestBody RstrFavoriteRegisterInputDTO rstrFavoriteRegisterInputDTO){
+        log.info("RstrFavoriteRegister..");
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
+
+        // userId와 rstrId를 사용하여 RstrFavoriteRegisterDTO 생성
+        RstrFavoriteRegisterDTO rstrFavoriteRegisterDTO = new RstrFavoriteRegisterDTO();
+        rstrFavoriteRegisterDTO.setUserId(userId);
+        rstrFavoriteRegisterDTO.setRstrId(rstrFavoriteRegisterInputDTO.getRstrId());
+
+        // rstrFavoriteRegisterDTO를 사용하여 추가적인 처리 (예: 데이터베이스에 저장)
+        mainSystemService.saveFavorite(rstrFavoriteRegisterDTO);
+
+        log.info("Favorite registered for userId: {} and rstrId: {}", userId, rstrFavoriteRegisterInputDTO.getRstrId());
+    }
+
+
+
     @Operation(summary = "리뷰등록")
     @PostMapping("/ReviewRegister")
     public String ReviewRegister(
-            @RequestParam("rstr_id") Long rstrId,
-            @RequestParam("user_id") Long userId,
-            @RequestParam("review_text") String reviewText,
-            @RequestParam("time_of_creation") @Parameter(description = "날짜와 시간", schema = @Schema(type = "string", format = "date-time"))
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime timeOfCreation,
-            @RequestParam("category_rating_taste") double categoryRatingTaste,
-            @RequestParam("category_rating_price") double categoryRatingPrice,
-            @RequestParam("category_rating_clean") double categoryRatingClean,
-            @RequestParam("category_rating_service") double categoryRatingService,
-            @RequestParam("category_rating_amenities") double categoryRatingAmenities,
-//            @RequestParam("receipt") boolean receipt,
-//            @RequestParam("like") int like,
-//            @RequestParam("dislike") int dislike,
+            @RequestBody ReviewRegisterInputDTO reviewRegisterInputDTO,
             RedirectAttributes redirectAttributes) {
-        log.info("ReviewRegister.." + rstrId);
+        log.info("ReviewRegister..");
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
+
+        double categoryRatingTaste = reviewRegisterInputDTO.getCategory_rating_taste();
+        double categoryRatingPrice = reviewRegisterInputDTO.getCategory_rating_price();
+        double categoryRatingClean = reviewRegisterInputDTO.getCategory_rating_clean();
+        double categoryRatingService = reviewRegisterInputDTO.getCategory_rating_service();
+        double categoryRatingAmenities = reviewRegisterInputDTO.getCategory_rating_amenities();
 
         DecimalFormat df = new DecimalFormat("#.##");
         double rating = (categoryRatingTaste + categoryRatingPrice + categoryRatingClean
                 + categoryRatingService + categoryRatingAmenities) / 5;
         rating = Double.parseDouble(df.format(rating));
-        boolean receipt = false;
-        int like = 0;
-        int dislike = 0;
 
-//        mainSystemService.deleteByReviewId(reviewId);
+        ReviewRegisterDTO reviewRegisterDTO = new ReviewRegisterDTO();
+        reviewRegisterDTO.setRstr_id(reviewRegisterInputDTO.getRstr_id());
+        reviewRegisterDTO.setUser_id(userId);
+        reviewRegisterDTO.setReview_text(reviewRegisterInputDTO.getReview_text());
+        reviewRegisterDTO.setTime_of_creation(reviewRegisterInputDTO.getTime_of_creation());
+        reviewRegisterDTO.setTime_of_revision(null);
+        reviewRegisterDTO.setRating(rating);
+        reviewRegisterDTO.setCategory_rating_taste(categoryRatingTaste);
+        reviewRegisterDTO.setCategory_rating_price(categoryRatingPrice);
+        reviewRegisterDTO.setCategory_rating_clean(categoryRatingClean);
+        reviewRegisterDTO.setCategory_rating_service(categoryRatingService);
+        reviewRegisterDTO.setCategory_rating_amenities(categoryRatingAmenities);
+        reviewRegisterDTO.setReceipt(false);
+        reviewRegisterDTO.setLike(0);
+        reviewRegisterDTO.setDislike(0);
+        reviewRegisterDTO.setReviewImages(null);
+
+
+        mainSystemService.saveReview(reviewRegisterDTO);
+
 
         redirectAttributes.addFlashAttribute("result", "created");
 
         return redirectAttributes.toString();
+    }
+    @Operation(summary = "리뷰 이미지 업로드")
+    @PostMapping(value = "/uploadReviewImage", consumes = "multipart/form-data")
+    public ResponseEntity<String> uploadReviewImage(
+            @RequestParam("review_id") Long reviewId,
+            @Parameter(name = "file", description = "업로드 사진 데이터")
+            @RequestParam("file") MultipartFile image) {
+        log.info("uploadReviewImage..");
+
+        try {
+            String imageUrl = mainSystemService.saveReviewImage(reviewId, image);
+            return ResponseEntity.ok(imageUrl);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "리뷰수정")
+    @PostMapping("/modifyReview")
+    public void modifyReview(){
+
+    }
+
+    @Operation(summary = "리뷰인증")
+    @PostMapping("/verifyReview")
+    public void verifyReview(){
+
+    }
+
+    @Operation(summary = "리뷰공감")
+    @PostMapping("/reactionReview")
+    public void reactionReview(){
+
     }
 
     @Operation(summary = "리뷰삭제")

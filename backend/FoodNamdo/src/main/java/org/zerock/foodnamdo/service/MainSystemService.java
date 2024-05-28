@@ -2,9 +2,13 @@ package org.zerock.foodnamdo.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+import org.zerock.foodnamdo.customDTO.ReviewRegisterDTO;
+import org.zerock.foodnamdo.customDTO.RstrFavoriteRegisterDTO;
 import org.zerock.foodnamdo.domain.ReviewEntity;
 import org.zerock.foodnamdo.domain.RstrEntity;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface MainSystemService {
@@ -24,4 +28,11 @@ public interface MainSystemService {
     long count();
 
     void deleteByReviewId(Long reviewID);
+
+    void saveReview(ReviewRegisterDTO reviewRegisterDTO);
+
+
+    String saveReviewImage(Long rstrId, MultipartFile image) throws IOException; // 수정된 부분
+
+    void saveFavorite(RstrFavoriteRegisterDTO rstrFavoriteRegisterDTO);
 }

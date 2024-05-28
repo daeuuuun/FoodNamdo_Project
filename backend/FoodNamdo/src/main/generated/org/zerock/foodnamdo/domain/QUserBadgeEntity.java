@@ -22,13 +22,9 @@ public class QUserBadgeEntity extends EntityPathBase<UserBadgeEntity> {
 
     public static final QUserBadgeEntity userBadgeEntity = new QUserBadgeEntity("userBadgeEntity");
 
-    public final DateTimePath<java.time.LocalDateTime> badgeDate = createDateTime("badgeDate", java.time.LocalDateTime.class);
-
     public final QBadgeEntity badgeEntity;
 
     public final BooleanPath badgeOnOff = createBoolean("badgeOnOff");
-
-    public final NumberPath<Integer> badgeSequence = createNumber("badgeSequence", Integer.class);
 
     public final NumberPath<Long> userBadgeId = createNumber("userBadgeId", Long.class);
 

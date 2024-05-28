@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 import org.zerock.foodnamdo.baseDTO.ReviewDTO;
 import org.zerock.foodnamdo.baseDTO.UserDTO;
 import org.zerock.foodnamdo.domain.*;
-import org.zerock.foodnamdo.repository.MyPageRepository;
-import org.zerock.foodnamdo.repository.MyPageRepositoryFavorite;
-import org.zerock.foodnamdo.repository.MyPageRepositoryReview;
-import org.zerock.foodnamdo.repository.MyPageRepositoryUserBadge;
+import org.zerock.foodnamdo.repository.*;
 
 import java.util.List;
 
@@ -26,6 +23,7 @@ public class MyPageServiceImpl implements MyPageService{
     private final MyPageRepositoryFavorite myPageRepositoryFavorite;
     private final MyPageRepositoryReview myPageRepositoryReview;
     private final MyPageRepositoryUserBadge myPageRepositoryUserBadge;
+    private final MyPageRepositoryBadge myPageRepositoryBadge;
 
 //    public Page<RstrEntity> findAllByUserEntity_UserId(Long userId, Pageable pageable){
 //        return myPageRepository.findByFavoriteEntities_UserEntity_UserId(userId, pageable);
@@ -48,6 +46,10 @@ public class MyPageServiceImpl implements MyPageService{
 
     public UserEntity findByUserId(Long userId){
         return myPageRepository.findByUserId(userId);
+    }
+
+    public List<BadgeEntity> getAllBadges(){
+        return myPageRepositoryBadge.findAll();
     }
 
     public List<ReviewEntity> findReviewByUserId(Long userId){

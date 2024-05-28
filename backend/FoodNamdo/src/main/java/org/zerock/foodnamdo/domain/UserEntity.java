@@ -68,4 +68,5 @@ public class UserEntity {
     public void changePassword(String password) {
         this.password = password;
     }
+
 }

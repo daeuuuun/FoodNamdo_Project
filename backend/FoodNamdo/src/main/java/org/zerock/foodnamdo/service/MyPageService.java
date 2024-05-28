@@ -22,5 +22,7 @@ public interface MyPageService {
 
     List<ReviewEntity> findReviewByUserId(Long userId);
 
+    List<BadgeEntity> getAllBadges();
+
     UserEntity findByUserId(Long userId);
 }
