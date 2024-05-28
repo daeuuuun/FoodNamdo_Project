@@ -8,13 +8,15 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.foodnamdo.baseDTO.*;
-import org.zerock.foodnamdo.customDTO.FavoriteTestDTO;
+import org.zerock.foodnamdo.customDTO.ChangeNicknameDTO;
+import org.zerock.foodnamdo.customDTO.ChangePasswordDTO;
+import org.zerock.foodnamdo.customDTO.getFavoriteRstrDTO;
 import org.zerock.foodnamdo.domain.*;
 import org.zerock.foodnamdo.service.MyPageService;
 import org.zerock.foodnamdo.util.JWTUtil;
@@ -22,6 +24,7 @@ import org.zerock.foodnamdo.util.JWTUtil;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -32,20 +35,21 @@ import java.util.stream.Collectors;
 public class MyPageController {
 
     private final MyPageService myPageService;
+    private final PasswordEncoder passwordEncoder;
     private final JWTUtil jwtUtil;
 
 
 
-    @Operation(summary = "내정보 조회", security = @SecurityRequirement(name = "jwtAuth"))
-    @GetMapping(value = "/myInfo", produces = "application/json")
-    public UserDTO myInfo(@RequestParam("user_id") Long userId){
-        log.info("myInfo......");
-        UserEntity userEntity = myPageService.findByUserId(userId);
-        return UserDTO.fromEntity(userEntity);
-    }
+//    @Operation(summary = "내정보 조회", security = @SecurityRequirement(name = "jwtAuth"))
+//    @GetMapping(value = "/myInfo", produces = "application/json")
+//    public UserDTO myInfo(@RequestParam("user_id") Long userId){
+//        log.info("myInfo......");
+//        UserEntity userEntity = myPageService.findByUserId(userId);
+//        return UserDTO.fromEntity(userEntity);
+//    }
 
     @Operation(summary = "내정보 조회", security = @SecurityRequirement(name = "jwtAuth"))
-    @GetMapping(value = "/myInfo2", produces = "application/json")
+    @GetMapping(value = "/myInfo", produces = "application/json")
 //    public UserDTO myInfo(@RequestHeader("Authorization") String token) {
     public UserDTO myInfo2() {
         log.info("myInfo......");
@@ -55,41 +59,23 @@ public class MyPageController {
         APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = userDetails.getUserId();  // Extract userId
         log.info(userDetails);
-//        String username = userDetails.getUsername(); // user_id 로 사용됨
-//        String username = userDetails.getUsername(); // user_id 로 사용됨
 
-//        log.info(username);
-//        Long userId = Long.valueOf(userIdStr);
-//        Long userId = Long.valueOf(username);
         log.info(userId);
-//        String actualToken = token.startsWith("Bearer ") ? token.substring(7) : token;
-//        log.info(actualToken);
-//        Long userId = jwtUtil.extractUserId(actualToken);
-//        log.info(userId);
 
         UserEntity userEntity = myPageService.findByUserId(userId);
         return UserDTO.fromEntity(userEntity);
     }
-//
-//    @Operation(summary = "닉네임 변경")
-//    @PostMapping("/changeNickname")
-//    public ResponseEntity<String> changeNickname(
-//            @RequestParam("user_id") Long userId,
-//            @RequestParam("nickname") String nickname) {
-//        log.info("changeNickname......");
-//        myPageService.changeNickname(userId, nickname);
-//        return ResponseEntity.ok("Nickname changed successfully");
-//    }
 
     @Operation(summary = "닉네임 변경")
     @PostMapping("/changeNickname")
     public ResponseEntity<String> changeNickname(
-            @RequestHeader("user_id") Long userId,
-            @RequestParam("nickname") String nickname) {
+//            @RequestHeader("user_id") Long userId,
+            @RequestBody ChangeNicknameDTO changeNicknameDTO) {
+//            @RequestParam("nickname") String nickname) {
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
+        String nickname = changeNicknameDTO.getNickname();
 
-        // "Bearer " 부분을 제거하여 실제 토큰 값만 추출
-//        String jwt = token.substring(7);
-//        Long userId = jwtUtil.extractUserId(jwt);
 
         myPageService.changeNickname(userId, nickname);
         return ResponseEntity.ok("Nickname changed successfully");
@@ -99,17 +85,33 @@ public class MyPageController {
     @Operation(summary = "비밀번호 변경")
     @PostMapping("/changePassword")
     public ResponseEntity<String> changePassword(
-            @RequestParam("user_id") Long userId,
-            @RequestParam("password") String password) {
-        log.info("changeNickname......");
-        myPageService.changePassword(userId, password);
-        return ResponseEntity.ok("Password changed successfully");
+//            @RequestParam("user_id") Long userId,
+//            @RequestParam("password") String password) {
+            @RequestBody ChangePasswordDTO changePasswordDTO) {
+        log.info("changePassword......");
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
+        String prevPassword = changePasswordDTO.getPrevPassword();
+        UserEntity userEntity = myPageService.findByUserId(userId);
+        String DBPassword = userEntity.getPassword();
+        log.info("prevPassword: " + prevPassword);
+        log.info("DBPassword: " + DBPassword);
+        if(passwordEncoder.matches(prevPassword, DBPassword)){
+            String newPassword = passwordEncoder.encode(changePasswordDTO.getNewPassword());
+            myPageService.changePassword(userId, newPassword);
+            return ResponseEntity.ok("Password changed successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Current password does not match");
+        }
     }
 
     @Operation(summary = "사용자id로 리뷰 불러오기")
     @GetMapping(value = "/getReview", produces = "application/json")
-    public List<ReviewDTO> getReview(
-            @RequestParam("user_id") Long userId) {
+    public List<ReviewDTO> getReview() {
+//    public List<ReviewDTO> getReview(@RequestParam("user_id") Long userId) {
+
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
         log.info("getReview......");
         List<ReviewEntity> reviewEntity = myPageService.findReviewByUserId(userId);
         return reviewEntity.stream()
@@ -117,49 +119,29 @@ public class MyPageController {
                 .toList();
     }
 
-//    @PostMapping
-//    public String modify(PageRequestDTO pageRequestDTO,
-//                         @Valid UserDTO userDTO,
-//                         BindingResult bindingResult,
-//                         RedirectAttributes redirectAttributes) {
-//        log.info("user modify post.........." + userDTO);
-//
-//        if (bindingResult.hasErrors()) {
-//            log.info("has errors.......");
-//
-//            String link = pageRequestDTO.getLink();
-//
-//            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-//
-//            redirectAttributes.addAttribute("userId", userDTO.getUserId());
-//
-//            return "redirect:/user/modify?" + link;
-//        }
-//
-//        userManagementService.modify(userDTO);
-//
-//        redirectAttributes.addFlashAttribute("result", "modified");
-//
-//        redirectAttributes.addAttribute("userId", userDTO.getUserId());
-//
-//        return "redirect:/user/read";
-//
-//    }
-//
-//
-
-//
-//
     @Operation(summary = "뱃지 확인")
     @GetMapping(value = "/myBadge", produces = "application/json")
-    public List<UserBadgeDTO> myBadge(@RequestParam("user_id") Long userId) {
+    public Map<String, Object> myBadge() {
+//    public List<UserBadgeDTO> myBadge() {
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
         log.info("getReview......");
-        List<UserBadgeEntity> userBadgeEntity = myPageService.findUserBadgeByUserId(userId);
+        List<BadgeEntity> badgeEntity = myPageService.getAllBadges();
+        List<BadgeDTO> BadgeDTOList = badgeEntity.stream()
+                .map(BadgeDTO::fromEntity)
+                .toList();
 
+        List<UserBadgeEntity> userBadgeEntity = myPageService.findUserBadgeByUserId(userId);
         List<UserBadgeDTO> userBadgeDTOList = userBadgeEntity.stream()
                 .map(UserBadgeDTO::fromEntity)
                 .toList();
-        return userBadgeDTOList;
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("badge", BadgeDTOList);
+        response.put("userBadge", userBadgeDTOList);
+
+        return response;
+//        return userBadgeDTOList;
 //        return userBadgeEntity.stream()
 //                .map(UserBadgeDTO::fromEntity)
 //                .toList();
@@ -169,20 +151,18 @@ public class MyPageController {
     @GetMapping(value = "/getFavoriteRstr", produces = "application/json")
     @ResponseBody
     public Map<String, Object> getFavoriteRstr(
-            @RequestParam("user_id") Long userId,
+//            @RequestParam("user_id") Long userId,
             @RequestParam("page") int page) {
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
         log.info("getFavoriteRstr......");
         int pageSize = 8;
 
         Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
         Page<FavoriteEntity> userPage = myPageService.findAllByUserEntity_UserId(userId, pageable);
         log.info(userPage);
-//        List<FavoriteTestDTO> rstrDTOList = userPage.getContent().stream()
-//                .map(FavoriteTestDTO::fromEntity)
-//                .collect(Collectors.toList());
-        List<RstrDTO> rstrList = userPage.getContent().stream()
-                .map(FavoriteTestDTO::fromEntity)
-                .map(FavoriteTestDTO::getRstr)
+        List<getFavoriteRstrDTO> getFavoriteRstrDTOList = userPage.getContent().stream()
+                .map(getFavoriteRstrDTO::fromEntity)
                 .collect(Collectors.toList());
 
         long totalElements = userPage.getTotalElements();
@@ -194,7 +174,7 @@ public class MyPageController {
         response.put("total_pages", totalPages);
         response.put("page_num", page);
         response.put("total_favorite", totalElements);
-        response.put("rstr", rstrList);
+        response.put("rstr", getFavoriteRstrDTOList);
 
         return response;
     }

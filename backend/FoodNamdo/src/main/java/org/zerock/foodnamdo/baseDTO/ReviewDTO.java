@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 public class ReviewDTO {
-
     private Long review_id;
     private Long rstr_id;
     private Long user_id;

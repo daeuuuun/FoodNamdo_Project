@@ -70,6 +70,12 @@ public class UserManagementServiceImpl implements UserManagementService {
         return null;
     }
 
+
+    public void changePassword(Long userId, String password) {
+        UserEntity userEntity = userManagementRepository.findByUserId(userId);
+        userEntity.changePassword(password);
+        userManagementRepository.save(userEntity);
+    }
     public UserEntity findByUserId(Long userId){
         return userManagementRepository.findByUserId(userId);
     }

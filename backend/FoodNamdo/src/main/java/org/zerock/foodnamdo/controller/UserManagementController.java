@@ -13,9 +13,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.zerock.foodnamdo.baseDTO.APIUserDTO;
 import org.zerock.foodnamdo.customDTO.*;
 import org.zerock.foodnamdo.domain.UserEntity;
 import org.zerock.foodnamdo.security.service.EncryptionService;
@@ -82,16 +84,16 @@ public class UserManagementController {
         String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
         signUpDTO.setPhone(formatPhone);
 
-//        String encodedPassword = passwordEncoder.encode(signUpDTO.getPassword());
-//        signUpDTO.setPassword(encodedPassword);
+        String encodedPassword = passwordEncoder.encode(signUpDTO.getPassword());
+        signUpDTO.setPassword(encodedPassword);
 
-        try {
-            String encryptedPassword = encryptionService.encrypt(signUpDTO.getPassword());
-            signUpDTO.setPassword(encryptedPassword);
-        } catch (Exception e) {
-            log.error("Error encrypting password", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during encryption");
-        }
+//        try {
+//            String encryptedPassword = encryptionService.encrypt(signUpDTO.getPassword());
+//            signUpDTO.setPassword(encryptedPassword);
+//        } catch (Exception e) {
+//            log.error("Error encrypting password", e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during encryption");
+//        }
 
         log.info(signUpDTO);
 
@@ -103,7 +105,6 @@ public class UserManagementController {
     @Operation(summary = "로그인")
     @PostMapping(value = "/login", produces = "application/json")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO) {
-//    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -121,7 +122,7 @@ public class UserManagementController {
             claims.put("userId", userId);
             claims.put("roles", authentication.getAuthorities());
 
-            String accessToken = jwtUtil.generateAccessToken(claims); // 3 minute for access token
+            String accessToken = jwtUtil.generateAccessToken(claims); // 15 minute for access token
             String refreshToken = jwtUtil.generateRefreshToken(claims); // 7 days for refresh token
 
             LoginResponseDTO loginResponse = new LoginResponseDTO(accessToken, refreshToken);
@@ -138,21 +139,15 @@ public class UserManagementController {
 
     @Operation(summary = "토큰 갱신", security = @SecurityRequirement(name = "jwtAuth"))
     @PostMapping(value = "/refreshToken", produces = "application/json")
-//    public ResponseEntity<Map<String, String>> refreshToken(@RequestBody Map<String, String> request) {
     public ResponseEntity<Map<String, String>> refreshToken(@RequestBody AccessRefreshTokenRequestDTO request) {
         String refreshToken = request.getRefreshToken();
-//        String refreshToken = request.get("refreshToken");
         try {
             Map<String, Object> claims = jwtUtil.validateToken(refreshToken);
             int userIdint = (int) claims.get("userId");
             Long userId = (long) userIdint;
             log.info(userId);
-//            Long userId = userIdstr.t
-//            String userId = (String) claims.get("sub");
-//            String accountId = (String) claims.get("sub");
 
             UserEntity userEntity = userManagementService.findByUserId(userId);
-//            UserEntity userEntity = userManagementService.findUserByAccountId(accountId);
             if (userEntity == null) {
                 throw new UsernameNotFoundException("User not found");
             }
@@ -161,11 +156,10 @@ public class UserManagementController {
             newClaims.put("userId", userEntity.getUserId());
             newClaims.put("roles", claims.get("roles"));
 
-            String newAccessToken = jwtUtil.generateAccessToken(newClaims); // new access token
-//            String newAccessToken = jwtUtil.generateToken(newClaims, 1); // 1 day for new access token
+            String newAccessToken = jwtUtil.generateAccessToken(newClaims);
             Map<String, String> tokens = new HashMap<>();
             tokens.put("accessToken", newAccessToken);
-            tokens.put("refreshToken", refreshToken); // Optionally, generate a new refresh token
+            tokens.put("refreshToken", refreshToken);
 
             return ResponseEntity.ok(tokens);
         } catch (JwtException e) {
@@ -176,9 +170,7 @@ public class UserManagementController {
     @Operation(summary = "로그아웃")
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestBody RefreshTokenRequestDTO request) {
-//    public ResponseEntity<Void> logout(@RequestBody Map<String, String> request) {
         String refreshToken = request.getRefreshToken();
-//        String refreshToken = request.get("refreshToken");
         tokenBlacklistService.blacklistToken(refreshToken);
         return ResponseEntity.ok().build();
     }
@@ -217,7 +209,7 @@ public class UserManagementController {
         }
     }
 
-    @Operation(summary = "아이디, 이름, 전화번호를 이용해 비밀번호 찾기")
+    @Operation(summary = "아이디, 이름, 전화번호를 이용해 사용자 인증 및 userId반환")
     @PostMapping(value = "/findPasswordByAccountIdAndNameAndPhone", produces = "application/json")
     public ResponseEntity<Object> findPasswordByAccountIdAndNameAndPhone(
             @RequestBody findPasswordDTO request)
@@ -232,17 +224,16 @@ public class UserManagementController {
         if (savedCode != null && savedCode.equals(request.getCode())) {
             UserEntity userEntity = userManagementService.findUserByAccountIdAndNameAndPhone(request.getAccountId(), request.getName(), formatPhone);
             if (userEntity != null) {
-                Map<String, String> response = new HashMap<>();
-//                response.put("password", "sendPassword");
-                try{
-                    String decryptedPassword = encryptionService.decrypt(userEntity.getPassword());
-                    response.put("password", "sendPassword");
-                    coolsmsService.sendIdOrPwd(formatPhone, decryptedPassword, IdOrPwd);
+//                Map<String, String> response = new HashMap<>();
+//                    String decryptedPassword = encryptionService.decrypt(userEntity.getPassword());
+//                    response.put("password", "sendPassword");
+//                    coolsmsService.sendIdOrPwd(formatPhone, decryptedPassword, IdOrPwd);
 //                    coolsmsService.sendIdOrPwd(formatPhone, userEntity.getPassword(), IdOrPwd);
-                } catch (Exception e) {
-                    log.error("Error decrypting password", e);
-                    return ResponseEntity.notFound().build();
-                }
+                Long userId = userEntity.getUserId();
+
+
+                UserIdResponseDTO response = new UserIdResponseDTO();
+                response.setUserId(userId);
                 return ResponseEntity.ok(response);
             } else {
                 log.info("ResponseEntity.notFound().build();");
@@ -254,10 +245,28 @@ public class UserManagementController {
         }
     }
 
+    @Operation(summary = "비밀번호 변경")
+    @PostMapping("/changePassword")
+    public ResponseEntity<String> changePassword(
+//            @RequestParam("user_id") Long userId,
+//            @RequestParam("password") String password) {
+            @RequestBody ChangePasswordUMDTO changePasswordUMDTO) {
+        log.info("changePassword......");
+//        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        Long userId = userDetails.getUserId();  // Extract userId
+        Long userId = changePasswordUMDTO.getUserId();
+        UserEntity userEntity = userManagementService.findByUserId(userId);
+//        String DBPassword = userEntity.getPassword();
+        String newPassword = passwordEncoder.encode(changePasswordUMDTO.getNewPassword());
+        userManagementService.changePassword(userId, newPassword);
+        return ResponseEntity.ok("Password changed successfully");
+    }
+
     @Operation(summary = "인증번호 요청")
     @PostMapping(value = "/verify", produces = "application/json")
-    public boolean verify(@RequestParam("phone") String phone) {
-        String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
+    public boolean verify(@RequestBody VerifyDTO request) {
+//    public boolean verify(@RequestParam("phone") String phone) {
+        String formatPhone = request.getPhone().substring(0, 3) + "-" + request.getPhone().substring(3, 7) + "-" + request.getPhone().substring(7);
         UserEntity userEntity = userManagementService.findUserByPhone(formatPhone);
         CoolsmsService coolsmsService = new CoolsmsService();
 
@@ -274,62 +283,14 @@ public class UserManagementController {
         }else return false;
     }
 
-//    @GetMapping("/read")
-//    public void read(Long userId, PageRequestDTO pageRequestDTO, Model model) {
-//
-//        UserDTO userDTO = userManagementService.readOne(userId);
-//
-//        log.info(userDTO);
-//
-//        model.addAttribute("userId", userDTO);
-//    }
-
-//    @GetMapping({"/read", "/modify"})
-//    public void read(Long userId, PageRequestDTO pageRequestDTO, Model model) {
-//
-//        UserDTO userDTO = userManagementService.readOne(userId);
-//
-//        log.info(userDTO);
-//
-//        model.addAttribute("userId", userDTO);
-//    }
-
-//    @PostMapping
-//    public String modify(PageRequestDTO pageRequestDTO,
-//                         @Valid UserDTO userDTO,
-//                         BindingResult bindingResult,
-//                         RedirectAttributes redirectAttributes) {
-//        log.info("user modify post.........." + userDTO);
-//
-//        if (bindingResult.hasErrors()) {
-//            log.info("has errors.......");
-//
-//            String link = pageRequestDTO.getLink();
-//
-//            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-//
-//            redirectAttributes.addAttribute("userId", userDTO.getUserId());
-//
-//            return "redirect:/user/modify?" + link;
-//        }
-//
-//        userManagementService.modify(userDTO);
-//
-//        redirectAttributes.addFlashAttribute("result", "modified");
-//
-//        redirectAttributes.addAttribute("userId", userDTO.getUserId());
-//
-//        return "redirect:/user/read";
-//
-//    }
     @Operation(summary = "회원삭제")
     @PostMapping("/deleteUser")
-    public ResponseEntity<String> remove(@RequestParam("user_id") Long userId) {
+    public ResponseEntity<String> remove() {
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();
         log.info("delete user.." + userId);
 
         userManagementService.deleteUser(userId);
-
-//        redirectAttributes.addFlashAttribute("result", "deleted");
 
         return ResponseEntity.ok("delete userId" + userId + " successfully");
     }

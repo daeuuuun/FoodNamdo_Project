@@ -19,7 +19,6 @@ public class ReviewImgEntity {
 
     @ManyToOne
     @JoinColumn(name = "review_id")
-//    @JsonBackReference
     private ReviewEntity reviewEntity;
 
     @Column(name = "review_img_url", nullable = false)

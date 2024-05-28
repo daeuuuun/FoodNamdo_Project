@@ -22,8 +22,8 @@ public class BadgeEntity {
     @Column(name = "badge_name", nullable = false)
     private String badgeName;
 
-    @Column(name = "badge_comment", nullable = false)
-    private String badgeComment;
+//    @Column(name = "badge_comment", nullable = false)
+//    private String badgeComment;
 
     @Column(name = "badge_unlock", nullable = false)
     private String badgeUnlock;
