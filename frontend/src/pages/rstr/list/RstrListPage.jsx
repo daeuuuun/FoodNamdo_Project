@@ -13,7 +13,7 @@ import PaginationItem from '@mui/material/PaginationItem';
 
 import { IMAGE_SERVER_URL } from '../../../config/Config';
 import { BACKEND_SERVER_URL } from '../../../config/Config';
-import {defaultImageInstance} from "../../../utils/axiosInstance";
+import { defaultImageInstance } from "../../../utils/axiosInstance";
 
 const RstrListPageContainer = styled.div`
     display: flex;
@@ -240,6 +240,7 @@ export const RstrListPage = () => {
             } else if (search) { // 검색어
                 fetchDataWithName();
             } else {
+                setFile(null);
                 fetchDataWithRandom();
             }
         };

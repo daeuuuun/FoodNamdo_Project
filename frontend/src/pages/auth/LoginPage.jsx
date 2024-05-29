@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Box from '@mui/material/Box';
@@ -8,8 +8,8 @@ import AuthLogo from './components/AuthLogo';
 import palette from '../../styles/palette';
 import { useNavigate } from 'react-router-dom';
 import { BACKEND_SERVER_URL } from '../../config/Config';
-import axios from 'axios';
-import {defaultBackInstance} from "../../utils/axiosInstance";
+import { defaultBackInstance } from "../../utils/axiosInstance";
+import { AppContext } from '../../utils/loginContext';
 
 const StyledLink = styled(Link)({
     fontSize: '0.9rem',
@@ -19,6 +19,8 @@ const StyledLink = styled(Link)({
 })
 
 const LoginPage = () => {
+
+    const { login } = useContext(AppContext);
 
     const navigate = useNavigate();
     const [focused, setFocused] = useState(null);
@@ -41,24 +43,25 @@ const LoginPage = () => {
     }
 
     const handleLogin = async () => {
-        setIsLoginAttempted(true); // 로그인 시도 상태를 true로 설정
+        setIsLoginAttempted(true);
 
         try {
-            const response = await defaultBackInstance.post
-                (BACKEND_SERVER_URL + '/usermanagement/login', {
-                    accountId: account_id,
-                    password: password
-                } ).then(response => console.log(response)).catch(err => console.log(err))
+            const response = await defaultBackInstance.post(BACKEND_SERVER_URL + '/usermanagement/login', {
+                accountId: account_id,
+                password: password
+            });
 
-            if (response.status === 200) {
-                navigate('/');
-                localStorage.setItem('accessToken', response.data.accessToken);
-                localStorage.setItem('refreshToken', response.data.refreshToken);
-            }
+            const responseData = response.data;
+
+            localStorage.setItem('accessToken', responseData.accessToken);
+            localStorage.setItem('refreshToken', responseData.refreshToken);
+            login();
+            navigate('/');
         } catch (error) {
             console.log(error);
         }
     }
+
 
     const onKeyDown = (e) => {
         if (e.key === 'Enter') {
