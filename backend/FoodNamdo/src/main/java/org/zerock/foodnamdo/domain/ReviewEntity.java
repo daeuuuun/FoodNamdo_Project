@@ -11,6 +11,7 @@ import java.util.Set;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -64,10 +65,10 @@ public class ReviewEntity {
     @Column(name = "receipt", nullable = false)
     private boolean receipt;
 
-    @Column(name = "like", nullable = false)
+    @Column(name = "`like`", nullable = false)
     private int like = 0;
 
-    @Column(name = "dislike", nullable = false)
+    @Column(name = "`dislike`", nullable = false)
     private int dislike = 0;
 
     @OneToMany(mappedBy = "reviewEntity")

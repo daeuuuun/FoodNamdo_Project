@@ -3,7 +3,9 @@ package org.zerock.foodnamdo.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
+import org.zerock.foodnamdo.customDTO.ReactionReviewDTO;
 import org.zerock.foodnamdo.customDTO.ReviewRegisterDTO;
+import org.zerock.foodnamdo.customDTO.ReviewUpdateDTO;
 import org.zerock.foodnamdo.customDTO.RstrFavoriteRegisterDTO;
 import org.zerock.foodnamdo.domain.ReviewEntity;
 import org.zerock.foodnamdo.domain.RstrEntity;
@@ -29,10 +31,16 @@ public interface MainSystemService {
 
     void deleteByReviewId(Long reviewID);
 
-    void saveReview(ReviewRegisterDTO reviewRegisterDTO);
+    Long saveReviewAndReturnId(ReviewRegisterDTO reviewRegisterDTO);
 
 
-    String saveReviewImage(Long rstrId, MultipartFile image) throws IOException; // 수정된 부분
+    void saveReviewImage(Long rstrId, MultipartFile image) throws IOException;
+
+    void insertReviewReaction(ReactionReviewDTO reactionReviewDTO);
+
+    void updateReviewReactions(ReviewEntity reviewEntity);
 
     void saveFavorite(RstrFavoriteRegisterDTO rstrFavoriteRegisterDTO);
+
+    void updateReview(ReviewUpdateDTO reviewUpdateDTO, Long userId);
 }

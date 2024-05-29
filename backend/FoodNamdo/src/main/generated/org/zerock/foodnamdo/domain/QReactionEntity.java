@@ -22,7 +22,9 @@ public class QReactionEntity extends EntityPathBase<ReactionEntity> {
 
     public static final QReactionEntity reactionEntity = new QReactionEntity("reactionEntity");
 
-    public final StringPath reactionType = createString("reactionType");
+    public final NumberPath<Long> reactionId = createNumber("reactionId", Long.class);
+
+    public final EnumPath<ReactionType> reactionType = createEnum("reactionType", ReactionType.class);
 
     public final QReviewEntity reviewEntity;
 

@@ -17,7 +17,7 @@ public class ReviewRegisterInputDTO {
     private Long rstr_id;
 //    private Long user_id;
     private String review_text;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime time_of_creation;
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 //    private LocalDateTime time_of_revision;

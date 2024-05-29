@@ -255,9 +255,11 @@ public class MainSystemController {
 
     @Operation(summary = "리뷰등록")
     @PostMapping("/ReviewRegister")
-    public String ReviewRegister(
-            @RequestBody ReviewRegisterInputDTO reviewRegisterInputDTO,
-            RedirectAttributes redirectAttributes) {
+    public ResponseEntity<Long> ReviewRegister(
+//    public String ReviewRegister(
+            @RequestBody ReviewRegisterInputDTO reviewRegisterInputDTO
+            ) {
+//            RedirectAttributes redirectAttributes) {
         log.info("ReviewRegister..");
         APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = userDetails.getUserId();  // Extract userId
@@ -288,15 +290,20 @@ public class MainSystemController {
         reviewRegisterDTO.setReceipt(false);
         reviewRegisterDTO.setLike(0);
         reviewRegisterDTO.setDislike(0);
-        reviewRegisterDTO.setReviewImages(null);
+//        reviewRegisterDTO.setReviewImages(null);
 
 
-        mainSystemService.saveReview(reviewRegisterDTO);
 
 
-        redirectAttributes.addFlashAttribute("result", "created");
+        Long reviewId = mainSystemService.saveReviewAndReturnId(reviewRegisterDTO);
 
-        return redirectAttributes.toString();
+        return ResponseEntity.ok(reviewId);
+//        mainSystemService.saveReview(reviewRegisterDTO);
+//
+//
+//        redirectAttributes.addFlashAttribute("result", "created");
+//
+//        return redirectAttributes.toString();
     }
     @Operation(summary = "리뷰 이미지 업로드")
     @PostMapping(value = "/uploadReviewImage", consumes = "multipart/form-data")
@@ -307,17 +314,21 @@ public class MainSystemController {
         log.info("uploadReviewImage..");
 
         try {
-            String imageUrl = mainSystemService.saveReviewImage(reviewId, image);
-            return ResponseEntity.ok(imageUrl);
+            mainSystemService.saveReviewImage(reviewId, image);
+            return ResponseEntity.ok("이미지 업로드 및 저장 성공");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 업로드 실패: " + e.getMessage());
         }
     }
 
     @Operation(summary = "리뷰수정")
     @PostMapping("/modifyReview")
-    public void modifyReview(){
+    public void modifyReview(@RequestBody ReviewUpdateDTO reviewUpdateDTO) {
+        log.info("updateReview..");
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
 
+        mainSystemService.updateReview(reviewUpdateDTO, userId);
     }
 
     @Operation(summary = "리뷰인증")
@@ -328,7 +339,18 @@ public class MainSystemController {
 
     @Operation(summary = "리뷰공감")
     @PostMapping("/reactionReview")
-    public void reactionReview(){
+    public void reactionReview(@RequestBody ReactionReviewInputDTO reactionReviewInputDTO){
+        log.info("reactionReview..");
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
+
+        ReactionReviewDTO reactionReviewDTO = new ReactionReviewDTO();
+        reactionReviewDTO.setReviewId(reactionReviewInputDTO.getReviewId());
+        reactionReviewDTO.setUserId(userId);
+        reactionReviewDTO.setReactionType(reactionReviewInputDTO.getReactionType());
+
+        mainSystemService.insertReviewReaction(reactionReviewDTO);
+
 
     }
 

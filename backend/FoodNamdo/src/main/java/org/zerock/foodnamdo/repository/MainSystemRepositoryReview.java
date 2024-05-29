@@ -7,12 +7,15 @@ import org.springframework.stereotype.Repository;
 import org.zerock.foodnamdo.domain.ReviewEntity;
 import org.zerock.foodnamdo.domain.RstrEntity;
 
+import java.util.List;
+
 @Repository
 public interface MainSystemRepositoryReview extends JpaRepository<ReviewEntity, Long> {
 //    Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable);
 
 //    Page<RstrEntity> findAllByRstrNameContains(String name, Pageable pageable);
 
+    List<ReviewEntity> findByRstrEntity(RstrEntity rstrEntity);
     Page<ReviewEntity> findAllByRstrEntity_RstrId(Long rstrId, Pageable pageable);
 
 //    int countAllByRstrNameContains(String rstrName);
