@@ -24,10 +24,6 @@ const AuthPage = ({ mode }) => {
         }
     };
 
-    const isFormValid = () => (
-        formData.name && formData.phone && formData.code.length == 6 && (mode === 'findPw' ? formData.account_id : true)
-    );
-
     const handleFind = async () => {
         if (mode === 'findPw') {
             if (!formData.account_id) {
@@ -50,7 +46,7 @@ const AuthPage = ({ mode }) => {
         if (mode === 'findId') { // 아이디 찾기
             try {
                 const response = await axios.post
-                    (BACKEND_SERVER_URL + '/usermanagement/findAccountIdByNameAndPhone', {
+                    (BACKEND_SERVER_URL + 'usermanagement/findAccountIdByNameAndPhone', {
                         name: formData.name,
                         phone: formData.phone,
                         code: formData.code
@@ -69,28 +65,28 @@ const AuthPage = ({ mode }) => {
             }
         } else if (mode === 'findPw') { // 비밀번호 찾기
             navigate('/reset-pw')
-            // try {
-            //     const response = await axios.post
-            //         (BACKEND_SERVER_URL + '/usermanagement/findPasswordByAccountIdAndNameAndPhone', {}, {
-            //             params: {
-            //                 accountId: formData.account_id,
-            //                 name: formData.name,
-            //                 phone: formData.phone,
-            //                 code: formData.code,
-            //             }
-            //         });
-            //     alert('비밀번호가 전송되었습니다.');
-            //     navigate('/login');
-            // } catch (error) {
-            //     alert('해당 정보를 찾을 수 없습니다.');
-            //     setFormData(prevState => ({
-            //         ...prevState,
-            //         account_id: '',
-            //         name: '',
-            //         phone: '',
-            //         code: '',
-            //     }));
-            // }
+            try {
+                const response = await axios.post
+                    (BACKEND_SERVER_URL + 'usermanagement/findPasswordByAccountIdAndNameAndPhone', {
+                        accountId: formData.account_id,
+                        name: formData.name,
+                        phone: formData.phone,
+                        code: formData.code,
+                    });
+
+                const userId = response.data.userId;
+
+                navigate('/reset-pw', { state: userId });
+            } catch (error) {
+                alert('해당 정보를 찾을 수 없습니다.');
+                setFormData(prevState => ({
+                    ...prevState,
+                    account_id: '',
+                    name: '',
+                    phone: '',
+                    code: '',
+                }));
+            }
         }
     };
 
@@ -101,12 +97,9 @@ const AuthPage = ({ mode }) => {
         };
         try {
             await axios.post(
-                BACKEND_SERVER_URL + '/usermanagement/verify', {},
-                {
-                    params: {
-                        phone: formData.phone
-                    }
-                });
+                BACKEND_SERVER_URL + 'usermanagement/verify', {
+                phone: formData.phone
+            });
             setIsVerified(true);
             alert('인증번호가 전송되었습니다.');
         } catch (error) {
@@ -117,7 +110,7 @@ const AuthPage = ({ mode }) => {
 
     return (
         <div className="auth-form-container centered-flex">
-            {/* <AuthLogo /> */}
+            <AuthLogo />
             <div className="auth-form">
                 {
                     mode === 'findPw' && (

@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
 import AuthLogo from './components/AuthLogo';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { BACKEND_SERVER_URL } from '../../config/Config';
+import axios from 'axios';
 
 const ResetPwPage = () => {
 
+	const { state } = useLocation();
+	const navigate = useNavigate();
 	const [focused, setFocused] = useState(null);
+	const [pwMatch, setPwMatch] = useState(true);
 
 	const [resetForm, setResetForm] = useState({
 		new_password: '',
@@ -14,15 +20,28 @@ const ResetPwPage = () => {
 	const { new_password, new_password_check } = resetForm;
 
 	const onChange = (e) => {
-		const userResetForm = {
-			...resetForm,
-			[e.target.name]: e.target.value
-		};
-		setResetForm(userResetForm);
+		const { name, value } = e.target;
+		setResetForm(prevState => ({
+			...prevState,
+			[name]: value
+		}));
+
+		if (name === 'new_password_check') {
+			setPwMatch(new_password === value);
+		}
 	}
 
-	const handleResetPw = () => {
-
+	const handleResetPw = async () => {
+		try {
+			await axios.post(BACKEND_SERVER_URL + 'usermanagement/changePassword', {
+				userId: state,
+				newPassword: new_password
+			});
+			alert('비밀번호가 재설정되었습니다.');
+			navigate('/login');
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const onKeyDown = (e) => {
@@ -60,6 +79,12 @@ const ResetPwPage = () => {
 						onBlur={() => setFocused(null)}
 					/>
 				</div>
+				{
+					!pwMatch &&
+					<div className='error-text'>
+						비밀번호가 일치하지 않습니다.
+					</div>
+				}
 				<div className="auth-button" onClick={handleResetPw}>
 					비밀번호 재설정
 				</div>

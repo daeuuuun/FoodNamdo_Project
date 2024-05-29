@@ -58,6 +58,7 @@ const LoginPage = () => {
             login();
             navigate('/');
         } catch (error) {
+            alert('아이디나 비밀번호가 잘못되었습니다. 다시 시도해주세요.')
             console.log(error);
         }
     }
@@ -71,7 +72,7 @@ const LoginPage = () => {
 
     return (
         <div className='auth-form-container centered-flex'>
-            {/* <AuthLogo /> */}
+            <AuthLogo />
             <div className="auth-form">
                 <div className={`input-form ${focused === 'account_id' ? 'input-focus-form' : ''}`}>
                     <PersonOutlinedIcon className="icons" />

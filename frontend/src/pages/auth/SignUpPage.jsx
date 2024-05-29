@@ -17,7 +17,7 @@ import { styled } from '@mui/system';
 import AuthLogo from './components/AuthLogo';
 
 import { BACKEND_SERVER_URL } from "../../config/Config";
-import {defaultBackInstance} from "../../utils/axiosInstance";
+import { defaultBackInstance } from "../../utils/axiosInstance";
 
 const StyledLink = styled(Link)({
 	fontSize: '0.9rem',
@@ -201,7 +201,7 @@ const SignUpPage = () => {
 
 	return (
 		<div className="auth-form-container centered-flex">
-			{/* <AuthLogo /> */}
+			<AuthLogo />
 			<div className="auth-form">
 				<div className={`input-form ${focused === 'account_id' ? 'input-focus-form' : ''}`}>
 					<PersonOutlinedIcon className="icons" />
