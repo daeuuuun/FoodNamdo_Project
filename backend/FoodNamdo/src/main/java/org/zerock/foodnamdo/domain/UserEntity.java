@@ -40,6 +40,9 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "last_visit")
+    private Long lastVisit;
+
     @OneToMany(mappedBy = "userEntity")
 //    @JsonManagedReference
     private List<ReviewEntity> reviews;

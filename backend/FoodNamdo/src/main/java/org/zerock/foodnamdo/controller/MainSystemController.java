@@ -58,9 +58,15 @@ public class MainSystemController {
 //        Pageable pageable = PageRequest.of(page, pageSize);
         Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
 
-        Page<RstrEntity> rstrPage = mainSystemService.findAllByOrderByRstrReviewCountDesc(pageable);
-        log.info(rstrPage);
-        List<FindRstrByNameDTO> rstrAllDTOList = rstrPage.getContent().stream()
+        Page<RstrEntity> rstrReviewPage = mainSystemService.findAllByOrderByRstrReviewCountDesc(pageable);
+//        log.info(rstrPage);
+        List<FindRstrByNameDTO> rstrReviewAllDTOList = rstrReviewPage.getContent().stream()
+                .map(FindRstrByNameDTO::fromEntity)
+                .collect(Collectors.toList());
+
+        Page<RstrEntity> rstrFavoritePage = mainSystemService.findAllByOrderByRstrFavoriteCountDesc(pageable);
+//        log.info(rstrPage);
+        List<FindRstrByNameDTO> rstrFavoriteAllDTOList = rstrFavoritePage.getContent().stream()
                 .map(FindRstrByNameDTO::fromEntity)
                 .collect(Collectors.toList());
 
@@ -74,7 +80,8 @@ public class MainSystemController {
         response.put("total_pages", totalPages);
         response.put("page_num", page);
         response.put("total_rstr", totalResults);
-        response.put("rstr", rstrAllDTOList);
+        response.put("rstr_favorite", rstrFavoriteAllDTOList);
+        response.put("rstr_review", rstrReviewAllDTOList);
 
         return response;
     }
@@ -190,9 +197,13 @@ public class MainSystemController {
     public RstrDetailDTO RstrDetail(
             @RequestParam("rstr_id") Long rstrId) {
         log.info("RstrDetail......");
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
 
 
         RstrEntity rstrEntity = mainSystemService.findByRstrId(rstrId);
+
+        mainSystemService.updateLastVisit(userId, rstrId);
 
 
 
@@ -247,6 +258,8 @@ public class MainSystemController {
 
         // rstrFavoriteRegisterDTO를 사용하여 추가적인 처리 (예: 데이터베이스에 저장)
         mainSystemService.saveFavorite(rstrFavoriteRegisterDTO);
+
+        mainSystemService.updateRestaurantFavoriteCount(rstrFavoriteRegisterInputDTO.getRstrId());
 
         log.info("Favorite registered for userId: {} and rstrId: {}", userId, rstrFavoriteRegisterInputDTO.getRstrId());
     }

@@ -24,6 +24,8 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final ListPath<FavoriteEntity, QFavoriteEntity> favorites = this.<FavoriteEntity, QFavoriteEntity>createList("favorites", FavoriteEntity.class, QFavoriteEntity.class, PathInits.DIRECT2);
 
+    public final NumberPath<Long> lastVisit = createNumber("lastVisit", Long.class);
+
     public final StringPath name = createString("name");
 
     public final StringPath nickname = createString("nickname");

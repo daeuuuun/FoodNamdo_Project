@@ -16,6 +16,8 @@ import java.util.List;
 public interface MainSystemService {
     Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable);
 
+    Page<RstrEntity> findAllByOrderByRstrFavoriteCountDesc(Pageable pageable);
+
     Page<RstrEntity> findAllByRstrNameContainsAndFilters(String name, String category, String region, Pageable pageable);
 //    Page<RstrEntity> findAllByRstrNameContains(String name, Pageable pageable);
 
@@ -33,6 +35,9 @@ public interface MainSystemService {
 
     Long saveReviewAndReturnId(ReviewRegisterDTO reviewRegisterDTO);
 
+    void updateRestaurantRatingAndCount(Long rstrId);
+
+    void updateRestaurantFavoriteCount(Long rstrId);
 
     void saveReviewImage(Long rstrId, MultipartFile image) throws IOException;
 
@@ -43,4 +48,6 @@ public interface MainSystemService {
     void saveFavorite(RstrFavoriteRegisterDTO rstrFavoriteRegisterDTO);
 
     void updateReview(ReviewUpdateDTO reviewUpdateDTO, Long userId);
+
+    void updateLastVisit(Long userId, Long rstrId);
 }

@@ -32,4 +32,6 @@ public interface MainSystemRepositoryRstr extends JpaRepository<RstrEntity, Long
 //    int countAllByRstrNameContains(String rstrName);
 
     long count();
+
+    Page<RstrEntity> findAllByOrderByRstrFavoriteCountDesc(Pageable pageable);
 }

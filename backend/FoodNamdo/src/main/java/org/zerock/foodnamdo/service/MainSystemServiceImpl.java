@@ -42,8 +42,12 @@ public class MainSystemServiceImpl implements MainSystemService{
 
     @Override
     public Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable) {
-        Page<RstrEntity> rstr = mainSystemRepositoryRstr.findAllByOrderByRstrReviewCountDesc(pageable);
-        return rstr;
+        return mainSystemRepositoryRstr.findAllByOrderByRstrReviewCountDesc(pageable);
+    }
+
+    @Override
+    public Page<RstrEntity> findAllByOrderByRstrFavoriteCountDesc(Pageable pageable) {
+        return mainSystemRepositoryRstr.findAllByOrderByRstrFavoriteCountDesc(pageable);
     }
 
     public Page<RstrEntity> findAllByRstrNameContainsAndFilters(String name, String category, String region, Pageable pageable) {
@@ -59,6 +63,9 @@ public class MainSystemServiceImpl implements MainSystemService{
         return mainSystemRepositoryRstr.findByRstrId(rstrId);
     }
 
+    public void updateLastVisit(Long userId, Long rstrId){
+        mainSystemRepositoryUser.updateLastVisit(userId, rstrId);
+    }
 
     public long count() {
         long count = mainSystemRepositoryRstr.count();
@@ -214,6 +221,20 @@ public class MainSystemServiceImpl implements MainSystemService{
 
         mainSystemRepositoryRstr.save(rstrEntity);
     }
+    @Transactional
+    public void updateRestaurantFavoriteCount(Long rstrId) {
+        RstrEntity rstrEntity = mainSystemRepositoryRstr.findById(rstrId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid restaurant ID"));
+
+        List<FavoriteEntity> favoriteEntities = mainSystemRepositoryFavirote.findByRstrEntity(rstrEntity);
+        int favoriteCount = favoriteEntities.size();
+
+        rstrEntity.setRstrFavoriteCount(favoriteCount);
+
+        mainSystemRepositoryRstr.save(rstrEntity);
+    }
+
+
     private final String uploadUrl = "http://foodnamdo.iptime.org:8000/images/?path=review_img&api_key=d0f535568d149afec1933a8c37c765e0";
 
     @Override
