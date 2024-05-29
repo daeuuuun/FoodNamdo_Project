@@ -6,6 +6,7 @@ import RstrBriefInfo from './components/RstrBriefInfo';
 import { useParams } from 'react-router-dom';
 import { BACKEND_SERVER_URL } from '../../../config/Config';
 import axios from 'axios';
+import {authBackInstance} from "../../../utils/axiosInstance";
 
 const RstrDetailMainContainer = styled.div`
     padding-top: 50px;
@@ -19,7 +20,7 @@ const RstrDetailPage = () => {
     useEffect(() => {
         const fetchRstrDetails = async () => {
             try {
-                const response = await axios.get
+                const response = await authBackInstance.get
                     (BACKEND_SERVER_URL + '/mainsystem/RstrDetail', {
                         params: {
                             rstr_id: rstrId

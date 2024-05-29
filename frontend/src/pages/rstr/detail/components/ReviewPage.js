@@ -1,9 +1,11 @@
 import React, {useState} from "react";
 import styles from './ReviewPage.module.css'
 import ReviewContainer from "./ReviewContainer";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 
-const ReviewPage = () => {
+const ReviewPage = ({ rstrInfo }) => {
+    const {rstrId} = useParams()
+
     const [selectOption, setSelectOption] = useState()
     const selectOptionHandle = (event) => {
         const { name, checked } = event.target
@@ -14,7 +16,7 @@ const ReviewPage = () => {
         <>
             <div className={styles.reviewPageContainer}>
                 <div className={styles.insertBtnDiv}>
-                    <button className={styles.insertBtn}><Link to = "/review/insert">리뷰 작성</Link></button>
+                    <Link to={`/review/insert/${rstrId}`} className={styles.insertBtn}>리뷰 작성</Link>
                 </div>
                 <div className={styles.radioBoxDiv}>
                     <div className={styles.rableBtn}>
@@ -26,7 +28,7 @@ const ReviewPage = () => {
                         영수증 인증
                     </div>
                 </div>
-                <ReviewContainer/>
+                <ReviewContainer rstrInfo={rstrInfo}/>
             </div>
         </>
     )

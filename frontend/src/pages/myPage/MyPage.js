@@ -23,7 +23,6 @@ const MyPage = () => {
     return (
         <>
             <div className={styles.background}>
-                <Header />
                 <SideBar />
             </div>
         </>

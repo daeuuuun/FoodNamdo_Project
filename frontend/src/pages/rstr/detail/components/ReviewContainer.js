@@ -4,14 +4,15 @@ import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { PiClover } from "react-icons/pi";
 import { IoHeartOutline } from "react-icons/io5";
 import { MdHeartBroken } from "react-icons/md";
-import {defaultBackInstance} from "../../../../utils/axiosInstance";
+import {authBackInstance, defaultBackInstance} from "../../../../utils/axiosInstance";
 import ReviewCategory from "./ReviewCategory";
+import ReviewCheck from "./ReviewCheck";
 
-const ReviewContain = () => {
+const ReviewContain = ({ rstrInfo }) => {
     const [userInfo, setUserInfo] = useState({});
     const rstr_id = 33445
     const getUserInfo = () => {
-        defaultBackInstance.get(`mainsystem/RstrDetail?rstr_id=${rstr_id}`
+        authBackInstance.get(`mainsystem/RstrDetail?rstr_id=${rstr_id}`
         )
             .then((res) => {
                 setUserInfo(res.data)
@@ -41,7 +42,7 @@ const ReviewContain = () => {
                         333
                     </div>
                 </div>
-                <ReviewCategory/>
+                <ReviewCheck rstrInfo={rstrInfo}/>
                 <div className={styles.reviewTextDiv}>
                     <div className={styles.textDiv}>
                         빵이 너무 너무 맛있어요 주차장은 따로 없지만 가게 앞에 주차는 잠깐은 가능하다고 하셨어요! 커피도 정말 잘 해요 아메리카노가 맛있는 집! 커피도 눈 앞에서 직접 내리고 빵
