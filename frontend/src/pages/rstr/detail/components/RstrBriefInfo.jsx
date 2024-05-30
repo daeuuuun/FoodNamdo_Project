@@ -6,6 +6,8 @@ import CallIcon from '@mui/icons-material/Call';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import StarIcon from '@mui/icons-material/Star';
+import { BACKEND_SERVER_URL } from '../../../../config/Config';
+import axios from 'axios';
 
 const RstrBriefInfoContainer = styled.div`
     display: flex;
@@ -145,16 +147,29 @@ const StyledBookmarkIcon = styled(BookmarkIcon)`
     margin-bottom: -8px;
 `;
 
-const RstrBriefInfo = ({ rstrInfo }) => {
+const RstrBriefInfo = ({ rstrInfo, rstrId }) => {
     const [isFavoriate, setIsFavoriate] = useState(true);
 
     const MoveToTop = () => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
     }
 
-    const toggleFavorite = () => {
-        setIsFavoriate(!isFavoriate);
-        // 찜 목록으로 이동
+    const token = localStorage.getItem('accessToken');
+
+    const toggleFavorite = async () => {
+        // try {
+        //     const response = await axios.post(BACKEND_SERVER_URL + '/mainsystem/RstrFavoriteRegister', {
+        //         rstrId: rstrId
+        //     }, {
+        //         headers: {
+        //             'Authorization': `Bearer ${token}`
+        //         }
+        //     });
+
+        //     setIsFavoriate(!isFavoriate);
+        // } catch (error) {
+        //     console.log(error);
+        // }
     }
 
     return (

@@ -3,7 +3,6 @@ import { Helmet } from "react-helmet";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './index.css';
 import '../src/styles/common.css';
-// import '../src/styles/authform.css';
 import MainPage from './pages/main/MainPage';
 import LoginPage from './pages/auth/LoginPage';
 import SignUpPage from './pages/auth/SignUpPage';
@@ -11,7 +10,7 @@ import RstrDetailPage from './pages/rstr/detail/RstrDetailPage';
 import RstrListPage from './pages/rstr/list/RstrListPage';
 import FindIdPage from './pages/auth/FindIdPage';
 import FindPwPage from './pages/auth/FindPwPage';
-import { FileProvider } from './data/FileContext'; // 이미지 파일 전역 관리
+import { FileProvider } from './data/FileContext';
 import Header from './pages/header/Header';
 import MyPage from "./pages/myPage/MyPage";
 import ReviewInsert from "./pages/review/ReviewInsert";
@@ -42,7 +41,7 @@ function App() {
 
             <Route path="/mypage" element={<MyPage />} />
 
-            <Route path="/review/insert" element={<ReviewInsert />} />
+            <Route path="/review/insert/:id" element={<ReviewInsert />} />
           </Routes>
         </Router>
       </FileProvider>
