@@ -1,5 +1,7 @@
 import mariadb_utils, os, uuid, main, Table
 from tqdm import tqdm
+from fastapi import HTTPException
+import urllib.parse
 
 def init(collection, table):
     query = ""
@@ -24,7 +26,23 @@ def img_saving(collection, save_path, table, data, columns):
 
         local_save_path = save_path + table + "/" + str(attribute[0]) + "." + file_extension_name
 
-        os.system('curl "' + str(attribute[2]) + '" > ' + local_save_path)      # 로컬에 이미지 저장
+        parsed_url = urllib.parse.urlparse(str(attribute[2]))
+        query_params = urllib.parse.parse_qs(parsed_url.query)
+        encoded_image_name = urllib.parse.quote(query_params['image_name'][0])
+        encoded_path = urllib.parse.quote('./' + query_params['path'][0] + '/')
+        encoded_query = f"image_name={encoded_image_name}&path={encoded_path}"
+
+        # 인코딩된 URL 생성
+        encoded_url = urllib.parse.urlunparse((
+            parsed_url.scheme,
+            parsed_url.netloc,
+            parsed_url.path,
+            parsed_url.params,
+            encoded_query,
+            parsed_url.fragment
+        ))
+
+        os.system('curl "' + encoded_url + '" > ' + local_save_path)      # 로컬에 이미지 저장
 
         # 메타 데이터 저장
         metadata = {"table": table}
@@ -41,6 +59,7 @@ def img_saving(collection, save_path, table, data, columns):
             print("이미지 저장 도중 오류 발생: ", e)
             print("이미지 오류 table: ", table)
             print("이미지 오류 id: ", str(attribute[0]))
+            raise HTTPException(status_code=422, detail="This file is not stored")
 
 keys_to_remove = ["embeddings", "documents", "uris", "data"]
 
