@@ -52,7 +52,7 @@ const ResetPwPage = () => {
 
 	return (
 		<div className="auth-form-container centered-flex">
-			{/* <AuthLogo /> */}
+			<AuthLogo />
 			<div className='auth-form'>
 				<div className={`input-form ${focused === 'new_password' ? 'input-focus-form' : ''}`}>
 					<LockOutlinedIcon className="icons" />

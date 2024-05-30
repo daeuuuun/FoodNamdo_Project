@@ -4,7 +4,7 @@ const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
     const [state, setState] = useState({
-        isAuthenticated: false,
+        isAuthenticated: !!localStorage.getItem('accessToken'),
     });
 
     const login = () => {
@@ -13,6 +13,8 @@ const AppProvider = ({ children }) => {
 
     const logout = () => {
         setState({ isAuthenticated: false });
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
     };
 
     return (

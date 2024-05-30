@@ -8,7 +8,7 @@ import { BACKEND_SERVER_URL } from '../../config/Config';
 import { AppContext } from '../../utils/loginContext';
 
 const Header = () => {
-    const { isAuthenticated } = useContext(AppContext);
+    const { isAuthenticated, logout } = useContext(AppContext);
     const refreshToken = localStorage.getItem('refreshToken');
 
     const handleLogout = async () => {
@@ -16,11 +16,7 @@ const Header = () => {
             await defaultBackInstance.post(BACKEND_SERVER_URL + '/usermanagement/logout', {
                 refreshToken: refreshToken
             });
-
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-
-            window.location.reload();
+            logout();
         } catch (error) {
             console.log(error);
         }
