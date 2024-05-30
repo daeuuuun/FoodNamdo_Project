@@ -197,15 +197,17 @@ public class MainSystemController {
     public RstrDetailDTO RstrDetail(
             @RequestParam("rstr_id") Long rstrId) {
         log.info("RstrDetail......");
-        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long userId = userDetails.getUserId();  // Extract userId
-
 
         RstrEntity rstrEntity = mainSystemService.findByRstrId(rstrId);
 
-        mainSystemService.updateLastVisit(userId, rstrId);
+        try {
+            APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Long userId = userDetails.getUserId();  // Extract userId
 
-
+            mainSystemService.updateLastVisit(userId, rstrId);
+        } catch (Exception e) {
+            log.info("User is not authenticated, proceeding without updating last visit.");
+        }
 
         return RstrDetailDTO.fromEntity(rstrEntity);
     }

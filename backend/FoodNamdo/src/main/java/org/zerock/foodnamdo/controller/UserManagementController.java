@@ -26,7 +26,6 @@ import org.zerock.foodnamdo.service.UserManagementService;
 import org.zerock.foodnamdo.service.CoolsmsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.zerock.foodnamdo.util.AESUtil;
 import org.zerock.foodnamdo.util.JWTUtil;
 
 import java.util.HashMap;

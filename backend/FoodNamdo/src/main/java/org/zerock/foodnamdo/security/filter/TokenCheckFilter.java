@@ -52,7 +52,17 @@ public class TokenCheckFilter extends OncePerRequestFilter {
 //        }
 
         // 필터를 적용할 경로들
-        List<String> filterPaths = Arrays.asList("/usermanagement/deleteUser", "/mainsystem/**", "/mypage/**");
+        List<String> filterPaths = Arrays.asList("/usermanagement/deleteUser",
+//                "/mainsystem/**",
+                "/mainsystem/verifyReview",
+                "/mainsystem/uploadReviewImage",
+                "/mainsystem/reactionReview",
+                "/mainsystem/modifyReview",
+                "/mainsystem/deleteReview",
+                "/mainsystem/verifyReview",
+                "/mainsystem/RstrFavoriteRegister",
+                "/mainsystem/ReviewRegister",
+                "/mypage/**");
 //        List<String> filterPaths = Arrays.asList("/usermanagement/deleteUser", "/mainsystem/**", "/mypage/myInfo", "/mypage/getFavoriteRstr");
 
         // 필터를 적용할 경로 검사
