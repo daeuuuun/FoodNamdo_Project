@@ -35,16 +35,14 @@ const AdditionInfo = ({ rstrInfo }) => {
     return (
         <AdditionInfoContainer style={{ justifyContent: 'flex-start' }}>
             {Object.entries(addInfo).map(([key, value]) => (
-                // (value) && (
-                //     <AdditionInfoContent className='centered-flex' key={key}>
-                //         <AdditionInfoLabel>{key}</AdditionInfoLabel>
-                //     </AdditionInfoContent>
-                // )
-                <AdditionInfoContent className='centered-flex' key={key}>
-                    <AdditionInfoLabel>{key}</AdditionInfoLabel>
-                </AdditionInfoContent>
-            ))}
-        </AdditionInfoContainer>
+                (value) && (
+                    <AdditionInfoContent className='centered-flex' key={key}>
+                        <AdditionInfoLabel>{key}</AdditionInfoLabel>
+                    </AdditionInfoContent>
+                )
+            ))
+            }
+        </AdditionInfoContainer >
     )
 }
 

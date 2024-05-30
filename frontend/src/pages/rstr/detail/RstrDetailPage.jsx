@@ -50,7 +50,7 @@ const RstrDetailPage = () => {
                 <div
                     style={{ display: 'flex' }}>
                     <RstrImgCarusel rstrImg={rstrDetails.rstr_images} />
-                    <RstrBriefInfo rstrInfo={rstrDetails} />
+                    <RstrBriefInfo rstrInfo={rstrDetails} rstrId={rstrId} />
                 </div>
             </RstrDetailMainContainer >
             <RstrTabBar rstrInfo={rstrDetails} />

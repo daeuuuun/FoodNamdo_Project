@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
 import palette from "../../../../styles/palette";
 import PlaceIcon from '@mui/icons-material/Place';
@@ -7,8 +8,9 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import StarIcon from '@mui/icons-material/Star';
 import { BACKEND_SERVER_URL } from '../../../../config/Config';
-import axios from 'axios';
-
+import { authBackInstance } from '../../../../utils/axiosInstance';
+import { AppContext } from '../../../../utils/loginContext';
+import { useParams } from 'react-router-dom';
 const RstrBriefInfoContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -148,30 +150,33 @@ const StyledBookmarkIcon = styled(BookmarkIcon)`
 `;
 
 const RstrBriefInfo = ({ rstrInfo, rstrId }) => {
+    const { isAuthenticated } = useContext(AppContext);
+    const navigate = useNavigate();
     const [isFavoriate, setIsFavoriate] = useState(true);
 
     const MoveToTop = () => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
     }
 
-    const token = localStorage.getItem('accessToken');
-
     const toggleFavorite = async () => {
-        // try {
-        //     const response = await axios.post(BACKEND_SERVER_URL + '/mainsystem/RstrFavoriteRegister', {
-        //         rstrId: rstrId
-        //     }, {
-        //         headers: {
-        //             'Authorization': `Bearer ${token}`
-        //         }
-        //     });
+        if (!isAuthenticated) {
+            alert("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
 
-        //     setIsFavoriate(!isFavoriate);
-        // } catch (error) {
-        //     console.log(error);
-        // }
+        console.log(rstrId);
+        try {
+            const response = await authBackInstance.post('/mainsystem/RstrFavoriteRegister', {
+                rstrId: rstrId
+            });
+            if (response.status === 200) {
+                setIsFavoriate(!isFavoriate);
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
-
     return (
         <RstrBriefInfoContainer>
             <CertificationMarks>

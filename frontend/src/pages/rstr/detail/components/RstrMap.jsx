@@ -14,7 +14,6 @@ const RstrMap = ({ rstrInfo }) => {
                 setKakaoMapLoaded(true);
             });
         };
-        console.log(rstrInfo);
     }, []);
 
     useEffect(() => {
