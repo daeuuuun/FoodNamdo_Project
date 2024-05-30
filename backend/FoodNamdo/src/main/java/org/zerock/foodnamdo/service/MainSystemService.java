@@ -31,6 +31,8 @@ public interface MainSystemService {
 
     long count();
 
+    void postReviewImage(int reviewImgId) throws IOException;
+
     void deleteByReviewId(Long reviewID);
 
     Long saveReviewAndReturnId(ReviewRegisterDTO reviewRegisterDTO);

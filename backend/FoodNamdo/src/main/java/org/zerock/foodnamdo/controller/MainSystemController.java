@@ -25,6 +25,7 @@ import org.zerock.foodnamdo.domain.RstrEntity;
 import org.zerock.foodnamdo.service.MainSystemService;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -335,6 +336,18 @@ public class MainSystemController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 업로드 실패: " + e.getMessage());
         }
     }
+
+    @Operation(summary = "리뷰이미지id전송")
+    @PostMapping("/postReviewImage")
+    public ResponseEntity<String> postReviewImage(@RequestParam int reviewImgId) {
+        try {
+            mainSystemService.postReviewImage(reviewImgId);
+            return ResponseEntity.ok("Successfully posted review image");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to post review image: " + e.getMessage());
+        }
+    }
+
 
     @Operation(summary = "리뷰수정")
     @PostMapping("/modifyReview")

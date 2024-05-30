@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.zerock.foodnamdo.customDTO.ReactionReviewDTO;
@@ -14,6 +15,7 @@ import org.zerock.foodnamdo.customDTO.ReviewUpdateDTO;
 import org.zerock.foodnamdo.customDTO.RstrFavoriteRegisterDTO;
 import org.zerock.foodnamdo.domain.*;
 import org.zerock.foodnamdo.repository.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -42,6 +44,9 @@ public class MainSystemServiceImpl implements MainSystemService{
     private final MainSystemRepositoryReviewImg mainSystemRepositoryReviewImg;
     private final MainSystemRepositoryReaction mainSystemRepositoryReaction;
     private final MainSystemRepositoryBadge mainSystemRepositoryBadge;
+    private final RestTemplate restTemplate;
+
+
 
     @Override
     public Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable) {
@@ -267,33 +272,66 @@ public class MainSystemServiceImpl implements MainSystemService{
                 .reviewImgUrl(imageUrl)
                 .build();
         mainSystemRepositoryReviewImg.save(reviewImgEntity);
+
         int reviewImgId = Math.toIntExact(reviewImgEntity.getReviewImgId());
-        String reviewImgUrl = "http://localhost/image_search_recommend/review_img/?review_img_id=" + reviewImgId;
-//        String reviewImgUrl = "http://localhost/image_search_recommend/review_img/?review_img_id=" + reviewImgId;
+        log.info("reviewImgId: {}", reviewImgId);
 
-        HttpURLConnection connection = null;
-        try {
-            URL url = new URL(reviewImgUrl);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
+//        postReviewImage(reviewImgId);
 
+    }
 
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                log.info("Successfully post review image " + reviewImgUrl);
-            } else {
-                log.info("Failed to post review image " + reviewImgUrl);
-            }
-        } catch (IOException e) {
-            // 예외 처리
-            throw new IOException("POST request failed", e);
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
+//    public void postReviewImage(int reviewImgId) throws IOException {
+////        String reviewImgUrl = "http://localhost:8000/review_image/" + reviewImgId;
+//        String reviewImgUrl = "http://localhost/image_search_recommend/review_image/" + reviewImgId;
+////        String reviewImgUrl = "http://localhost/image_search_recommend/review_image/" + reviewImgId;
+//        log.info("Sending POST request to URL: {}", reviewImgUrl);
+//        log.info(reviewImgUrl);
+//        HttpURLConnection connection = null;
+//        try {
+//            URL url = new URL(reviewImgUrl);
+//            connection = (HttpURLConnection) url.openConnection();
+//            connection.setDoOutput(true);
+//            connection.setRequestMethod("POST");
+//            connection.setRequestProperty("Content-Type", "application/json");
+//
+//            int responseCode = connection.getResponseCode();
+//            log.info("응답 코드: {}", responseCode);
+//
+//            if (responseCode == HttpURLConnection.HTTP_OK) {
+//                log.info("성공적으로 리뷰 이미지를 전송했습니다: {}", reviewImgUrl);
+//            } else {
+//                log.error("리뷰 이미지 전송 실패: {}. 응답 코드: {}", reviewImgUrl, responseCode);
+//            }
+//        } catch (IOException e) {
+//            log.error("{}로의 POST 요청 실패", reviewImgUrl, e);
+//            throw new IOException("POST 요청 실패", e);
+//        } finally {
+//            if (connection != null) {
+//                connection.disconnect();
+//            }
+//        }
+//    }
+
+    @Override
+    public void postReviewImage(int reviewImgId) throws IOException {
+        // RestTemplate 인스턴스 생성 (이미 주입받았다고 가정)
+        RestTemplate restTemplate = new RestTemplate();
+
+        // HttpHeaders 객체를 생성하고 Accept 헤더를 application/json으로 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+        // HttpEntity를 생성하고, 헤더만 포함시킨다 (body는 null)
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        // URL 설정
+        String url = "http://localhost/image_search_recommend/review_image/" + reviewImgId;
+
+        // RestTemplate를 사용하여 POST 요청을 보내고, 응답을 ResponseEntity<String>으로 받는다
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+        // 응답 출력
+        System.out.println("Response from the server: " + response.getBody());
     }
 
     private String uploadImageToServer(MultipartFile image) throws IOException {
