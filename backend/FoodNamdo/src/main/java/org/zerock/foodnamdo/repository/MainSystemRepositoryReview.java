@@ -23,4 +23,6 @@ public interface MainSystemRepositoryReview extends JpaRepository<ReviewEntity, 
     void deleteByReviewId(Long reviewId);
 
     long count();
+
+    List<ReviewEntity> findAllByUserEntity_UserId(Long userId);
 }

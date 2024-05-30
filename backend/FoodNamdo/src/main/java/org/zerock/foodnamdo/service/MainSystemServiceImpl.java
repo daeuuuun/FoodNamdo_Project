@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,6 +41,7 @@ public class MainSystemServiceImpl implements MainSystemService{
     private final MainSystemRepositoryFavorite mainSystemRepositoryFavirote;
     private final MainSystemRepositoryReviewImg mainSystemRepositoryReviewImg;
     private final MainSystemRepositoryReaction mainSystemRepositoryReaction;
+    private final MainSystemRepositoryBadge mainSystemRepositoryBadge;
 
     @Override
     public Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable) {
@@ -150,6 +152,9 @@ public class MainSystemServiceImpl implements MainSystemService{
                 .build();
 
         mainSystemRepositoryReview.save(reviewEntity);
+
+        int reviewCount = mainSystemRepositoryReview.findAllByUserEntity_UserId(reviewRegisterDTO.getUser_id()).size();
+
         updateRestaurantRatingAndCount(reviewRegisterDTO.getRstr_id());
         return reviewEntity.getReviewId();
 
@@ -163,6 +168,23 @@ public class MainSystemServiceImpl implements MainSystemService{
 //            }
 //        }
     }
+
+//    public void assignBadgesBasedOnReviewCount(Long userId) {
+//        int reviewCount = mainSystemRepositoryReview.findAllByUserEntity_UserId(userId).size();
+//        List<Integer> badgeThresholds = Arrays.asList(1, 5, 10, 20, 30);
+//
+//        for (int threshold : badgeThresholds) {
+//            if (reviewCount >= threshold) {
+//                BadgeEntity badgeEntity = mainSystemRepositoryBadge.findById((long) threshold)
+//                        .orElseThrow(() -> new IllegalArgumentException("Invalid badge ID"));
+//                UserBadgeEntity userBadgeEntity = new UserBadgeEntity();
+//                userBadgeEntity.setUserEntity(mainSystemRepositoryUser.findById(userId)
+//                        .orElseThrow(() -> new IllegalArgumentException("Invalid user ID")));
+//                userBadgeEntity.setBadgeEntity(badgeEntity);
+//                mainSystemRepositoryUserBadge.save(userBadgeEntity);
+//            }
+//        }
+//    }
 
     @Override
     @Transactional
@@ -245,7 +267,33 @@ public class MainSystemServiceImpl implements MainSystemService{
                 .reviewImgUrl(imageUrl)
                 .build();
         mainSystemRepositoryReviewImg.save(reviewImgEntity);
+        int reviewImgId = Math.toIntExact(reviewImgEntity.getReviewImgId());
+        String reviewImgUrl = "http://localhost/image_search_recommend/review_img/?review_img_id=" + reviewImgId;
+//        String reviewImgUrl = "http://localhost/image_search_recommend/review_img/?review_img_id=" + reviewImgId;
 
+        HttpURLConnection connection = null;
+        try {
+            URL url = new URL(reviewImgUrl);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                log.info("Successfully post review image " + reviewImgUrl);
+            } else {
+                log.info("Failed to post review image " + reviewImgUrl);
+            }
+        } catch (IOException e) {
+            // 예외 처리
+            throw new IOException("POST request failed", e);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
     }
 
     private String uploadImageToServer(MultipartFile image) throws IOException {
