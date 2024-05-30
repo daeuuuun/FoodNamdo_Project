@@ -12,7 +12,8 @@ import java.util.List;
 public interface MyPageService {
 
 //    Page<RstrEntity> findAllByUserEntity_UserId(Long userId, Pageable pageable);
-    Page<FavoriteEntity> findAllByUserEntity_UserId(Long userId, Pageable pageable);
+    List<FavoriteEntity> findAllByUserEntity_UserId(Long userId);
+//    Page<FavoriteEntity> findAllByUserEntity_UserId(Long userId, Pageable pageable);
 
     void changeNickname(Long userId, String nickname);
 

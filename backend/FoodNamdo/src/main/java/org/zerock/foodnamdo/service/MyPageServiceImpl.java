@@ -28,8 +28,9 @@ public class MyPageServiceImpl implements MyPageService{
 //    public Page<RstrEntity> findAllByUserEntity_UserId(Long userId, Pageable pageable){
 //        return myPageRepository.findByFavoriteEntities_UserEntity_UserId(userId, pageable);
 //    }
-    public Page<FavoriteEntity> findAllByUserEntity_UserId(Long userId, Pageable pageable){
-        return myPageRepositoryFavorite.findAllByUserEntity_UserId(userId, pageable);
+//    public List<FavoriteEntity> findAllByUserEntity_UserId(Long userId, Pageable pageable){
+    public List<FavoriteEntity> findAllByUserEntity_UserId(Long userId){
+        return myPageRepositoryFavorite.findAllByUserEntity_UserId(userId);
     }
 
     public void changeNickname(Long userId, String nickname) {

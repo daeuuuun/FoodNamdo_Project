@@ -247,8 +247,8 @@ public class MainSystemController {
     }
 
     @Operation(summary = "음식점 찜하기")
-    @PostMapping("/RstrFavoriteRegister")
-    public void RstrFavoriteRegister(@RequestBody RstrFavoriteRegisterInputDTO rstrFavoriteRegisterInputDTO){
+    @PostMapping(value = "/RstrFavoriteRegister", produces = "application/json")
+    public boolean RstrFavoriteRegister(@RequestBody RstrFavoriteRegisterInputDTO rstrFavoriteRegisterInputDTO){
         log.info("RstrFavoriteRegister..");
         APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = userDetails.getUserId();  // Extract userId
@@ -259,11 +259,11 @@ public class MainSystemController {
         rstrFavoriteRegisterDTO.setRstrId(rstrFavoriteRegisterInputDTO.getRstrId());
 
         // rstrFavoriteRegisterDTO를 사용하여 추가적인 처리 (예: 데이터베이스에 저장)
-        mainSystemService.saveFavorite(rstrFavoriteRegisterDTO);
-
-        mainSystemService.updateRestaurantFavoriteCount(rstrFavoriteRegisterInputDTO.getRstrId());
+        boolean isFavoriteAdded = mainSystemService.saveFavorite(rstrFavoriteRegisterDTO);
 
         log.info("Favorite registered for userId: {} and rstrId: {}", userId, rstrFavoriteRegisterInputDTO.getRstrId());
+
+        return isFavoriteAdded;
     }
 
 

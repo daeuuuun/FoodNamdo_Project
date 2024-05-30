@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -221,18 +222,7 @@ public class MainSystemServiceImpl implements MainSystemService{
 
         mainSystemRepositoryRstr.save(rstrEntity);
     }
-    @Transactional
-    public void updateRestaurantFavoriteCount(Long rstrId) {
-        RstrEntity rstrEntity = mainSystemRepositoryRstr.findById(rstrId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid restaurant ID"));
 
-        List<FavoriteEntity> favoriteEntities = mainSystemRepositoryFavirote.findByRstrEntity(rstrEntity);
-        int favoriteCount = favoriteEntities.size();
-
-        rstrEntity.setRstrFavoriteCount(favoriteCount);
-
-        mainSystemRepositoryRstr.save(rstrEntity);
-    }
 
 
     private final String uploadUrl = "http://foodnamdo.iptime.org:8000/images/?path=review_img&api_key=d0f535568d149afec1933a8c37c765e0";
@@ -297,19 +287,44 @@ public class MainSystemServiceImpl implements MainSystemService{
         }
     }
 
-    public void saveFavorite(RstrFavoriteRegisterDTO rstrFavoriteRegisterDTO) {
+    public boolean saveFavorite(RstrFavoriteRegisterDTO rstrFavoriteRegisterDTO) {
         UserEntity userEntity = mainSystemRepositoryUser.findById(rstrFavoriteRegisterDTO.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
 
         RstrEntity rstrEntity = mainSystemRepositoryRstr.findById(rstrFavoriteRegisterDTO.getRstrId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid restaurant ID"));
 
-        FavoriteEntity favorite = FavoriteEntity.builder()
-                .userEntity(userEntity)
-                .rstrEntity(rstrEntity)
-                .build();
+        Optional<FavoriteEntity> existingFavorite = mainSystemRepositoryFavirote.findByRstrEntity_RstrIdAndUserEntity_UserId(
+                rstrFavoriteRegisterDTO.getRstrId(), rstrFavoriteRegisterDTO.getUserId());
 
-        mainSystemRepositoryFavirote.save(favorite);
+        boolean isFavoriteAdded;
+        if (existingFavorite.isPresent()) {
+            mainSystemRepositoryFavirote.delete(existingFavorite.get());
+            isFavoriteAdded = false;
+        } else {
+            FavoriteEntity favorite = FavoriteEntity.builder()
+                    .userEntity(userEntity)
+                    .rstrEntity(rstrEntity)
+                    .build();
+            mainSystemRepositoryFavirote.save(favorite);
+            isFavoriteAdded = true;
+        }
+
+        updateRestaurantFavoriteCount(rstrFavoriteRegisterDTO.getRstrId());
+        return isFavoriteAdded;
+    }
+
+    @Transactional
+    public void updateRestaurantFavoriteCount(Long rstrId) {
+        RstrEntity rstrEntity = mainSystemRepositoryRstr.findById(rstrId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid restaurant ID"));
+
+        List<FavoriteEntity> favoriteEntities = mainSystemRepositoryFavirote.findByRstrEntity(rstrEntity);
+        int favoriteCount = favoriteEntities.size();
+
+        rstrEntity.setRstrFavoriteCount(favoriteCount);
+
+        mainSystemRepositoryRstr.save(rstrEntity);
     }
 
     @Override

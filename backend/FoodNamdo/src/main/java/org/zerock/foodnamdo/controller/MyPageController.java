@@ -150,31 +150,32 @@ public class MyPageController {
     @Operation(summary = "찜한 음식점 조회")
     @GetMapping(value = "/getFavoriteRstr", produces = "application/json")
     @ResponseBody
-    public Map<String, Object> getFavoriteRstr(
+    public Map<String, Object> getFavoriteRstr()
 //            @RequestParam("user_id") Long userId,
-            @RequestParam("page") int page) {
+//            @RequestParam("page") int page)
+    {
         APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = userDetails.getUserId();  // Extract userId
         log.info("getFavoriteRstr......");
-        int pageSize = 8;
+//        int pageSize = 8;
 
-        Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
-        Page<FavoriteEntity> userPage = myPageService.findAllByUserEntity_UserId(userId, pageable);
-        log.info(userPage);
-        List<getFavoriteRstrDTO> getFavoriteRstrDTOList = userPage.getContent().stream()
+//        Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
+        List<FavoriteEntity> favoriteEntityList = myPageService.findAllByUserEntity_UserId(userId);
+//        log.info(userPage);
+        List<getFavoriteRstrDTO> FavoriteRstrDTOList = favoriteEntityList.stream()
                 .map(getFavoriteRstrDTO::fromEntity)
                 .collect(Collectors.toList());
 
-        long totalElements = userPage.getTotalElements();
+//        long totalElements = userPage.getTotalElements();
 
-        int totalPages = (int) Math.ceil((double) totalElements / pageSize);
+//        int totalPages = (int) Math.ceil((double) totalElements / pageSize);
 
         Map<String, Object> response = new LinkedHashMap<>();
-        response.put("page_size", pageSize);
-        response.put("total_pages", totalPages);
-        response.put("page_num", page);
-        response.put("total_favorite", totalElements);
-        response.put("rstr", getFavoriteRstrDTOList);
+//        response.put("page_size", pageSize);
+//        response.put("total_pages", totalPages);
+//        response.put("page_num", page);
+        response.put("total_favorite", (long) FavoriteRstrDTOList.size());
+        response.put("rstr", FavoriteRstrDTOList);
 
         return response;
     }

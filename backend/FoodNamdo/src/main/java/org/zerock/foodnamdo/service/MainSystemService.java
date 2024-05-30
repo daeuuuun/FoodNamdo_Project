@@ -45,7 +45,7 @@ public interface MainSystemService {
 
     void updateReviewReactions(ReviewEntity reviewEntity);
 
-    void saveFavorite(RstrFavoriteRegisterDTO rstrFavoriteRegisterDTO);
+    boolean saveFavorite(RstrFavoriteRegisterDTO rstrFavoriteRegisterDTO);
 
     void updateReview(ReviewUpdateDTO reviewUpdateDTO, Long userId);
 
