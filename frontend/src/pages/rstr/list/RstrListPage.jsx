@@ -13,7 +13,7 @@ import PaginationItem from '@mui/material/PaginationItem';
 
 import { IMAGE_SERVER_URL } from '../../../config/Config';
 import { BACKEND_SERVER_URL } from '../../../config/Config';
-import { defaultImageInstance } from "../../../utils/axiosInstance";
+import {authBackInstance, defaultBackInstance, defaultImageInstance} from "../../../utils/axiosInstance";
 
 const RstrListPageContainer = styled.div`
     display: flex;
@@ -211,7 +211,7 @@ export const RstrListPage = () => {
 
             const url = `${BACKEND_SERVER_URL}/mainsystem/findRstrByName?${params}`;
             try {
-                const response = await defaultImageInstance.get(url);
+                const response = await defaultBackInstance.get(url);
                 setRstrList(response.data.rstr);
                 setTotalPage(response.data.total_pages);
                 setPageSize(response.data.page_size);
