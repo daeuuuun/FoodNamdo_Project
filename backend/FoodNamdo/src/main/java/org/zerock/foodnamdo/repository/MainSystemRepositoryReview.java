@@ -25,4 +25,6 @@ public interface MainSystemRepositoryReview extends JpaRepository<ReviewEntity, 
     long count();
 
     List<ReviewEntity> findAllByUserEntity_UserId(Long userId);
+    List<ReviewEntity> findAllByUserEntity_UserIdAndReceiptTrue(Long userId);
+
 }

@@ -322,10 +322,13 @@ public class MainSystemController {
 
         Long reviewId = mainSystemService.saveReviewAndReturnId(reviewRegisterDTO);
 
-        Long badgeId = mainSystemService.reviewBadgeUpdate(userId);
-        if (badgeId != null) {
-            // 뱃지 부여 로직
-            System.out.println("Badge ID " + badgeId + " granted to user " + userId);
+        Long reviewBadgeId = mainSystemService.reviewBadgeUpdate(userId);
+        if (reviewBadgeId != null) {
+            System.out.println("Badge ID " + reviewBadgeId + " granted to user " + userId);
+        }
+        Long totalBadgeId = mainSystemService.allBadgeUpdate(userId);
+        if (totalBadgeId != null) {
+            System.out.println("Total Badge ID " + totalBadgeId + " granted to user " + userId);
         }
         return ResponseEntity.ok(reviewId);
 //        mainSystemService.saveReview(reviewRegisterDTO);
@@ -378,6 +381,18 @@ public class MainSystemController {
     @Operation(summary = "리뷰인증")
     @PostMapping("/verifyReview")
     public void verifyReview(){
+        log.info("verifyReview..");
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
+
+        Long receiptBadgeId = mainSystemService.receiptBadgeUpdate(userId);
+        if (receiptBadgeId != null) {
+            System.out.println("Badge ID " + receiptBadgeId + " granted to user " + userId);
+        }
+        Long totalBadgeId = mainSystemService.allBadgeUpdate(userId);
+        if (totalBadgeId != null) {
+            System.out.println("Total Badge ID " + totalBadgeId + " granted to user " + userId);
+        }
 
     }
 
@@ -395,7 +410,14 @@ public class MainSystemController {
 
         mainSystemService.insertReviewReaction(reactionReviewDTO);
 
-
+        Long reactionBadgeId = mainSystemService.reactionBadgeUpdate(userId);
+        if (reactionBadgeId != null) {
+            System.out.println("Badge ID " + reactionBadgeId + " granted to user " + userId);
+        }
+        Long totalBadgeId = mainSystemService.allBadgeUpdate(userId);
+        if (totalBadgeId != null) {
+            System.out.println("Total Badge ID " + totalBadgeId + " granted to user " + userId);
+        }
     }
 
     @Operation(summary = "리뷰삭제")
