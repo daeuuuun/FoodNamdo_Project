@@ -76,19 +76,48 @@ public class MainSystemServiceImpl implements MainSystemService{
     }
 
     public long count() {
-        long count = mainSystemRepositoryRstr.count();
-        return count;
+        return mainSystemRepositoryRstr.count();
     }
 
     @Override
     public Long reviewBadgeUpdate(Long userId){
-        int reviewCount = mainSystemRepositoryReview.findAllByUserEntity_UserId(userId).size();
-
+        int Count = mainSystemRepositoryReview.findAllByUserEntity_UserId(userId).size();
         Long[] badgeIds = {1L, 2L, 3L, 4L, 5L};
         int[] thresholds = {1, 5, 10, 20, 30};
 
+        return BadgeUpdate(userId, Count, badgeIds, thresholds);
+    }
+
+    @Override
+    public Long reactionBadgeUpdate(Long userId){
+        int Count = mainSystemRepositoryReaction.findAllByUserEntity_UserId(userId).size();
+        Long[] badgeIds = {6L, 7L, 8L, 9L, 10L};
+        int[] thresholds = {1, 5, 10, 20, 30};
+
+        return BadgeUpdate(userId, Count, badgeIds, thresholds);
+    }
+
+    @Override
+    public Long receiptBadgeUpdate(Long userId) {
+        int Count = mainSystemRepositoryReview.findAllByUserEntity_UserIdAndReceiptTrue(userId).size();
+        Long[] badgeIds = {11L, 12L, 13L, 14L, 15L};
+        int[] thresholds = {1, 3, 5, 10, 15};
+
+        return BadgeUpdate(userId, Count, badgeIds, thresholds);
+    }
+
+    @Override
+    public Long allBadgeUpdate(Long userId){
+        int Count = mainSystemRepositoryUserBadge.findAllByUserEntity_UserId(userId).size();
+        Long[] badgeIds = {21L, 22L, 23L, 24L, 25L, 26L};
+        int[] thresholds = {1, 3, 5, 10, 15, 19};
+
+        return BadgeUpdate(userId, Count, badgeIds, thresholds);
+    }
+
+    private Long BadgeUpdate(Long userId, int Count, Long[] badgeIds, int[] thresholds){
         for (int i = 0; i < thresholds.length; i++) {
-            if (reviewCount >= thresholds[i]) {
+            if (Count >= thresholds[i]) {
                 Long badgeId = badgeIds[i];
                 Optional<UserBadgeEntity> existingBadge = mainSystemRepositoryUserBadge.findByUserEntity_UserIdAndBadgeEntity_BadgeId(userId, badgeId);
 
@@ -109,8 +138,11 @@ public class MainSystemServiceImpl implements MainSystemService{
                 }
             }
         }
+
         return null;
     }
+
+
 
     @Override
     public void insertReviewReaction(ReactionReviewDTO reactionReviewDTO){

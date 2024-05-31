@@ -33,6 +33,12 @@ public interface MainSystemService {
 
     Long reviewBadgeUpdate(Long userId);
 
+    Long reactionBadgeUpdate(Long userId);
+
+    Long receiptBadgeUpdate(Long userId);
+
+    Long allBadgeUpdate(Long userId);
+
     void postReviewImage(int reviewImgId) throws IOException;
 
     void deleteByReviewId(Long reviewID);
