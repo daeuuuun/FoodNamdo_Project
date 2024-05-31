@@ -107,6 +107,10 @@ const SearchBar = () => {
 
     // 텍스트 검색
     const handleClickSearch = async () => {
+        if (!search) {
+            return;
+        }
+
         sessionStorage.removeItem('random');
         setFile(null);
         navigate(`/rstr?search=${search}`);
@@ -121,8 +125,8 @@ const SearchBar = () => {
         }
         if (file) {
             console.log(file);
-            setFile(file); // 파일을 Context에 저장
-            navigate('/rstr'); // 페이지 이동
+            setFile(file);
+            navigate('/rstr');
         }
         console.log('이미지 검색입니다');
         handleClose();
