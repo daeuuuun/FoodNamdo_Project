@@ -7,8 +7,9 @@ import CallIcon from '@mui/icons-material/Call';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import StarIcon from '@mui/icons-material/Star';
-import { authBackInstance } from '../../../../utils/axiosInstance';
 import { AppContext } from '../../../../utils/loginContext';
+import { authBackInstance } from './../../../../utils/axiosInstance';
+
 const RstrBriefInfoContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -172,7 +173,9 @@ const RstrBriefInfo = ({ rstrInfo, rstrId }) => {
             }
         }
 
-        checkFavorite();
+        if (isAuthenticated) {
+            checkFavorite();
+        }
     }, []);
 
     const toggleFavorite = async () => {

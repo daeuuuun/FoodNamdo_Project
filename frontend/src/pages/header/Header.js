@@ -2,13 +2,12 @@ import React, { useContext } from 'react';
 import styles from '../header/Header.module.css';
 import FoodNamdoLogo from '../header/FoodNamdoLogo.png';
 import SearchBar from '../../components/common/SearchBar';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { defaultBackInstance } from '../../utils/axiosInstance';
 import { BACKEND_SERVER_URL } from '../../config/Config';
 import { AppContext } from '../../utils/loginContext';
 
 const Header = () => {
-    const navigate = useNavigate();
     const { isAuthenticated, logout } = useContext(AppContext);
     const refreshToken = localStorage.getItem('refreshToken');
 
@@ -22,7 +21,6 @@ const Header = () => {
 
             setTimeout(() => {
                 logout();
-                navigate('/');
             }, 10);
         } catch (error) {
             console.log(error);

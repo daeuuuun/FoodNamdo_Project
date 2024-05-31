@@ -56,7 +56,7 @@ const LoginPage = () => {
             localStorage.setItem('accessToken', responseData.accessToken);
             localStorage.setItem('refreshToken', responseData.refreshToken);
             login();
-            navigate('/');
+            navigate(-1);
         } catch (error) {
             alert('아이디나 비밀번호가 잘못되었습니다. 다시 시도해주세요.')
             console.log(error);
