@@ -1,12 +1,17 @@
 import React from "react";
 import styles from '../myPage/MyReview.module.css';
+import ReviewContain from "./ReviewContain";
 
 const MyReview = () => {
     return (
         <>
             <div className={styles.background}>
                 <div className={styles.rightContainer}>
-                    내가 남긴 리뷰
+                    <ReviewContain/>
+                    <ReviewContain/>
+                    <ReviewContain/>
+                    <ReviewContain/>
+                    <ReviewContain/>
                 </div>
             </div>
         </>

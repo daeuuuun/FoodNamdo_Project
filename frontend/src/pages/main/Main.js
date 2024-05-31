@@ -27,7 +27,7 @@ const Main = () => {
     return (
         <>
             <div className={styles.backgroundColor}>
-                <MainTopCategory/>
+                {/* <MainTopCategory/> */}
                 <CarouselContainer title={'#나에게 딱 맞는 맛집'} styles={style1} images={images}/>
                 <div className={styles.div}>
                     <div className={styles.div2}>

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import styles from '../myPage/MyPage.module.css';
 import SideBar from "./SideBar";
-import Header from "../header/Header";
 import { AppContext } from "../../utils/loginContext";
 import { useNavigate } from "react-router-dom";
 
