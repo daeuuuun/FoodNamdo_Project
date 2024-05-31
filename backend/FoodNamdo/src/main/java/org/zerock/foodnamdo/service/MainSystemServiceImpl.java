@@ -3,16 +3,15 @@ package org.zerock.foodnamdo.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.zerock.foodnamdo.customDTO.ReactionReviewDTO;
-import org.zerock.foodnamdo.customDTO.ReviewRegisterDTO;
-import org.zerock.foodnamdo.customDTO.ReviewUpdateDTO;
-import org.zerock.foodnamdo.customDTO.RstrFavoriteRegisterDTO;
+import org.zerock.foodnamdo.customDTO.*;
 import org.zerock.foodnamdo.domain.*;
 import org.zerock.foodnamdo.repository.*;
 import org.springframework.web.client.RestTemplate;
@@ -21,11 +20,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -71,9 +66,19 @@ public class MainSystemServiceImpl implements MainSystemService{
         return mainSystemRepositoryRstr.findByRstrId(rstrId);
     }
 
+    public Optional<ReviewEntity> findByReviewId(Long reviewId){
+        return mainSystemRepositoryReview.findById(reviewId);
+    }
+
+    public String getRstrName_ReviewEntity(Long reviewId){
+        return mainSystemRepositoryReview.findByReviewId(reviewId).getRstrEntity().getRstrName();
+    }
+
     public void updateLastVisit(Long userId, Long rstrId){
         mainSystemRepositoryUser.updateLastVisit(userId, rstrId);
     }
+
+
 
     public long count() {
         return mainSystemRepositoryRstr.count();
@@ -346,6 +351,8 @@ public class MainSystemServiceImpl implements MainSystemService{
 
     }
 
+
+
 //    public void postReviewImage(int reviewImgId) throws IOException {
 ////        String reviewImgUrl = "http://localhost:8000/review_image/" + reviewImgId;
 //        String reviewImgUrl = "http://localhost/image_search_recommend/review_image/" + reviewImgId;
@@ -438,6 +445,141 @@ public class MainSystemServiceImpl implements MainSystemService{
             throw new IOException("Failed to upload image. Server returned HTTP response code: " + responseCode);
         }
     }
+
+    private static final String API_URL = "https://kyxg7x7hj6.apigw.ntruss.com/custom/v1/31347/0e807b837caa93532d7555da356de802287917fdce11479ae93e2438a5d9781c/document/receipt";
+    private static final String SECRET_KEY = "T0Z1bm9iZE1PZktza1JOaWJTTlBvcnplQ2ZSRlFpR1E=";
+
+    @Override
+    public String processOCR(MultipartFile file) {
+//    public ResponseEntity<String> processOCR(MultipartFile file) {
+        try {
+            URL url = new URL(API_URL);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setUseCaches(false);
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setReadTimeout(30000);
+            con.setRequestMethod("POST");
+            String boundary = "----" + UUID.randomUUID().toString().replaceAll("-", "");
+            con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+            con.setRequestProperty("X-OCR-SECRET", SECRET_KEY);
+
+            JSONObject json = new JSONObject();
+            json.put("version", "V2");
+            json.put("requestId", UUID.randomUUID().toString());
+            json.put("timestamp", System.currentTimeMillis());
+            JSONObject image = new JSONObject();
+            image.put("format", "jpg");
+            image.put("name", "demo");
+            JSONArray images = new JSONArray();
+            images.put(image);
+            json.put("images", images);
+            String postParams = json.toString();
+
+            con.connect();
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            File tempFile = File.createTempFile("upload", file.getOriginalFilename());
+            file.transferTo(tempFile);
+            writeMultiPart(wr, postParams, tempFile, boundary);
+            wr.close();
+
+            int responseCode = con.getResponseCode();
+            BufferedReader br;
+            if (responseCode == 200) {
+                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            } else {
+                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+            }
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = br.readLine()) != null) {
+                response.append(inputLine);
+            }
+            br.close();
+            log.info("response: {}", response.toString());
+
+            // JSON 파싱 및 DTO로 변환
+            JSONObject responseObj = new JSONObject(response.toString());
+            log.info("responseObj: {}", responseObj.toString());
+            JSONArray imagesArray = responseObj.getJSONArray("images");
+            log.info("imagesArray: {}", imagesArray.toString());
+            JSONObject imageObj = imagesArray.getJSONObject(0);
+            log.info("imageObj: {}", imageObj.toString());
+            JSONObject receiptObj = imageObj.getJSONObject("receipt");
+            log.info("receiptObj: {}", receiptObj.toString());
+            JSONObject resultObj = receiptObj.getJSONObject("result");
+            log.info("resultObj: {}", resultObj.toString());
+
+
+//            if (resultObj.has("storeInfo")) {
+            JSONObject storeInfoObj = resultObj.getJSONObject("storeInfo");
+            log.info("storeInfoObj: {}", storeInfoObj.toString());
+
+            String storeName = storeInfoObj.getJSONObject("name").getString("text");
+            JSONObject storeNameObj = storeInfoObj.getJSONObject("name");
+            String storeNameFormmattedValue = storeNameObj.getJSONObject("formatted").getString("value");
+            String subName = storeInfoObj.optJSONObject("subName") != null ? storeInfoObj.getJSONObject("subName").getString("text") : "N/A";
+            String bizNum = storeInfoObj.getJSONObject("bizNum").getString("text");
+            String address = storeInfoObj.getJSONArray("addresses").getJSONObject(0).getString("text");
+            String tel = storeInfoObj.getJSONArray("tel").getJSONObject(0).getString("text");
+
+            log.info("Store Info:");
+            log.info("Name: {}", storeName);
+            log.info("NameValue: {}", storeNameFormmattedValue);
+            log.info("Sub Name: {}", subName);
+            log.info("Business Number: {}", bizNum);
+            log.info("Address: {}", address);
+            log.info("Telephone: {}", tel);
+//            } else {
+//                log.warn("No storeInfo found in the response.");
+//            }
+
+            return storeName;
+//            return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+        } catch (Exception e) {
+            return "can't get reciept info";
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private static void writeMultiPart(OutputStream out, String jsonMessage, File file, String boundary) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("--").append(boundary).append("\r\n");
+        sb.append("Content-Disposition:form-data; name=\"message\"\r\n\r\n");
+        sb.append(jsonMessage);
+        sb.append("\r\n");
+
+        out.write(sb.toString().getBytes("UTF-8"));
+        out.flush();
+
+        if (file != null && file.isFile()) {
+            out.write(("--" + boundary + "\r\n").getBytes("UTF-8"));
+            StringBuilder fileString = new StringBuilder();
+            fileString.append("Content-Disposition:form-data; name=\"file\"; filename=");
+            fileString.append("\"").append(file.getName()).append("\"\r\n");
+            fileString.append("Content-Type: application/octet-stream\r\n\r\n");
+            out.write(fileString.toString().getBytes("UTF-8"));
+            out.flush();
+
+            try (FileInputStream fis = new FileInputStream(file)) {
+                byte[] buffer = new byte[8192];
+                int count;
+                while ((count = fis.read(buffer)) != -1) {
+                    out.write(buffer, 0, count);
+                }
+                out.write("\r\n".getBytes());
+            }
+
+            out.write(("--" + boundary + "--\r\n").getBytes("UTF-8"));
+        }
+        out.flush();
+    }
+
+    public void verifyReview(Long reviewId){
+        ReviewEntity reviewEntity = mainSystemRepositoryReview.findByReviewId(reviewId);
+        reviewEntity.setReceipt(true);
+    }
+
 
     public boolean checkFavorite(Long rstrId, Long userId){
         Optional<FavoriteEntity> existingFavorite = mainSystemRepositoryFavirote.findByRstrEntity_RstrIdAndUserEntity_UserId(

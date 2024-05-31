@@ -7,11 +7,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -378,22 +380,67 @@ public class MainSystemController {
         mainSystemService.updateReview(reviewUpdateDTO, userId);
     }
 
+//    @Operation(summary = "리뷰인증")
+//    @PostMapping(value = "/verifyReview", consumes = "multipart/form-data", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<OcrResponseDTO> verifyReview(
+//            @RequestParam("review_id") Long reviewId,
+//            @Parameter(name = "file", description = "업로드 사진 데이터")
+//            @RequestParam("file") MultipartFile image) {
+//        log.info("verifyReview..");
+//        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        Long userId = userDetails.getUserId();  // Extract userId
+//
+//        try {
+//            OcrResponseDTO ocrResponse = mainSystemService.verifyreview(userId, reviewId, image);
+//
+//            Long receiptBadgeId = mainSystemService.receiptBadgeUpdate(userId);
+//            if (receiptBadgeId != null) {
+//                log.info("Badge ID " + receiptBadgeId + " granted to user " + userId);
+//            }
+//            Long totalBadgeId = mainSystemService.allBadgeUpdate(userId);
+//            if (totalBadgeId != null) {
+//                log.info("Total Badge ID " + totalBadgeId + " granted to user " + userId);
+//            }
+//
+//            return ResponseEntity.ok(ocrResponse);
+//        } catch (IOException | JSONException e) {
+//            log.error("Exception in verifyReview", e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+//    }
+
+
     @Operation(summary = "리뷰인증")
-    @PostMapping("/verifyReview")
-    public void verifyReview(){
+    @PostMapping(value = "/verifyReview", consumes = "multipart/form-data")
+//    @PostMapping(value = "/upload", consumes = "multipart/form-data", produces = "application/json")
+    public String verifyReview(
+            @RequestParam("review_id") Long reviewId,
+            @Parameter(name = "file", description = "업로드 사진 데이터")
+            @RequestParam("file") MultipartFile file) {
         log.info("verifyReview..");
+
         APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = userDetails.getUserId();  // Extract userId
 
+        String recieptRstrName = mainSystemService.processOCR(file);
+        String rstrName = "COSTCO";
+//        String rstrName = mainSystemService.getRstrName_ReviewEntity(reviewId);
+
+        if(recieptRstrName.equals(rstrName)){
+            mainSystemService.verifyReview(reviewId);
+        }
+
         Long receiptBadgeId = mainSystemService.receiptBadgeUpdate(userId);
         if (receiptBadgeId != null) {
-            System.out.println("Badge ID " + receiptBadgeId + " granted to user " + userId);
+            log.info("Badge ID " + receiptBadgeId + " granted to user " + userId);
         }
         Long totalBadgeId = mainSystemService.allBadgeUpdate(userId);
         if (totalBadgeId != null) {
-            System.out.println("Total Badge ID " + totalBadgeId + " granted to user " + userId);
+            log.info("Total Badge ID " + totalBadgeId + " granted to user " + userId);
         }
 
+        String check = recieptRstrName + "," + rstrName;
+        return check;
     }
 
     @Operation(summary = "리뷰공감")

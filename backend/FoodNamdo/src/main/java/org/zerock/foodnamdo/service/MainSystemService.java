@@ -3,15 +3,12 @@ package org.zerock.foodnamdo.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
-import org.zerock.foodnamdo.customDTO.ReactionReviewDTO;
-import org.zerock.foodnamdo.customDTO.ReviewRegisterDTO;
-import org.zerock.foodnamdo.customDTO.ReviewUpdateDTO;
-import org.zerock.foodnamdo.customDTO.RstrFavoriteRegisterDTO;
+import org.zerock.foodnamdo.customDTO.*;
 import org.zerock.foodnamdo.domain.ReviewEntity;
 import org.zerock.foodnamdo.domain.RstrEntity;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Optional;
 
 public interface MainSystemService {
     Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable);
@@ -62,4 +59,15 @@ public interface MainSystemService {
     void updateReview(ReviewUpdateDTO reviewUpdateDTO, Long userId);
 
     void updateLastVisit(Long userId, Long rstrId);
+
+//    OcrResponseDTO verifyreview(Long userId, Long reviewId, MultipartFile image) throws IOException, JSONException;
+
+    String processOCR(MultipartFile file);
+
+    Optional<ReviewEntity> findByReviewId(Long reviewId);
+
+    String getRstrName_ReviewEntity(Long reviewId);
+
+    void verifyReview(Long reviewId);
+//    ResponseEntity<String> processOCR(MultipartFile file);
 }
