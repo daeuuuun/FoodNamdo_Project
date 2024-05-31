@@ -83,15 +83,19 @@ const CertificationMarks = styled.div`
     }
 `;
 
-const RstrCard = ({ rstrInfo }) => {
+const RstrCard = ({ rstrInfo, mode }) => {
 
     const navigate = useNavigate();
-    // const imgUrl = rstrInfo.rstr_img_url;
 
     return (
-        <RstrCardContainer onClick={() => {
-            navigate(`/rstr/${rstrInfo.rstr_id}`, { state: { rstrInfo } })
-        }}>
+        <RstrCardContainer
+            style={{
+                backgroundColor: mode == 'rstrList' ? palette.lightblue : '#ffffff'
+            }}
+            onClick={() => {
+                navigate(`/rstr/${rstrInfo.rstr_id}`, { state: { rstrInfo } })
+            }}
+        >
             <CertificationMarks>
                 {rstrInfo.example && <div id='example-mark'>모범식당</div>}
                 {rstrInfo.relax && <div id='relax-mark'>안심식당</div>}

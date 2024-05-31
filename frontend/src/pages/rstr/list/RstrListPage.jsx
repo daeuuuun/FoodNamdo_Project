@@ -13,7 +13,7 @@ import PaginationItem from '@mui/material/PaginationItem';
 
 import { IMAGE_SERVER_URL } from '../../../config/Config';
 import { BACKEND_SERVER_URL } from '../../../config/Config';
-import {authBackInstance, defaultBackInstance, defaultImageInstance} from "../../../utils/axiosInstance";
+import { defaultBackInstance, defaultImageInstance } from "../../../utils/axiosInstance";
 
 const RstrListPageContainer = styled.div`
     display: flex;
@@ -69,9 +69,9 @@ const RstrListContainer = styled.div`
     display: flex;
     flex-direction: column;
     .total-rstr-num {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         margin: 10px 20px;
-        text-align: right;
+        text-align: left;
     }
     .rstr-loading {
         margin: 0 auto;
@@ -220,7 +220,7 @@ export const RstrListPage = () => {
                 if (response.data.rstr.length === 0) {
                     setIsNotInfo(true);
                 }
-                console.log(response.data);
+
             } catch (error) {
                 console.log(error);
             }
@@ -319,7 +319,7 @@ export const RstrListPage = () => {
                                 <div style={{ height: '550px' }}>
                                     <RstrCards>
                                         {rstrList.map((rstrInfo) => (
-                                            <RstrCard key={rstrInfo.rstr_id} rstrInfo={rstrInfo} />
+                                            <RstrCard key={rstrInfo.rstr_id} rstrInfo={rstrInfo} mode={'rstrList'} />
                                         ))}
                                     </RstrCards>
                                 </div>

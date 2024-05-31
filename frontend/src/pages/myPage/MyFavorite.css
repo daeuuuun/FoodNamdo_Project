@@ -3,8 +3,9 @@
 }
 
 .my-favorite-count {
-	font-size: 16px;
+	font-size: 18px;
 	margin-left: 10px;
+	margin-bottom: 10px;
 }
 
 .my-favorite-list {
@@ -12,5 +13,11 @@
 	flex-wrap: wrap;
 	gap: 0 20px;
 	overflow-y: auto;
-	max-height: 100vh;
+	max-height: 80vh;
+}
+
+.my-favorite-list-empty {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
