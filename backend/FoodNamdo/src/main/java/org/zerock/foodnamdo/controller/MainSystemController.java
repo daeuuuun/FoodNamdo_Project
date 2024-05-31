@@ -267,6 +267,16 @@ public class MainSystemController {
         return isFavoriteAdded;
     }
 
+    @Operation(summary = "음식점 찜확인")
+    @GetMapping(value = "/RstrFavoriteRegister", produces = "application/json")
+    public boolean RstrFavoriteCheck(@RequestParam ("rstr_id") Long rstrId){
+        log.info("RstrFavoriteCheck..");
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
+
+        return mainSystemService.checkFavorite(rstrId, userId);
+    }
+
 
 
     @Operation(summary = "리뷰등록")
@@ -310,9 +320,13 @@ public class MainSystemController {
 
 
 
-
         Long reviewId = mainSystemService.saveReviewAndReturnId(reviewRegisterDTO);
 
+        Long badgeId = mainSystemService.reviewBadgeUpdate(userId);
+        if (badgeId != null) {
+            // 뱃지 부여 로직
+            System.out.println("Badge ID " + badgeId + " granted to user " + userId);
+        }
         return ResponseEntity.ok(reviewId);
 //        mainSystemService.saveReview(reviewRegisterDTO);
 //
@@ -321,6 +335,8 @@ public class MainSystemController {
 //
 //        return redirectAttributes.toString();
     }
+
+
     @Operation(summary = "리뷰 이미지 업로드")
     @PostMapping(value = "/uploadReviewImage", consumes = "multipart/form-data")
     public ResponseEntity<String> uploadReviewImage(

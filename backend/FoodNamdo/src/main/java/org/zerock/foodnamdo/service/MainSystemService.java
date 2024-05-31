@@ -31,6 +31,8 @@ public interface MainSystemService {
 
     long count();
 
+    Long reviewBadgeUpdate(Long userId);
+
     void postReviewImage(int reviewImgId) throws IOException;
 
     void deleteByReviewId(Long reviewID);
@@ -46,6 +48,8 @@ public interface MainSystemService {
     void insertReviewReaction(ReactionReviewDTO reactionReviewDTO);
 
     void updateReviewReactions(ReviewEntity reviewEntity);
+
+    boolean checkFavorite(Long rstrId, Long userId);
 
     boolean saveFavorite(RstrFavoriteRegisterDTO rstrFavoriteRegisterDTO);
 

@@ -45,7 +45,7 @@ public class MainSystemServiceImpl implements MainSystemService{
     private final MainSystemRepositoryReaction mainSystemRepositoryReaction;
     private final MainSystemRepositoryBadge mainSystemRepositoryBadge;
     private final RestTemplate restTemplate;
-
+    private final MainSystemRepositoryUserBadge mainSystemRepositoryUserBadge;
 
 
     @Override
@@ -78,6 +78,38 @@ public class MainSystemServiceImpl implements MainSystemService{
     public long count() {
         long count = mainSystemRepositoryRstr.count();
         return count;
+    }
+
+    @Override
+    public Long reviewBadgeUpdate(Long userId){
+        int reviewCount = mainSystemRepositoryReview.findAllByUserEntity_UserId(userId).size();
+
+        Long[] badgeIds = {1L, 2L, 3L, 4L, 5L};
+        int[] thresholds = {1, 5, 10, 20, 30};
+
+        for (int i = 0; i < thresholds.length; i++) {
+            if (reviewCount >= thresholds[i]) {
+                Long badgeId = badgeIds[i];
+                Optional<UserBadgeEntity> existingBadge = mainSystemRepositoryUserBadge.findByUserEntity_UserIdAndBadgeEntity_BadgeId(userId, badgeId);
+
+                if (existingBadge.isEmpty()) {
+                    UserEntity userEntity = mainSystemRepositoryUser.findById(userId)
+                            .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+                    BadgeEntity badgeEntity = mainSystemRepositoryBadge.findById(badgeId)
+                            .orElseThrow(() -> new IllegalArgumentException("Invalid badge ID"));
+
+                    UserBadgeEntity userBadgeEntity = UserBadgeEntity.builder()
+                            .userEntity(userEntity)
+                            .badgeEntity(badgeEntity)
+                            .badgeOnOff(false)
+                            .build();
+
+                    mainSystemRepositoryUserBadge.save(userBadgeEntity);
+                    return badgeId;
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -158,7 +190,9 @@ public class MainSystemServiceImpl implements MainSystemService{
 
         mainSystemRepositoryReview.save(reviewEntity);
 
-        int reviewCount = mainSystemRepositoryReview.findAllByUserEntity_UserId(reviewRegisterDTO.getUser_id()).size();
+
+
+
 
         updateRestaurantRatingAndCount(reviewRegisterDTO.getRstr_id());
         return reviewEntity.getReviewId();
@@ -371,6 +405,13 @@ public class MainSystemServiceImpl implements MainSystemService{
         } else {
             throw new IOException("Failed to upload image. Server returned HTTP response code: " + responseCode);
         }
+    }
+
+    public boolean checkFavorite(Long rstrId, Long userId){
+        Optional<FavoriteEntity> existingFavorite = mainSystemRepositoryFavirote.findByRstrEntity_RstrIdAndUserEntity_UserId(
+                rstrId, userId);
+
+        return existingFavorite.isPresent();
     }
 
     public boolean saveFavorite(RstrFavoriteRegisterDTO rstrFavoriteRegisterDTO) {
