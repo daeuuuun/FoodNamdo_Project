@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
 import palette from "../../../../styles/palette";
@@ -7,10 +7,8 @@ import CallIcon from '@mui/icons-material/Call';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import StarIcon from '@mui/icons-material/Star';
-import { BACKEND_SERVER_URL } from '../../../../config/Config';
 import { authBackInstance } from '../../../../utils/axiosInstance';
 import { AppContext } from '../../../../utils/loginContext';
-import { useParams } from 'react-router-dom';
 const RstrBriefInfoContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -152,11 +150,30 @@ const StyledBookmarkIcon = styled(BookmarkIcon)`
 const RstrBriefInfo = ({ rstrInfo, rstrId }) => {
     const { isAuthenticated } = useContext(AppContext);
     const navigate = useNavigate();
-    const [isFavoriate, setIsFavoriate] = useState(true);
+    const [isFavorite, setIsFavorite] = useState(false);
 
     const MoveToTop = () => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
     }
+
+    useEffect(() => {
+        const checkFavorite = async () => {
+            try {
+                const response = await authBackInstance.get(`/mainsystem/RstrFavoriteRegister`, {
+                    params: {
+                        rstr_id: rstrId
+                    }
+                });
+                if (response.status === 200) {
+                    setIsFavorite(response.data);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        checkFavorite();
+    }, []);
 
     const toggleFavorite = async () => {
         if (!isAuthenticated) {
@@ -171,7 +188,7 @@ const RstrBriefInfo = ({ rstrInfo, rstrId }) => {
                 rstrId: rstrId
             });
             if (response.status === 200) {
-                setIsFavoriate(!isFavoriate);
+                setIsFavorite(response.data);
             }
         } catch (error) {
             console.error(error);
@@ -214,7 +231,7 @@ const RstrBriefInfo = ({ rstrInfo, rstrId }) => {
             <FavoriteButtonWrapper>
                 <FavoriteButton className='centered-flex' onClick={toggleFavorite}>
                     <div>
-                        {!isFavoriate ?
+                        {isFavorite ?
                             <StyledBookmarkIcon style={{ fontSize: '2.2rem' }} /> :
                             <StyledBookmarkBorderIcon style={{ fontSize: '2.2rem' }} />
                         }

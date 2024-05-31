@@ -17,8 +17,13 @@ const Header = () => {
             await defaultBackInstance.post(BACKEND_SERVER_URL + '/usermanagement/logout', {
                 refreshToken: refreshToken
             });
-            navigate('/');
-            logout();
+
+            window.location.reload();
+
+            setTimeout(() => {
+                logout();
+                navigate('/');
+            }, 10);
         } catch (error) {
             console.log(error);
         }
