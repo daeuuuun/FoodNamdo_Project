@@ -9,10 +9,14 @@ import cafe3 from '../main/cafe3.jpg';
 import style1 from '../main/Recommend.module.css';
 import style2 from '../main/Best.module.css';
 import {AppContext} from "../../utils/loginContext";
+import {Link} from "react-router-dom";
 
 
 
 const Main = () => {
+
+    const { isAuthenticated } = useContext(AppContext);
+
     const images = [{
         imgSrc: cafe1,
         name: 'cafe1'
@@ -28,13 +32,18 @@ const Main = () => {
         <>
             <div className={styles.backgroundColor}>
                 {/* <MainTopCategory/> */}
-                <CarouselContainer title={'#나에게 딱 맞는 맛집'} styles={style1} images={images}/>
+                {isAuthenticated ? (<><CarouselContainer title={'#나에게 딱 맞는 맛집'} styles={style1} images={images}/>
+
+
+
+
+                </>) : (<Link to={"/login"}>로그인이 필요합니다!!</Link>)}
                 <div className={styles.div}>
-                    <div className={styles.div2}>
-                        <CarouselContainer title={'#BEST 맛집'} styles={style2} images={images} onesImages={2} auto={false}/>
-                        <CarouselContainer title={'#BEST REVIEW'} styles={style2} images={images} onesImages={2} auto={false}/>
-                    </div>
-                    <MainBottomButton/>
+                <div className={styles.div2}>
+                    <CarouselContainer title={'#BEST 맛집'} styles={style2} images={images} onesImages={2} auto={false}/>
+                    <CarouselContainer title={'#BEST REVIEW'} styles={style2} images={images} onesImages={2} auto={false}/>
+                </div>
+                <MainBottomButton/>
                 </div>
             </div>
         </>

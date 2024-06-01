@@ -1,29 +1,36 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from '../myPage/MyReview.module.css';
-import CategoryDesign from './CategoryDesign';
+import {authBackInstance} from "../../utils/axiosInstance";
+import Review from "../rstr/detail/components/Review";
+import {Link} from "react-router-dom";
 
 const ReviewContain = () => {
+
+  const [myReviews, setMyReviews] = useState([]);
+
+  useEffect(() => {
+    authBackInstance.get("/mypage/getReview")
+        .then(res => {setMyReviews(res.data); console.log(res.data)}).catch(err => console.log(err))
+  }, []);
+
+  const removeFoodReview = review_id => {
+    authBackInstance.post(`/mainsystem/deleteReview?review_id=${review_id}`).then(res => console.log(res)).catch(err => console.log(err))
+  }
+
   return (
     <>
       <div className={styles.Contain}>
         <div className={styles.topBar}>
-        <div className={styles.storeName}>음식점 이름</div>
-          <div className={styles.btns}>수정</div>
-          <div className={styles.btns}>삭제</div>
+
         </div>
-        <div className={styles.categorys}>
-          <CategoryDesign/>
-          <CategoryDesign/>
-          <CategoryDesign/>
-          <CategoryDesign/>
-          <CategoryDesign/>
-        </div>
-        <div className={styles.textContain}>
-          리뷰테스트인데 뭐라고 써야할지 모르겠다리뷰테스트인데 뭐라고 써야할지 모르겠다리뷰테스트인데 뭐라고 써야할지 모르겠다리뷰테스트인데 뭐라고 써야할지 모르겠다리뷰테스트인데 뭐라고 써야할지 모르겠다리뷰테스트인데 뭐라고 써야할지 모르겠다리뷰테스트인데 뭐라고 써야할지 모르겠다리뷰테스트인데 뭐라고 써야할지 모르겠다 
-        </div>
-        <div className={styles.reviewTime}>
-          2024.05.31.12:11:45
-        </div>
+        {myReviews.map(review => {
+          return <>
+            <div className={styles.storeName}>음식점 이름</div>
+            <div className={styles.btns}><Link to={"/"} >수정</Link></div>
+            <div className={styles.btns} onClick={() => removeFoodReview(review.review_id)}>삭제</div>
+            <Review key={review.review_id} item={review}/>
+          </>
+        })}
       </div>
     </>
   );

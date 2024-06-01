@@ -28,6 +28,10 @@
   flex: 1;
 }
 
+.btns:hover {
+  cursor: pointer;
+}
+
 .storeName {
   font-size: 20px;
   padding: 1%;
