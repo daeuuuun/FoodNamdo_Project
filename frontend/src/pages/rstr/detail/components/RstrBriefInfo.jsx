@@ -152,6 +152,7 @@ const RstrBriefInfo = ({ rstrInfo, rstrId }) => {
     const { isAuthenticated } = useContext(AppContext);
     const navigate = useNavigate();
     const [isFavorite, setIsFavorite] = useState(false);
+    const [favoriteCount, setFavoriteCount] = useState(rstrInfo.rstr_favorite_count);
 
     const MoveToTop = () => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
@@ -192,6 +193,12 @@ const RstrBriefInfo = ({ rstrInfo, rstrId }) => {
             });
             if (response.status === 200) {
                 setIsFavorite(response.data);
+                if (response.data) {
+                    setFavoriteCount(prev => prev + 1);
+                } else {
+                    setFavoriteCount(prev => prev - 1);
+                }
+
             }
         } catch (error) {
             console.error(error);
@@ -239,7 +246,7 @@ const RstrBriefInfo = ({ rstrInfo, rstrId }) => {
                             <StyledBookmarkBorderIcon style={{ fontSize: '2.2rem' }} />
                         }
                     </div>
-                    <div className='favorite-count'>{rstrInfo.rstr_favorite_count}</div>
+                    <div className='favorite-count'>{favoriteCount}</div>
                 </FavoriteButton>
             </FavoriteButtonWrapper>
         </RstrBriefInfoContainer>
