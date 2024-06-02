@@ -9,9 +9,15 @@ import org.springframework.stereotype.Repository;
 import org.zerock.foodnamdo.domain.ReviewEntity;
 import org.zerock.foodnamdo.domain.RstrEntity;
 
+import java.util.List;
+
 @Repository
 public interface MainSystemRepositoryRstr extends JpaRepository<RstrEntity, Long> {
     Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable);
+
+    Page<RstrEntity> findAllByOrderByRstrReviewRatingDesc(Pageable pageable);
+
+    List<RstrEntity> findAllByOrderByRstrReviewRatingDesc();
 //    Page<RstrEntity> findAllByRstrNameContains(String name, Pageable pageable);
 
     @Query("SELECT r FROM RstrEntity r " +
@@ -34,4 +40,6 @@ public interface MainSystemRepositoryRstr extends JpaRepository<RstrEntity, Long
     long count();
 
     Page<RstrEntity> findAllByOrderByRstrFavoriteCountDesc(Pageable pageable);
+
+    List<RstrEntity> findAllByOrderByRstrFavoriteCountDesc();
 }

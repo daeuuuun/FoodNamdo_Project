@@ -44,13 +44,28 @@ public class MainSystemServiceImpl implements MainSystemService{
 
 
     @Override
-    public Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable) {
-        return mainSystemRepositoryRstr.findAllByOrderByRstrReviewCountDesc(pageable);
+    public Page<RstrEntity> findAll(Pageable pageable) {
+        return mainSystemRepositoryRstr.findAll(pageable);
+    }
+
+    @Override
+    public Page<RstrEntity> findAllByOrderByRstrReviewRatingDesc(Pageable pageable) {
+        return mainSystemRepositoryRstr.findAllByOrderByRstrReviewRatingDesc(pageable);
+    }
+
+    @Override
+    public List<RstrEntity> findAllByOrderByRstrReviewRatingDesc() {
+        return mainSystemRepositoryRstr.findAllByOrderByRstrReviewRatingDesc();
     }
 
     @Override
     public Page<RstrEntity> findAllByOrderByRstrFavoriteCountDesc(Pageable pageable) {
         return mainSystemRepositoryRstr.findAllByOrderByRstrFavoriteCountDesc(pageable);
+    }
+
+    @Override
+    public List<RstrEntity> findAllByOrderByRstrFavoriteCountDesc() {
+        return mainSystemRepositoryRstr.findAllByOrderByRstrFavoriteCountDesc();
     }
 
     public Page<RstrEntity> findAllByRstrNameContainsAndFilters(String name, String category, String region, Pageable pageable) {

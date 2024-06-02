@@ -8,12 +8,20 @@ import org.zerock.foodnamdo.domain.ReviewEntity;
 import org.zerock.foodnamdo.domain.RstrEntity;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 public interface MainSystemService {
-    Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable);
+
+    Page<RstrEntity> findAllByOrderByRstrReviewRatingDesc(Pageable pageable);
+
+    List<RstrEntity> findAllByOrderByRstrReviewRatingDesc();
+
+//    Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable);
 
     Page<RstrEntity> findAllByOrderByRstrFavoriteCountDesc(Pageable pageable);
+
+    List<RstrEntity> findAllByOrderByRstrFavoriteCountDesc();
 
     Page<RstrEntity> findAllByRstrNameContainsAndFilters(String name, String category, String region, Pageable pageable);
 //    Page<RstrEntity> findAllByRstrNameContains(String name, Pageable pageable);
@@ -69,5 +77,7 @@ public interface MainSystemService {
     String getRstrName_ReviewEntity(Long reviewId);
 
     void verifyReview(Long reviewId);
+
+    Page<RstrEntity> findAll(Pageable pageable);
 //    ResponseEntity<String> processOCR(MultipartFile file);
 }

@@ -49,29 +49,72 @@ import java.util.stream.Collectors;
 public class MainSystemController {
     private final MainSystemService mainSystemService;
 
+    @Operation(summary = "메인페이지 음식점 목록")
+    @GetMapping(value = "/mainRstr", produces = "application/json")
+    @ResponseBody
+    public Map<String, Object> mainRstr() {
+        log.info("mainRstr......");
+        int page = 1;
+        int pageSize = 3;
+
+        Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
+
+//        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        Long userId = userDetails.getUserId();  // Extract userId
+
+
+        Page<RstrEntity> rstrReviewList = mainSystemService.findAllByOrderByRstrReviewRatingDesc(pageable);
+//        List<RstrEntity> rstrReviewList = mainSystemService.findAllByOrderByRstrReviewRatingDesc();
+        Page<RstrEntity> rstrFavoriteList = mainSystemService.findAllByOrderByRstrFavoriteCountDesc(pageable);
+//        List<RstrEntity> rstrFavoriteList = mainSystemService.findAllByOrderByRstrFavoriteCountDesc();
+
+        List<FindAllRstrDTO> rstrReviewAllDTOList = rstrReviewList.getContent().stream()
+                .map(FindAllRstrDTO::fromEntity)
+                .collect(Collectors.toList());
+
+        List<FindAllRstrDTO> rstrFavoriteAllDTOList = rstrFavoriteList.getContent().stream()
+                .map(FindAllRstrDTO::fromEntity)
+                .collect(Collectors.toList());
+
+        // 응답 데이터 생성
+        Map<String, Object> response = new LinkedHashMap<>();
+//        response.put("page_size", pageSize);
+//        response.put("total_pages", totalPages);
+//        response.put("page_num", page);
+//        response.put("total_rstr", totalResults);
+//        response.put("rstr", rstrAllDTOList);
+//        response.put("rstr_recommand", rstrRecomandList);
+        response.put("rstr_favorite", rstrFavoriteAllDTOList);
+        response.put("rstr_review", rstrReviewAllDTOList);
+
+        return response;
+    }
+
 
     @Operation(summary = "음식점 목록 조회")
     @GetMapping(value = "/findAll", produces = "application/json")
     @ResponseBody
-    public Map<String, Object> findAll(@RequestParam("page") int page) {
+    public Map<String, Object> findAll(@RequestParam("page") int page,
+                                       @RequestParam(value = "sort", required = false)
+                                       @Parameter(description = "정렬", schema = @Schema(allowableValues = {"전체", "리뷰 높은 순", "찜 많은 순"})) String sort) {
         log.info("findAll......");
         int pageSize = 8;
 
-        // 요청된 페이지의 결과를 가져오기 위해 페이지와 페이지 크기로 Pageable 객체를 생성
-//        Pageable pageable = PageRequest.of(page, pageSize);
         Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
 
-        Page<RstrEntity> rstrReviewPage = mainSystemService.findAllByOrderByRstrReviewCountDesc(pageable);
-//        log.info(rstrPage);
-        List<FindRstrByNameDTO> rstrReviewAllDTOList = rstrReviewPage.getContent().stream()
-                .map(FindRstrByNameDTO::fromEntity)
+        Page<RstrEntity> rstrPage = null;
+        if(Objects.equals(sort, "전체")){
+            rstrPage = mainSystemService.findAll(pageable);
+        } else if (Objects.equals(sort, "리뷰 높은 순")) {
+            rstrPage = mainSystemService.findAllByOrderByRstrReviewRatingDesc(pageable);
+        } else if (Objects.equals(sort, "찜 많은 순")) {
+            rstrPage = mainSystemService.findAllByOrderByRstrFavoriteCountDesc(pageable);
+        }
+
+        List<FindAllRstrDTO> rstrAllDTOList = rstrPage.getContent().stream()
+                .map(FindAllRstrDTO::fromEntity)
                 .collect(Collectors.toList());
 
-        Page<RstrEntity> rstrFavoritePage = mainSystemService.findAllByOrderByRstrFavoriteCountDesc(pageable);
-//        log.info(rstrPage);
-        List<FindRstrByNameDTO> rstrFavoriteAllDTOList = rstrFavoritePage.getContent().stream()
-                .map(FindRstrByNameDTO::fromEntity)
-                .collect(Collectors.toList());
 
         long totalResults = mainSystemService.count();
         // 전체 페이지 수 계산
@@ -83,70 +126,13 @@ public class MainSystemController {
         response.put("total_pages", totalPages);
         response.put("page_num", page);
         response.put("total_rstr", totalResults);
-        response.put("rstr_favorite", rstrFavoriteAllDTOList);
-        response.put("rstr_review", rstrReviewAllDTOList);
+        response.put("rstr", rstrAllDTOList);
+//        response.put("rstr_favorite", rstrFavoriteAllDTOList);
+//        response.put("rstr_review", rstrReviewAllDTOList);
 
         return response;
     }
 
-    // 요청된 식당 이름을 포함하는 모든 식당의 DTO 목록을 가져옴
-//        List<RstrDTObackup> rstrDTOList = mainSystemService.findAllByOrderByRstrReviewCountDesc(pageable).stream()
-//                .map(rstrEntity -> {
-//                    String categoryName = ""; // 카테고리 이름 변수 초기화
-//
-//                    double roundedNaverRating = Math.round(rstrEntity.getRstrNaverRating() * 100.0) / 100.0;
-//                    double roundedReviewRating = Math.round(rstrEntity.getRstrReviewRating() * 100.0) / 100.0;
-//
-//                    // 식당의 카테고리 중 하나 선택
-//                    if (rstrEntity.getCategories() != null && !rstrEntity.getCategories().isEmpty()) {
-//                        categoryName = rstrEntity.getCategories().iterator().next().getCategoryName();
-//                    }
-//
-//                    // RstrDTO 객체 생성
-//                    RstrDTObackup rstrDTO = RstrDTObackup.builder()
-//                            .category_name(categoryName)
-//                            .rstr_id(rstrEntity.getRstrId())
-//                            .rstr_img(rstrEntity.getRstrImages().stream()
-//                                    .map(RstrimgEntity -> RstrImgDTO.builder()
-//                                            .rstr_img_id(RstrimgEntity.getRstrImgId())
-//                                            .rstr_img_url(RstrimgEntity.getRstrImgUrl())
-//                                            .build())
-//                                    .collect(Collectors.toList()))
-//                            .rstr_num(rstrEntity.getRstrNum())
-//                            .rstr_region(rstrEntity.getRstrRegion())
-//                            .rstr_permission(rstrEntity.getRstrPermission())
-//                            .rstr_name(rstrEntity.getRstrName())
-//                            .rstr_address(rstrEntity.getRstrAddress())
-//                            .rstr_la(rstrEntity.getRstrLa())
-//                            .rstr_lo(rstrEntity.getRstrLo())
-//                            .rstr_tel(rstrEntity.getRstrTel())
-//                            .rstr_intro(rstrEntity.getRstrIntro())
-//                            .rstr_naver_rating(roundedNaverRating)
-//                            .rstr_review_rating(roundedReviewRating)
-//                            .example(rstrEntity.isExample() ? 1 : 0)
-//                            .relax(rstrEntity.isRelax() ? 1 : 0)
-//                            .rstr_review_count(rstrEntity.getRstrReviewCount())
-//                            .rstr_favorite_count(rstrEntity.getRstrFavoriteCount())
-//                            .rstr_parking(rstrEntity.isRstrParking() ? 1 : 0)
-//                            .rstr_play(rstrEntity.isRstrPlay() ? 1 : 0)
-//                            .rstr_pet(rstrEntity.isRstrPet() ? 1 : 0)
-//                            .rstr_closed(rstrEntity.getRstrClosed())
-//                            .rstr_business_hour(rstrEntity.getRstrBusinessHour())
-//                            .rstr_delivery(rstrEntity.isRstrDelivery() ? 1 : 0)
-//                            .menu_description(rstrEntity.getMenuDescriptions().stream()
-//                                    .map(menuDescriptionEntity -> MenuDescriptionDTO.builder()
-//                                            .menu_description_id(menuDescriptionEntity.getMenuDescriptionId())
-//                                            .rstr_id(menuDescriptionEntity.getRstrEntity().getRstrId())
-//                                            .menu_id(menuDescriptionEntity.getMenuId())
-//                                            .menu_category_sub(menuDescriptionEntity.getMenuCategorySub())
-//                                            .menu_name(menuDescriptionEntity.getMenuName())
-//                                            .menu_price(menuDescriptionEntity.getMenuPrice())
-//                                            .build())
-//                                    .collect(Collectors.toList()))
-//                            .build();
-//                    return rstrDTO;
-//                })
-//                .collect(Collectors.toList());
 
     // 전체 결과 수 계산
 
