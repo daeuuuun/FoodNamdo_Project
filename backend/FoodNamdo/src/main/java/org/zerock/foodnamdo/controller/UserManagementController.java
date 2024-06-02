@@ -73,6 +73,14 @@ public class UserManagementController {
         return userEntity != null;
     }
 
+    @Operation(summary = "전화번호중복체크(전화번호가 존재할 경우 true, 아닐 경우 false)")
+    @GetMapping(value = "/PhoneDuplication", produces = "application/json")
+    public boolean PhoneDuplication(@RequestParam("phone")String phone){
+        String formatPhone = phone.substring(0, 3) + "-" + phone.substring(3, 7) + "-" + phone.substring(7);
+        UserEntity userEntity = userManagementService.findUserByPhone(formatPhone);
+        return userEntity != null;
+    }
+
     @Operation(summary = "회원가입")
     @PostMapping("/signUp")
     public ResponseEntity<String> signUp(

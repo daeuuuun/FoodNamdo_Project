@@ -41,7 +41,8 @@ public class RstrDetailDTO {
     private boolean rstr_delivery;
     private Double rstr_la;
     private Double rstr_lo;
-    private List<ReviewDTO> reviews;
+//    private List<ReviewDTO> reviews;
+    private List<UserReviewDTO> reviews;
 
 
 //    private String rstr_permission;
@@ -77,7 +78,8 @@ public class RstrDetailDTO {
                 .rstr_delivery(entity.isRstrDelivery())
                 .rstr_la(entity.getRstrLa())
                 .rstr_lo(entity.getRstrLo())
-                .reviews(ReviewDTO.fromEntities(entity.getReviews()))
+//                .reviews(ReviewDTO.fromEntities(entity.getReviews()))
+                .reviews(UserReviewDTO.fromEntities(entity.getReviews()))
 
 
 

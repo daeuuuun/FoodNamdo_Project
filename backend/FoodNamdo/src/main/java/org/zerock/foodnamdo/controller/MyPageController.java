@@ -5,9 +5,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.zerock.foodnamdo.baseDTO.*;
 import org.zerock.foodnamdo.customDTO.ChangeNicknameDTO;
 import org.zerock.foodnamdo.customDTO.ChangePasswordDTO;
+import org.zerock.foodnamdo.customDTO.UserReviewDTO;
 import org.zerock.foodnamdo.customDTO.getFavoriteRstrDTO;
 import org.zerock.foodnamdo.domain.*;
 import org.zerock.foodnamdo.service.MyPageService;
@@ -24,7 +22,6 @@ import org.zerock.foodnamdo.util.JWTUtil;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -107,15 +104,17 @@ public class MyPageController {
 
     @Operation(summary = "사용자id로 리뷰 불러오기")
     @GetMapping(value = "/getReview", produces = "application/json")
-    public List<ReviewDTO> getReview() {
+    public List<UserReviewDTO> getReview() {
 //    public List<ReviewDTO> getReview(@RequestParam("user_id") Long userId) {
 
         APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = userDetails.getUserId();  // Extract userId
         log.info("getReview......");
         List<ReviewEntity> reviewEntity = myPageService.findReviewByUserId(userId);
+//        String userName = reviewEntity.u
         return reviewEntity.stream()
-                .map(ReviewDTO::fromEntity)
+                .map(UserReviewDTO::fromEntity)
+//                .map(ReviewDTO::fromEntity)
                 .toList();
     }
 
