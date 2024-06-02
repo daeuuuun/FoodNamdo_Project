@@ -7,9 +7,9 @@
 .divBox {
     display: flex;
     border-radius: 10px;
-    background-color: #F9F7F7;
     width: 90%;
     margin: 2% auto;
+    flex-direction: column;
 }
 
 .badge {
@@ -38,4 +38,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.detailDiv {
+    display: flex;
+    background-color: #F9F7F7;
+    margin: 1%;
+    border-radius: 10px;
 }

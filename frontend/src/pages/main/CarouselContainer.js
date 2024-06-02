@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-
+import noImage from '../../asset/noimage.jpg'
 
 const CarouselContainer = ({ title, styles, images, auto, time, onesImages }) => {
+
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const handleRightButton = useCallback(() => {
         setCurrentImageIndex(prevIndex =>
@@ -38,8 +39,10 @@ const CarouselContainer = ({ title, styles, images, auto, time, onesImages }) =>
                         const newIndex = (currentImageIndex + index) % images.length;
                         return (
                             <div key={newIndex} className={styles.recImgDiv}>
-                                <img src={images[newIndex].imgSrc} className={styles.recommendStoreImg} alt={`Cafe ${newIndex + 1}`} />
-                                <div className={styles.imgText}>{images[newIndex].name}</div>
+                                {images[newIndex].rstr_img_url[0] ? (<img src={images[newIndex].rstr_img_url[0]} className={styles.recommendStoreImg} alt={`Cafe ${newIndex + 1}`} />) : (
+                                    <img src={noImage} className={styles.recommendStoreImg}
+                                         alt={`Cafe ${newIndex + 1}`}/>)}
+                                <div className={styles.imgText}>{images[newIndex].rstr_name}</div>
                             </div>
                         );
                     })}

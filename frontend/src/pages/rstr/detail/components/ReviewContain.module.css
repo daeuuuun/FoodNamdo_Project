@@ -1,6 +1,5 @@
 .reviewContainer {
     margin-top: 1%;
-    background: #F9F7F7;
     border: 1px #112D4E;
     border-radius: 10px;
 }
@@ -12,10 +11,10 @@
 }
 
 .nicknameText {
-    margin: 1%;
+    margin-top: 1%;
+    margin-left: 2%;
     display: flex;
-    justify-content: center;
-    flex: 2;
+    justify-content: left;
 }
 
 .reviewCount {
@@ -24,14 +23,12 @@
     justify-content: right;
     font-family: "Gmarket Sans Light";
     font-size: 18px;
-    flex: 2;
 }
 
 .badge {
     margin: 1%;
     display: flex;
     justify-content: left;
-    flex: 1;
 }
 
 .reviewTime {
@@ -48,7 +45,6 @@
     margin: 1%;
     display: flex;
     justify-content: right;
-    flex: 1;
 }
 
 .icons {
@@ -76,5 +72,10 @@
     padding: 1%;
     margin: 1%;
     background: #DBE2EF;
+    border-radius: 10px;
+}
+
+.backgroundDiv {
+    background: #F9F7F7;
     border-radius: 10px;
 }

@@ -25,9 +25,11 @@ const ReviewContain = () => {
         </div>
         {myReviews.map(review => {
           return <>
-            <div className={styles.storeName}>음식점 이름</div>
-            <div className={styles.btns}><Link to={"/"} >수정</Link></div>
-            <div className={styles.btns} onClick={() => removeFoodReview(review.review_id)}>삭제</div>
+            <div className={styles.topdiv}>
+              <div className={styles.storeName}>{review.rstrName}</div>
+              <div className={styles.btns}><Link to={"/"} >수정</Link></div>
+              <div className={styles.btns} onClick={() => removeFoodReview(review.review_id)}>삭제</div>
+            </div>
             <Review key={review.review_id} item={review}/>
           </>
         })}

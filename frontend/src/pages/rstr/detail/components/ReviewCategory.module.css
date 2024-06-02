@@ -34,8 +34,8 @@
 
 .icons {
     display: flex;
-    height: 1.8em;
-    width: 1.8em;
+    height: 100%;
+    width: 100%;
     margin-left: 1%;
     margin-right: 1%;
 }

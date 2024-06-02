@@ -11,15 +11,13 @@
 
 .insertBtn {
     position: absolute;
-    left: 85%;
-    justify-content: center;
-    align-items: center;
+    left: 88%;
     font-family: "Gmarket Sans Medium";
     font-size: 20px;
     padding: 1%;
     border: none;
     border-radius: 10px;
-    width: 15%;
+    width: 9%;
     background: #DBE2EF;
 }
 

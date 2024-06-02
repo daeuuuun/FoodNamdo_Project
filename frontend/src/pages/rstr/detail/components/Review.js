@@ -6,6 +6,8 @@ import { MdOutlineHeartBroken } from "react-icons/md";
 import { IoHeart } from "react-icons/io5";
 import {MdHeartBroken} from "react-icons/md";
 import {authBackInstance} from "../../../../utils/axiosInstance";
+import {IoMdCheckmarkCircleOutline} from "react-icons/io";
+import {PiClover} from "react-icons/pi";
 
 
 const Review = ({item}) => {
@@ -34,20 +36,32 @@ const Review = ({item}) => {
 
     return (
         <>
-            <div className={styles.heartReview}>
-                {toggleLike ? <IoHeart className={styles.icons}/> : <IoHeartOutline className={styles.icons} onClick={() => handleLike()}/>}
-                {toggleLike ? item.like + 1 : item.like}
-                {toggleDislike ? <MdOutlineHeartBroken className={styles.icons}/> : <MdHeartBroken className={styles.icons} onClick={() => handleDislike()}/>}
-                {toggleDislike ? item.dislike + 1: item.dislike}
+            <div className={styles.backgroundDiv}>
+                <div className={styles.infoDiv}>
+                    <div className={styles.nicknameText}>{item.userNickName}</div>
+                    <div className={styles.badge}>
+                        <IoMdCheckmarkCircleOutline className={styles.icons}/>
+                        <PiClover className={styles.icons}/>
+                    </div>
+                    <div className={styles.nullDiv}></div>
+                <div className={styles.heartReview}>
+                    {toggleLike ? <IoHeart className={styles.icons}/> :
+                        <IoHeartOutline className={styles.icons} onClick={() => handleLike()}/>}
+                    {toggleLike ? item.like + 1 : item.like}
+                    {toggleDislike ? <MdOutlineHeartBroken className={styles.icons}/> :
+                        <MdHeartBroken className={styles.icons} onClick={() => handleDislike()}/>}
+                    {toggleDislike ? item.dislike + 1 : item.dislike}
 
-            </div>
-            <ReviewCheck rstrInfo={item} />
-            <div className={styles.reviewTextDiv}>
-                <div className={styles.textDiv}>
-                    {item.review_text}
                 </div>
+                </div>
+                <ReviewCheck rstrInfo={item}/>
+                <div className={styles.reviewTextDiv}>
+                    <div className={styles.textDiv}>
+                        {item.review_text}
+                    </div>
+                </div>
+                <div className={styles.reviewTime}>{item.time_of_creation}</div>
             </div>
-            <div className={styles.reviewTime}>{item.time_of_creation}</div>
         </>
     )
 };

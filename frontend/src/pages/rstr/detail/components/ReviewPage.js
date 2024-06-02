@@ -20,7 +20,7 @@ const ReviewPage = ({ rstrInfo }) => {
                 </div>
                 <div className={styles.radioBoxDiv}>
                     <div className={styles.rableBtn}>
-                        <input type="radio" name="option" value="optionAll" checked={selectOption === 'optionAll'} onChange={selectOptionHandle} className={styles.radioBox}/>
+                        <input type="radio" name="option" value="optionAll" checked={selectOption === 'optionAll'} onChange={selectOptionHandle} defaultChecked={true} className={styles.radioBox}/>
                         모두 보기
                     </div>
                     <div className={styles.rableBtn}>

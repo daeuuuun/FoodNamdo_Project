@@ -78,3 +78,6 @@
   font-family: 'Gmarket Sans Light';
 }
 
+.topdiv {
+  display: flex;
+}

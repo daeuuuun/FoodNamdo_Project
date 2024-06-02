@@ -1,24 +1,48 @@
-import React from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import styles from '../myPage/Mission.module.css';
-import { DiRuby } from "react-icons/di";
+
+import {authBackInstance} from "../../utils/axiosInstance";
+import MissionDetail from "./MissionDetail";
 
 const MissionContent = () => {
+    const [mission, setMission] = useState({
+        badge: [],
+        userBadge: []
+    });
+
+    useEffect(() => {
+        const getMission = async () => {
+            try {
+                const res = await authBackInstance.get(`/mypage/myBadge`);
+                setMission(res.data);
+                console.log(res);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        getMission();
+    }, []);
+
+    const myBadges = useMemo(() => {
+        const myBadgeIds = mission.userBadge.map(badge => badge.badge_id);
+        const myBadgeNames = mission.badge
+            .filter(badge => myBadgeIds.includes(badge.badge_id))
+            .map(badge => badge.badge_name);
+
+        return myBadgeNames;
+    }, [mission]);
+
     return (
         <>
             <div className={styles.background}>
                 <div className={styles.divBox}>
-                    <div className={styles.badge}>
-                        <DiRuby/>
-                    </div>
-                    <div className={styles.contentBox}>
-                        <div className={styles.textDiv}>
-                            <div className={styles.text}>리뷰 1개 작성하기</div>
-                        </div>
-                    </div>
+                    {myBadges.map((badge, index) => (
+                        <MissionDetail key={index} name={badge} />
+                    ))}
                 </div>
             </div>
         </>
-    )
-}
+    );
+};
 
 export default MissionContent;

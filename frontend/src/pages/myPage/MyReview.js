@@ -8,10 +8,6 @@ const MyReview = () => {
             <div className={styles.background}>
                 <div className={styles.rightContainer}>
                     <ReviewContain/>
-                    <ReviewContain/>
-                    <ReviewContain/>
-                    <ReviewContain/>
-                    <ReviewContain/>
                 </div>
             </div>
         </>
