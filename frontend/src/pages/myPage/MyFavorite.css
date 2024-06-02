@@ -11,13 +11,7 @@
 .my-favorite-list {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0 20px;
+	gap: 0 12px;
 	overflow-y: auto;
 	max-height: 80vh;
-}
-
-.my-favorite-list-empty {
-	display: flex;
-	justify-content: center;
-	align-items: center;
 }

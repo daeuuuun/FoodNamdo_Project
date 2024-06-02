@@ -170,31 +170,25 @@ const SignUpPage = () => {
 			alert("인증번호를 입력해주세요.");
 		}
 
-		try {
-			const response = await defaultBackInstance.post
-				(BACKEND_SERVER_URL + '/usermanagement/signUp', {
-					accountId: account_id,
-					password: password,
-					name: name,
-					nickname: nickname,
-					phone: phone
-				});
-			console.log(signUpForm);
-			setSignUpForm({
-				account_id: '',
-				password: '',
-				name: '',
-				nickname: '',
-				phone: '',
-			})
-			setCode('');
-			alert("푸드남도 회원가입을 축하합니다!");
-			navigate('/');
-		} catch (error) {
-			console.error(error);
-		}
-	};
+		if (isCheckedId && password && name && isCheckedNickname && isVerified && code) {
+			try {
+				const response = await defaultBackInstance.post
+					(BACKEND_SERVER_URL + '/usermanagement/signUp', {
+						accountId: account_id,
+						password: password,
+						name: name,
+						nickname: nickname,
+						phone: phone
+					});
 
+				alert("푸드남도 회원가입을 축하합니다!");
+				navigate('/');
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+	}
 	const toggleShowPassword = () => {
 		setShowPassword(!showPassword);
 	}

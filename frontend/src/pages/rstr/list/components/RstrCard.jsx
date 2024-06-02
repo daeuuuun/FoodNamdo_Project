@@ -5,9 +5,9 @@ import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import { useNavigate } from 'react-router-dom';
 
 const RstrCardContainer = styled.div`
-    margin: 5px 8px;
+    margin: 5px 9px;
     padding: 0.5rem;
-    width: 190px;
+    width: 195px;
     border-radius: 10px;
     border: 1px solid ${palette.lightblue};
     box-shadow: 2px 1px 2px ${palette.gray};
@@ -108,7 +108,7 @@ const RstrCard = ({ rstrInfo, mode }) => {
                 )}
             </ImgContainer>
             <RstrInfo className='title'>
-                {rstrInfo.rstr_name.length > 8 ? rstrInfo.rstr_name.slice(0, 8) + '...' : rstrInfo.rstr_name}
+                {rstrInfo.rstr_name.length > 8 ? rstrInfo.rstr_name.slice(0, 10) + '...' : rstrInfo.rstr_name}
             </RstrInfo>
             <RstrInfo className='info'>
                 <div style={{ marginTop: '1px' }}>

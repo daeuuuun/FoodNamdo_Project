@@ -186,7 +186,6 @@ const RstrBriefInfo = ({ rstrInfo, rstrId }) => {
             return;
         }
 
-        console.log(rstrId);
         try {
             const response = await authBackInstance.post('/mainsystem/RstrFavoriteRegister', {
                 rstrId: rstrId
