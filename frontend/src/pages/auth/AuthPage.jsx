@@ -32,10 +32,7 @@ const AuthPage = ({ mode }) => {
             }
         };
 
-        if (!formData.name) {
-            alert("이름을 입력해주세요.");
-            return;
-        } else if (!isVerified) {
+        if (!isVerified) {
             alert("인증번호 요청을 해주세요.");
             return;
         } else if (!formData.code) {
@@ -91,13 +88,17 @@ const AuthPage = ({ mode }) => {
     };
 
     const handleAuth = async () => {
-        if (!formData.phone) {
+        if (!formData.name) {
+            alert("이름을 입력해주세요.");
+            return;
+        } else if (!formData.phone) {
             alert('전화번호를 입력해주세요.');
             return;
         };
         try {
             await axios.post(
                 BACKEND_SERVER_URL + 'usermanagement/verify', {
+                name: formData.name,
                 phone: formData.phone
             });
             setIsVerified(true);

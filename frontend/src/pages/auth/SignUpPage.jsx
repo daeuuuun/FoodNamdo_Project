@@ -41,12 +41,8 @@ const SignUpPage = () => {
 
 	const { account_id, password, name, nickname, phone } = signUpForm;
 
-	const [isIdAvailable, setIsIdAvailable] = useState(false); // 사용 가능
-	const [isCheckedId, setIsCheckedId] = useState(false); // 중복 확인
-
-	const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
+	const [isCheckedId, setIsCheckedId] = useState(false);
 	const [isCheckedNickname, setIsCheckedNickname] = useState(false);
-
 	const [isVerified, setIsVerified] = useState(false);
 
 	const onChange = e => {
@@ -85,11 +81,9 @@ const SignUpPage = () => {
 				);
 
 				if (!response.data) {
-					setIsIdAvailable(true);
 					setIsCheckedId(true);
 					alert('사용가능한 아이디입니다.');
 				} else {
-					setIsIdAvailable(false);
 					setIsCheckedId(false);
 					alert('중복된 아이디입니다.');
 					setSignUpForm({
@@ -116,11 +110,9 @@ const SignUpPage = () => {
 				);
 
 				if (!response.data) {
-					setIsNicknameAvailable(true);
 					setIsCheckedNickname(true);
 					alert('사용가능한 닉네임입니다.');
 				} else {
-					setIsNicknameAvailable(false);
 					setIsCheckedNickname(false);
 					alert('중복된 닉네임입니다.');
 					setSignUpForm({
@@ -136,22 +128,55 @@ const SignUpPage = () => {
 		}
 	}
 
+	const checkPhoneDuplication = async () => {
+		try {
+			const response = await defaultBackInstance.get(
+				BACKEND_SERVER_URL + '/usermanagement/PhoneDuplication',
+				{
+					params: { phone: phone }
+				}
+			)
+			if (response.data) {
+				setSignUpForm({
+					...signUpForm,
+					phone: ''
+				});
+				return true;
+			} else {
+				return false;
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
 	const handleAuth = async () => {
 		if (!phone) {
 			alert('전화번호를 입력해주세요.');
 			return;
 		};
-		try {
-			await defaultBackInstance.post(
-				BACKEND_SERVER_URL + '/usermanagement/verify', {
-				phone: phone
-			});
-			setIsVerified(true);
-			alert('인증번호가 전송되었습니다.');
-		} catch (error) {
-			alert('인증번호 발송에 실패하였습니다. 다시 시도해주세요.');
-			console.log(error);
+
+		const isDuplicatedPhone = await checkPhoneDuplication();
+
+		if (!isDuplicatedPhone) {
+			try {
+				const response = await defaultBackInstance.post(
+					BACKEND_SERVER_URL + '/usermanagement/verifySignUp', {
+					name: name,
+					phone: phone
+				});
+
+				if (response.status == 200) {
+					setIsVerified(true);
+					alert('인증번호가 전송되었습니다.');
+				}
+
+			} catch (error) {
+				alert('인증번호 발송에 실패하였습니다. 다시 시도해주세요.');
+				console.log(error);
+			}
+		} else {
+			alert('이미 존재하는 전화번호입니다.');
 		}
 	};
 
@@ -238,18 +263,6 @@ const SignUpPage = () => {
 						/>
 					)}
 				</div>
-				<div className={`input-form ${focused === 'name' ? 'input-focus-form' : ''}`}>
-					<PersonOutlinedIcon className="icons" />
-					<input
-						type="text"
-						placeholder="이름"
-						name="name"
-						value={name}
-						onChange={onChange}
-						onFocus={() => setFocused('name')}
-						onBlur={() => setFocused(null)}
-					/>
-				</div>
 				<div className={`input-form ${focused === 'nickname' ? 'input-focus-form' : ''}`}>
 					<PersonOutlinedIcon className="icons" />
 					<input
@@ -264,6 +277,18 @@ const SignUpPage = () => {
 					<div className="btn" onClick={checkNicknameDuplicate}>
 						중복체크
 					</div>
+				</div>
+				<div className={`input-form ${focused === 'name' ? 'input-focus-form' : ''}`}>
+					<PersonOutlinedIcon className="icons" />
+					<input
+						type="text"
+						placeholder="이름"
+						name="name"
+						value={name}
+						onChange={onChange}
+						onFocus={() => setFocused('name')}
+						onBlur={() => setFocused(null)}
+					/>
 				</div>
 				<div className={`input-form ${focused === 'phone' ? 'input-focus-form' : ''}`}>
 					<LocalPhoneOutlinedIcon className="icons" />

@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import styled from "styled-components";
+import SortIcon from '@mui/icons-material/Sort';
 
 import palette from '../../../styles/palette';
 import { Radio, FormControlLabel } from '@mui/material';
 import { useFile } from '../../../data/FileContext';
+
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 import RstrCard from './components/RstrCard';
 import { Link, useLocation } from 'react-router-dom';
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 
-import { IMAGE_SERVER_URL } from '../../../config/Config';
-import { BACKEND_SERVER_URL } from '../../../config/Config';
 import { defaultBackInstance, defaultImageInstance } from "../../../utils/axiosInstance";
 
 const RstrListPageContainer = styled.div`
@@ -61,18 +62,35 @@ const StyledCheckbox = styled(Radio)`
   }
 `;
 
+const StyledButton = styled(Button)`
+    font-family: 'Gmarket Sans Medium';
+`;
+
 // 음식점 리스트
 const RstrListContainer = styled.div`
     padding: 0 5px;
     width: 100%;
-    // border: 1px solid gray;
     display: flex;
     flex-direction: column;
+
+    .rstr-list-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 10px 0;
+    }
+
     .total-rstr-num {
         font-size: 0.9rem;
-        margin: 10px 20px;
-        text-align: left;
+        margin: 0px 20px;
     }
+
+    .rstr-sort-btn {
+        display: flex;
+        align-items: center;
+        margin: 0px 20px;
+    }
+
     .rstr-loading {
         margin: 0 auto;
         margin-top: 10%;
@@ -102,6 +120,9 @@ export const RstrListPage = () => {
     const [checkedRegion, setCheckedRegion] = useState('전체');
     const [checkedCategory, setCheckedCategory] = useState('전체');
 
+    const [sortOrder, setSortOrder] = useState('distance');
+    const [reverse, setReverse] = useState(false);
+
     const searchParams = new URLSearchParams(location.search);
     const search = searchParams.get('search');
 
@@ -111,142 +132,167 @@ export const RstrListPage = () => {
         setPage(newPage);
     }, [location]);
 
+    const fetchAllRestaurants = async () => {
+        setIsNotInfo(false);
+        const params = new URLSearchParams({
+            page: page,
+            // region: checkedRegion,
+            // category: checkedCategory
+        }).toString();
+        const url = `/mainsystem/findAll?${params}`;
+
+        try {
+            const response = await defaultBackInstance.get(url);
+            setRstrList(response.data.rstr_favorite);
+            setTotalPage(response.data.total_pages);
+            setPageSize(response.data.page_size);
+            setTotalRstr(response.data.total_rstr);
+
+            if (response.data.rstr.length === 0) {
+                setIsNotInfo(true);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        setIsLoading(false);
+    };
+
+    const fetchDataWithFile = async () => { // 이미지 검색
+        const formData = new FormData();
+        formData.append('file', file);
+        const params = new URLSearchParams({
+            similarity: 1,
+            n_results: 30,
+            page_number: page,
+            sort_order: sortOrder,
+            reverse: reverse,
+            category: checkedCategory,
+            region: checkedRegion,
+        }).toString();
+
+        const url = `/image_to_image/?${params}`;
+
+        try {
+            const response = await defaultImageInstance.post(url, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
+            setRstrList(response.data.rstr);
+            setTotalPage(response.data.total_pages);
+            setPageSize(response.data.page_size);
+            setTotalRstr(response.data.total_rstr);
+            console.log(response.data);
+            // random URL을 session에 저장하는 코드
+            sessionStorage.setItem('random', response.data.random);
+        } catch (error) {
+            if (error.response.status === 404) {
+                setIsNotInfo(true);
+            }
+        }
+        setIsLoading(false);
+    };
+
+    const fetchDataWithRandom = async () => {
+        const savedRandom = sessionStorage.getItem('random');
+
+        const params = new URLSearchParams({
+            page_number: page,
+            sort_order: sortOrder,
+            reverse: reverse,
+            category: checkedCategory,
+            region: checkedRegion,
+        }).toString();
+
+        const url = `/${savedRandom}/?${params}`;
+
+        try {
+            const response = await defaultImageInstance.get(url);
+            setRstrList(response.data.rstr);
+            setTotalPage(response.data.total_pages);
+            setPageSize(response.data.page_size);
+            setTotalRstr(response.data.total_rstr);
+        } catch (error) {
+            if (error.response.status === 404) {
+                setIsNotInfo(true);
+            }
+        }
+        setIsLoading(false);
+    };
+
+    const fetchDataWithName = async () => {
+        const params = new URLSearchParams({
+            rstrName: search,
+            page: page,
+            category: checkedCategory,
+            region: checkedRegion,
+        }).toString();
+
+        const url = `/mainsystem/findRstrByName?${params}`;
+        try {
+            const response = await defaultBackInstance.get(url);
+            setRstrList(response.data.rstr);
+            setTotalPage(response.data.total_pages);
+            setPageSize(response.data.page_size);
+            setTotalRstr(response.data.total_rstr);
+
+            if (response.data.rstr.length === 0) {
+                setIsNotInfo(true);
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+        setIsLoading(false);
+
+        sessionStorage.removeItem('random');
+    };
+
     // 검색 시
     useEffect(() => {
-
-        const fetchAllRestaurants = async () => {
-            setIsNotInfo(false);
-            const params = new URLSearchParams({
-                page,
-                // region: checkedRegion,
-                // category: checkedCategory
-            }).toString();
-            const url = `${BACKEND_SERVER_URL}/mainsystem/findAll?${params}`;
-
-            try {
-                const response = await defaultImageInstance.get(url);
-                setRstrList(response.data.rstr);
-                setTotalPage(response.data.total_pages);
-                setPageSize(response.data.page_size);
-                setTotalRstr(response.data.total_rstr);
-
-                if (response.data.rstr.length === 0) {
-                    setIsNotInfo(true);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-            setIsLoading(false);
-        };
-
-        const fetchDataWithFile = async () => { // 이미지 검색
-            const formData = new FormData();
-            formData.append('file', file);
-            const params = new URLSearchParams({
-                similarity: 1,
-                n_results: 30,
-                page_number: page,
-                sort_order: 'distance',
-                reverse: 'false',
-                category: checkedCategory,
-                region: checkedRegion,
-            }).toString();
-
-            const url = `${IMAGE_SERVER_URL}/image_to_image/?${params}`;
-
-            try {
-                const response = await defaultImageInstance.post(url, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    }
-                });
-                setRstrList(response.data.rstr);
-                setTotalPage(response.data.total_pages);
-                setPageSize(response.data.page_size);
-                setTotalRstr(response.data.total_rstr);
-                // random URL을 session에 저장하는 코드
-                sessionStorage.setItem('random', response.data.random);
-            } catch (error) {
-                if (error.response.status === 404) {
-                    setIsNotInfo(true);
-                }
-            }
-            setIsLoading(false);
-        };
-
-        const fetchDataWithRandom = async () => {
-            const savedRandom = sessionStorage.getItem('random');
-
-            const params = new URLSearchParams({
-                page_number: page,
-                sort_order: 'distance',
-                reverse: 'false',
-                category: checkedCategory,
-                region: checkedRegion,
-            }).toString();
-
-            const url = `${IMAGE_SERVER_URL}/${savedRandom}/?${params}`;
-
-            try {
-                const response = await defaultImageInstance.get(url);
-                setRstrList(response.data.rstr);
-                setTotalPage(response.data.total_pages);
-                setPageSize(response.data.page_size);
-                setTotalRstr(response.data.total_rstr);
-            } catch (error) {
-                if (error.response.status === 404) {
-                    setIsNotInfo(true);
-                }
-            }
-            setIsLoading(false);
-        };
-
-        const fetchDataWithName = async () => {
-            const params = new URLSearchParams({
-                rstrName: search,
-                page: page,
-                category: checkedCategory,
-                region: checkedRegion,
-            }).toString();
-
-            const url = `${BACKEND_SERVER_URL}/mainsystem/findRstrByName?${params}`;
-            try {
-                const response = await defaultBackInstance.get(url);
-                setRstrList(response.data.rstr);
-                setTotalPage(response.data.total_pages);
-                setPageSize(response.data.page_size);
-                setTotalRstr(response.data.total_rstr);
-
-                if (response.data.rstr.length === 0) {
-                    setIsNotInfo(true);
-                }
-
-            } catch (error) {
-                console.log(error);
-            }
-            setIsLoading(false);
-
-            sessionStorage.removeItem('random');
-        };
-
-        const loadData = () => {
-            setIsLoading(true);
-            setIsNotInfo(false);
-
-            if (!file && !search && !sessionStorage.getItem('random')) {
-                fetchAllRestaurants();
-            } else if (file && page === 1) { // 이미지 파일
-                fetchDataWithFile();
-            } else if (search) { // 검색어
-                fetchDataWithName();
-            } else {
-                setFile(null);
-                fetchDataWithRandom();
-            }
-        };
         loadData();
-    }, [file, page, search, checkedRegion, checkedCategory]);
+        console.log(sortOrder);
+    }, [file, page, search, checkedRegion, checkedCategory, sortOrder]);
 
+    const loadData = () => {
+        setIsLoading(true);
+        setIsNotInfo(false);
+
+        if (!file && !search && !sessionStorage.getItem('random')) {
+            fetchAllRestaurants();
+        } else if (file && page === 1) { // 이미지 파일
+            fetchDataWithFile();
+        } else if (search) { // 검색어
+            fetchDataWithName();
+        } else {
+            setFile(null);
+            fetchDataWithRandom();
+        }
+    };
+
+    const handleBasicSort = () => {
+        setSortOrder('distance');
+        setReverse(false);
+        setPage(1);
+    }
+
+    const handleReviewSort = () => {
+        setSortOrder('rstr_review_rating');
+        setReverse(true);
+        setPage(1);
+    }
+
+    const handleReviewCountSort = () => {
+        setSortOrder('rstr_review_count');
+        setReverse(true);
+        setPage(1);
+    }
+
+    const handleFavoriteSort = () => {
+        setSortOrder('rstr_favorite_count');
+        setReverse(true);
+        setPage(1);
+    }
 
     const regionOptions = [
         '전체', '경상남도', '전라남도'
@@ -259,10 +305,12 @@ export const RstrListPage = () => {
 
     const handleRegionCheckboxChange = (e) => {
         setCheckedRegion(e.target.checked ? e.target.name : null);
+        setPage(1);
     }
 
     const handleCheckboxChange = (e) => {
         setCheckedCategory(e.target.checked ? e.target.name : null);
+        setPage(1);
     }
 
     return (
@@ -315,7 +363,21 @@ export const RstrListPage = () => {
                         isLoading ?
                             (<div className='rstr-loading'>로딩중입니다. 잠시만 기다려주세요!</div>) :
                             <>
-                                <div className='total-rstr-num'>{`약 ${totalRstr}건`}</div>
+                                <div className='rstr-list-top'>
+                                    <div className='total-rstr-num'>{`약 ${totalRstr}건`}</div>
+                                    <div className='rstr-sort-btn'>
+                                        <SortIcon />
+                                        <ButtonGroup
+                                            variant="text"
+                                            aria-label="Basic button group"
+                                        >
+                                            <StyledButton onClick={handleBasicSort}>기본순</StyledButton>
+                                            <StyledButton onClick={handleReviewSort}>리뷰높은순</StyledButton>
+                                            <StyledButton onClick={handleReviewCountSort}>리뷰많은순</StyledButton>
+                                            <StyledButton onClick={handleFavoriteSort}>찜많은순</StyledButton>
+                                        </ButtonGroup>
+                                    </div>
+                                </div>
                                 <div style={{ height: '550px' }}>
                                     <RstrCards>
                                         {rstrList.map((rstrInfo) => (
@@ -324,7 +386,7 @@ export const RstrListPage = () => {
                                     </RstrCards>
                                 </div>
                                 <Pagination
-                                    style={{ margin: '30px auto' }}
+                                    style={{ margin: '10px auto 0px' }}
                                     page={page}
                                     count={totalPage}
                                     color="primary"

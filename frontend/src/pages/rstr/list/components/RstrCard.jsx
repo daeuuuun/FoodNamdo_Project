@@ -43,12 +43,12 @@ const RstrInfo = styled.div`
     &.info {
         justify-content: space-between;
         display: flex;
-        font-size: 0.8rem;
+        font-size: 0.9rem;
     }
 
     &.info .rating {
         flex-direction: row;
-        font-size: 0.8rem;
+        font-size: 0.9rem;
     }
 `;
 

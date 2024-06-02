@@ -24,8 +24,8 @@ const modalStyle = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 500,
-    height: 250,
+    width: 560,
+    height: 330,
     bgcolor: 'background.paper',
     boxShadow: 24,
     borderRadius: '10px',
@@ -37,10 +37,11 @@ const modalContentStyle = {
     borderRadius: '15px',
     backgroundColor: `${palette.lightgray}`,
     width: '90%',
-    height: '100%',
-    color: `${palette.gray}`,
-    fontSize: '0.9rem',
+    height: '80%',
+    color: `${palette.darygray}`,
+    fontSize: '1rem',
     cursor: 'pointer',
+    marginTop: '10px',
 }
 
 const closeButtonStyle = {
@@ -56,8 +57,8 @@ const Container = styled.div`
     padding: 5px 10px;
     border: 2px solid ${palette.blue};
     border-radius: 20px;
-    width: 300px;
-    height: 25px;
+    width: 350px;
+    height: 30px;
     background-color: #ffffff;
 
     input {
@@ -66,11 +67,13 @@ const Container = styled.div`
         height: 100%;
         border: none;
         outline: none;
+        font-size: 1rem;
     }
 `
 
 const StyledSearchIcon = styled(SearchIcon)`
     color: ${palette.blue};
+    font-size: 1.1rem;
     margin-left: 5px;
     &:hover {
         cursor: pointer;
@@ -79,6 +82,7 @@ const StyledSearchIcon = styled(SearchIcon)`
 
 const StyledImageSearchIcon = styled(ImageSearchIcon)`
     color: ${palette.blue};
+    font-size: 1.2rem;
     &:hover {
         cursor: pointer;
     }
@@ -165,7 +169,7 @@ const SearchBar = () => {
                             이미지 검색
                         </Typography>
                         <Typography id="modal-modal-description" component="h2"
-                            sx={{ fontSize: '0.9rem' }}>
+                            sx={{ fontSize: '1rem' }}>
                             음식점/리뷰 이미지로 비슷한 음식점을 검색해보세요!
                         </Typography>
                         <Typography className='centered-flex' id="modal-modal-description" sx={modalContentStyle}
@@ -178,7 +182,7 @@ const SearchBar = () => {
                                 accept="image/jpeg, image/jpg, image/png"
                                 onChange={(e) => handleClickImageSearch(e)}
                             />
-                            <PhotoSizeSelectActualOutlinedIcon sx={{ fontSize: '2.4rem', color: palette.lightblue, marginBottom: '5px' }} />
+                            <PhotoSizeSelectActualOutlinedIcon sx={{ fontSize: '2.6rem', color: palette.lightblue2, marginBottom: '5px' }} />
                             <div>파일을 업로드해주세요!</div>
                         </Typography>
                     </Box>
