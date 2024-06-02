@@ -159,7 +159,7 @@ public class MainSystemController {
             @RequestParam(value = "region", required = false)
             @Parameter(description = "지역", schema = @Schema(allowableValues = {"전체", "경상남도", "전라남도"})) String region,
             @RequestParam(value = "sort", required = false)
-            @Parameter(description = "정렬", schema = @Schema(allowableValues = {"기본순", "리뷰높은순", "리뷰많은순", "찜많은순"})) String sort) {
+            @Parameter(description = "정렬", schema = @Schema(allowableValues = {"distance", "rstr_review_rating", "rstr_review_count", "rstr_favorite_count"})) String sort) {
         log.info("findRstrByName......");
 
         category = "전체".equals(category) ? null : category;
@@ -168,11 +168,11 @@ public class MainSystemController {
         int pageSize = 8;
 
         Sort sortOrder = Sort.unsorted();
-        if ("리뷰높은순".equals(sort)) {
+        if ("rstr_review_rating".equals(sort)) {
             sortOrder = Sort.by(Sort.Order.desc("rstrReviewRating"));
-        } else if ("리뷰많은순".equals(sort)) {
+        } else if ("rstr_review_count".equals(sort)) {
             sortOrder = Sort.by(Sort.Order.desc("rstrReviewCount"));
-        } else if ("찜많은순".equals(sort)) {
+        } else if ("rstr_favorite_count".equals(sort)) {
             sortOrder = Sort.by(Sort.Order.desc("rstrFavoriteCount"));
         }
 
