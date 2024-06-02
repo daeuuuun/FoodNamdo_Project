@@ -1,5 +1,7 @@
 package org.zerock.foodnamdo.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -18,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
@@ -31,6 +34,7 @@ import java.util.UUID;
 @Transactional
 public class MainSystemServiceImpl implements MainSystemService{
 
+    private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
     private final MainSystemRepositoryRstr mainSystemRepositoryRstr;
     private final MainSystemRepositoryReview mainSystemRepositoryReview;
@@ -43,6 +47,8 @@ public class MainSystemServiceImpl implements MainSystemService{
     private final MainSystemRepositoryUserBadge mainSystemRepositoryUserBadge;
 
 
+
+
     @Override
     public Page<RstrEntity> findAll(Pageable pageable) {
         return mainSystemRepositoryRstr.findAll(pageable);
@@ -51,6 +57,11 @@ public class MainSystemServiceImpl implements MainSystemService{
     @Override
     public Page<RstrEntity> findAllByOrderByRstrReviewRatingDesc(Pageable pageable) {
         return mainSystemRepositoryRstr.findAllByOrderByRstrReviewRatingDesc(pageable);
+    }
+
+    @Override
+    public Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable) {
+        return mainSystemRepositoryRstr.findAllByOrderByRstrReviewCountDesc(pageable);
     }
 
     @Override
@@ -362,64 +373,55 @@ public class MainSystemServiceImpl implements MainSystemService{
         int reviewImgId = Math.toIntExact(reviewImgEntity.getReviewImgId());
         log.info("reviewImgId: {}", reviewImgId);
 
-//        postReviewImage(reviewImgId);
+        postReviewImage(reviewImgId);
 
     }
 
-
-
-//    public void postReviewImage(int reviewImgId) throws IOException {
-////        String reviewImgUrl = "http://localhost:8000/review_image/" + reviewImgId;
-//        String reviewImgUrl = "http://localhost/image_search_recommend/review_image/" + reviewImgId;
-////        String reviewImgUrl = "http://localhost/image_search_recommend/review_image/" + reviewImgId;
-//        log.info("Sending POST request to URL: {}", reviewImgUrl);
-//        log.info(reviewImgUrl);
-//        HttpURLConnection connection = null;
-//        try {
-//            URL url = new URL(reviewImgUrl);
-//            connection = (HttpURLConnection) url.openConnection();
-//            connection.setDoOutput(true);
-//            connection.setRequestMethod("POST");
-//            connection.setRequestProperty("Content-Type", "application/json");
-//
-//            int responseCode = connection.getResponseCode();
-//            log.info("응답 코드: {}", responseCode);
-//
-//            if (responseCode == HttpURLConnection.HTTP_OK) {
-//                log.info("성공적으로 리뷰 이미지를 전송했습니다: {}", reviewImgUrl);
-//            } else {
-//                log.error("리뷰 이미지 전송 실패: {}. 응답 코드: {}", reviewImgUrl, responseCode);
-//            }
-//        } catch (IOException e) {
-//            log.error("{}로의 POST 요청 실패", reviewImgUrl, e);
-//            throw new IOException("POST 요청 실패", e);
-//        } finally {
-//            if (connection != null) {
-//                connection.disconnect();
-//            }
-//        }
-//    }
-
     @Override
     public void postReviewImage(int reviewImgId) throws IOException {
-        // RestTemplate 인스턴스 생성 (이미 주입받았다고 가정)
-        RestTemplate restTemplate = new RestTemplate();
+        // Use the internal Docker network address
+        String urlString = "http://image_search_recommend:8000/review_image/" + reviewImgId;
+        URL url = new URL(urlString);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Accept", "application/json");
 
-        // HttpHeaders 객체를 생성하고 Accept 헤더를 application/json으로 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+        int responseCode = connection.getResponseCode();
+        if (responseCode != HttpURLConnection.HTTP_OK) {
+            throw new IOException("HTTP request failed with response code " + responseCode);
+        }
 
-        // HttpEntity를 생성하고, 헤더만 포함시킨다 (body는 null)
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+        // Clean up
+        connection.disconnect();
+    }
 
-        // URL 설정
-        String url = "http://localhost/image_search_recommend/review_image/" + reviewImgId;
+    @Override
+    public JsonNode getRecommand(Long userId) throws IOException {
+        // Use the internal Docker network address
+        String urlString = "http://image_search_recommend:8000/recommend/" + userId + "?n_results=5";
+        URL url = new URL(urlString);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", "application/json");
 
-        // RestTemplate를 사용하여 POST 요청을 보내고, 응답을 ResponseEntity<String>으로 받는다
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuilder content = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
 
-        // 응답 출력
-        System.out.println("Response from the server: " + response.getBody());
+            // Clean up
+            in.close();
+            connection.disconnect();
+
+            // Parse JSON response
+            return objectMapper.readTree(content.toString());
+        } else {
+            throw new IOException("HTTP request failed with response code " + responseCode);
+        }
     }
 
     private String uploadImageToServer(MultipartFile image) throws IOException {

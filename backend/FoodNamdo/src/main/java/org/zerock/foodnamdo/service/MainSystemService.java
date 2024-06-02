@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,6 +9,7 @@ import org.zerock.foodnamdo.domain.ReviewEntity;
 import org.zerock.foodnamdo.domain.RstrEntity;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +19,7 @@ public interface MainSystemService {
 
     List<RstrEntity> findAllByOrderByRstrReviewRatingDesc();
 
-//    Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable);
+    Page<RstrEntity> findAllByOrderByRstrReviewCountDesc(Pageable pageable);
 
     Page<RstrEntity> findAllByOrderByRstrFavoriteCountDesc(Pageable pageable);
 
@@ -79,5 +81,7 @@ public interface MainSystemService {
     void verifyReview(Long reviewId);
 
     Page<RstrEntity> findAll(Pageable pageable);
+
+    JsonNode getRecommand(Long userId) throws IOException;
 //    ResponseEntity<String> processOCR(MultipartFile file);
 }

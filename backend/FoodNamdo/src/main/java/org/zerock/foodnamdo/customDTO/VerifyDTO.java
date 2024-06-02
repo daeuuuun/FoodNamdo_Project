@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VerifyDTO {
+    @Schema(description = "user Name", example = "name")
+    private String name;
     @Schema(description = "user PhoneNumber", example = "phone")
     private String phone;
 }

@@ -40,6 +40,10 @@ public class UserManagementServiceImpl implements UserManagementService {
         return userId;
     }
 
+    public UserEntity findUserByNameAndPhone(String name, String formatPhone){
+        return userManagementRepository.findUserByNameAndPhone(name, formatPhone);
+    }
+
     public UserEntity findAccountIdByNameAndPhone(String name, String phone) {
         // 사용자 정보를 DB에서 조회
         UserEntity user = userManagementRepository.findAccountIdByNameAndPhone(name, phone);

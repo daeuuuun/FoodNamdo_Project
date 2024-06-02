@@ -1,5 +1,6 @@
 package org.zerock.foodnamdo.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -11,6 +12,7 @@ import org.json.JSONException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -52,16 +54,22 @@ public class MainSystemController {
     @Operation(summary = "메인페이지 음식점 목록")
     @GetMapping(value = "/mainRstr", produces = "application/json")
     @ResponseBody
-    public Map<String, Object> mainRstr() {
+    public Map<String, Object> mainRstr() throws IOException {
         log.info("mainRstr......");
         int page = 1;
         int pageSize = 3;
 
         Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
 
-//        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        Long userId = userDetails.getUserId();  // Extract userId
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
 
+        JsonNode rstrRecommandList = null;
+        try {
+            rstrRecommandList = mainSystemService.getRecommand(userId);
+        } catch (IOException e) {
+            log.error("Error fetching recommendations", e);
+        }
 
         Page<RstrEntity> rstrReviewList = mainSystemService.findAllByOrderByRstrReviewRatingDesc(pageable);
 //        List<RstrEntity> rstrReviewList = mainSystemService.findAllByOrderByRstrReviewRatingDesc();
@@ -83,7 +91,7 @@ public class MainSystemController {
 //        response.put("page_num", page);
 //        response.put("total_rstr", totalResults);
 //        response.put("rstr", rstrAllDTOList);
-//        response.put("rstr_recommand", rstrRecomandList);
+        response.put("rstr_recommand", rstrRecommandList);
         response.put("rstr_favorite", rstrFavoriteAllDTOList);
         response.put("rstr_review", rstrReviewAllDTOList);
 
@@ -96,18 +104,20 @@ public class MainSystemController {
     @ResponseBody
     public Map<String, Object> findAll(@RequestParam("page") int page,
                                        @RequestParam(value = "sort", required = false)
-                                       @Parameter(description = "정렬", schema = @Schema(allowableValues = {"전체", "리뷰 높은 순", "찜 많은 순"})) String sort) {
+                                       @Parameter(description = "정렬", schema = @Schema(allowableValues = {"기본순", "리뷰높은순", "리뷰많은순", "찜많은순"})) String sort) {
         log.info("findAll......");
         int pageSize = 8;
 
         Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
 
         Page<RstrEntity> rstrPage = null;
-        if(Objects.equals(sort, "전체")){
+        if(Objects.equals(sort, "기본순")){
             rstrPage = mainSystemService.findAll(pageable);
-        } else if (Objects.equals(sort, "리뷰 높은 순")) {
+        } else if (Objects.equals(sort, "리뷰높은순")) {
             rstrPage = mainSystemService.findAllByOrderByRstrReviewRatingDesc(pageable);
-        } else if (Objects.equals(sort, "찜 많은 순")) {
+        } else if (Objects.equals(sort, "리뷰많은순")) {
+            rstrPage = mainSystemService.findAllByOrderByRstrReviewCountDesc(pageable);
+        } else if (Objects.equals(sort, "찜많은순")) {
             rstrPage = mainSystemService.findAllByOrderByRstrFavoriteCountDesc(pageable);
         }
 
@@ -147,7 +157,9 @@ public class MainSystemController {
                     schema = @Schema(allowableValues = {"전체", "한식", "중식", "일식", "카페/제과점", "양식", "치킨/호프", "분식", "식육(숯불구이)"
                             , "회", "패스트푸드", "푸드트럭", "외국음식전문점", "뷔페식", "기타"})) String category,
             @RequestParam(value = "region", required = false)
-            @Parameter(description = "지역", schema = @Schema(allowableValues = {"전체", "경상남도", "전라남도"})) String region) {
+            @Parameter(description = "지역", schema = @Schema(allowableValues = {"전체", "경상남도", "전라남도"})) String region,
+            @RequestParam(value = "sort", required = false)
+            @Parameter(description = "정렬", schema = @Schema(allowableValues = {"기본순", "리뷰높은순", "리뷰많은순", "찜많은순"})) String sort) {
         log.info("findRstrByName......");
 
         category = "전체".equals(category) ? null : category;
@@ -155,7 +167,16 @@ public class MainSystemController {
 
         int pageSize = 8;
 
-        Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
+        Sort sortOrder = Sort.unsorted();
+        if ("리뷰높은순".equals(sort)) {
+            sortOrder = Sort.by(Sort.Order.desc("rstrReviewRating"));
+        } else if ("리뷰많은순".equals(sort)) {
+            sortOrder = Sort.by(Sort.Order.desc("rstrReviewCount"));
+        } else if ("찜많은순".equals(sort)) {
+            sortOrder = Sort.by(Sort.Order.desc("rstrFavoriteCount"));
+        }
+
+        Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize, sortOrder);
 
         Page<RstrEntity> rstrPage = mainSystemService.findAllByRstrNameContainsAndFilters(rstrName, category, region, pageable);
         log.info(rstrPage);
@@ -164,11 +185,8 @@ public class MainSystemController {
                 .collect(Collectors.toList());
 
         int totalResults = (int) rstrPage.getTotalElements();
-//        int totalResults = mainSystemService.countAllByRstrNameContainsAndFilters(rstrName, category, region);
-        // 전체 페이지 수 계산
         int totalPages = (int) Math.ceil((double) totalResults / pageSize);
 
-        // 응답 데이터 생성
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("page_size", pageSize);
         response.put("total_pages", totalPages);

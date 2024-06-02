@@ -274,7 +274,7 @@ public class UserManagementController {
     public boolean verify(@RequestBody VerifyDTO request) {
 //    public boolean verify(@RequestParam("phone") String phone) {
         String formatPhone = request.getPhone().substring(0, 3) + "-" + request.getPhone().substring(3, 7) + "-" + request.getPhone().substring(7);
-        UserEntity userEntity = userManagementService.findUserByPhone(formatPhone);
+        UserEntity userEntity = userManagementService.findUserByNameAndPhone(request.getName(), formatPhone);
         CoolsmsService coolsmsService = new CoolsmsService();
 
         if (userEntity != null) {
@@ -288,6 +288,25 @@ public class UserManagementController {
                 return false;
             }
         }else return false;
+    }
+
+    @Operation(summary = "회원가입 인증번호 요청")
+    @PostMapping(value = "/verifySignUp", produces = "application/json")
+    public boolean verifySignUp(@RequestBody VerifyDTO request) {
+//    public boolean verify(@RequestParam("phone") String phone) {
+        String formatPhone = request.getPhone().substring(0, 3) + "-" + request.getPhone().substring(3, 7) + "-" + request.getPhone().substring(7);
+//        UserEntity userEntity = userManagementService.findUserByPhone(formatPhone);
+        CoolsmsService coolsmsService = new CoolsmsService();
+
+        try {
+            String verificationCode = userManagementService.generateVerificationCode();
+            verificationCodes.put(formatPhone, verificationCode);
+            log.info(verificationCodes);
+            coolsmsService.sendSMS(formatPhone, verificationCode);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Operation(summary = "회원삭제")

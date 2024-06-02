@@ -33,6 +33,8 @@ public interface UserManagementService {
 
     void changePassword(Long userId, String newPassword);
 
+    UserEntity findUserByNameAndPhone(String name, String formatPhone);
+
 //    UserDetails findUserByUserId(String userId);
 
 //    PageResponseDTO<UserDTO> list(PageRequestDTO pageRequestDTO);
