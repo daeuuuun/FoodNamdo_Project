@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./ReviewCategory.module.css";
 import { FaRegStar, FaStar } from "react-icons/fa";
 
 const ReviewCategoryDetail = ({ items, onRatingChange }) => {
-
-    const [rating, setRating] = useState(null);
+    const [rating, setRating] = useState(items.rating);
     const [showOptions, setShowOptions] = useState(false);
     const ratings = [0, 1, 2, 3, 4, 5];
+
+    useEffect(() => {
+        setRating(items.rating);
+    }, [items.rating]);
 
     const handleRatingClick = (value) => {
         setRating(value);

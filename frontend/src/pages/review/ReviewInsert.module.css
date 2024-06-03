@@ -52,3 +52,24 @@
     border-radius: 10px;
     background: #DBE2EF;
 }
+
+.textarea {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #DBE2EF;
+    border-radius: 10px;
+    font-size: 20px;
+    resize: none;
+    font-family: "Gmarket Sans Medium";
+    padding: 2%;
+}
+
+.textarea:focus {
+    border-color: #DBE2EF;
+    outline: none;
+}
+
+.imageInput {
+    font-family: "Gmarket Sans Medium";
+    padding: 2%;
+}

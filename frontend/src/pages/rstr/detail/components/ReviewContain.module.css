@@ -79,3 +79,16 @@
     background: #F9F7F7;
     border-radius: 10px;
 }
+
+.imagesDiv {
+    display: flex;
+    margin: 1%;
+    padding: 1%;
+}
+
+.reviewImage {
+    width: 20%;
+    height: 20vh;
+    object-fit: cover;
+    border-radius: 10px;
+}

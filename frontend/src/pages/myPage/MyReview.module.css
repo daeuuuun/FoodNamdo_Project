@@ -78,6 +78,12 @@
   font-family: 'Gmarket Sans Light';
 }
 
-.topdiv {
+.topDiv {
   display: flex;
+  flex-direction: column;
+}
+
+.btnDiv {
+  display: flex;
+  flex-direction: row;
 }

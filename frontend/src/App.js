@@ -15,6 +15,7 @@ import Header from './pages/header/Header';
 import MyPage from "./pages/myPage/MyPage";
 import ReviewInsert from "./pages/review/ReviewInsert";
 import ResetPwPage from './pages/auth/ResetPwPage';
+import ReviewUpdate from "./pages/review/ReviewUpdate";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             <Route path="/mypage" element={<MyPage />} />
 
             <Route path="/review/insert/:id" element={<ReviewInsert />} />
+            <Route path="/review/update" element={<ReviewUpdate />} />
           </Routes>
         </Router>
       </FileProvider>

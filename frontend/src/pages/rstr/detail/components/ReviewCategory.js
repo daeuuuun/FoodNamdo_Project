@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import ReviewCategoryDetail from "./ReviewCategoryDetail";
 import styles from "./ReviewCategory.module.css";
 
-const ReviewCategory = ({onRatingChange}) => {
+const ReviewCategory = ({ onRatingChange, initialRatings = [] }) => { // 기본값 설정
     const categoryTitle = [
         { id: 1, title: '맛', rating: 0 },
         { id: 2, title: '가격', rating: 0 },
@@ -12,6 +12,12 @@ const ReviewCategory = ({onRatingChange}) => {
     ];
 
     const [categoryList, setCategoryList] = useState(categoryTitle);
+
+    useEffect(() => {
+        if (initialRatings.length) {
+            setCategoryList(initialRatings);
+        }
+    }, [initialRatings]);
 
     const handleRatingChange = (id, rating) => {
         const updatedCategoryList = categoryList.map(category => {
