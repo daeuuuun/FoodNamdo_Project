@@ -85,10 +85,33 @@ const RstrListContainer = styled.div`
         margin: 0px 20px;
     }
 
-    .rstr-sort-btn {
+    .rstr-sort-btns {
         display: flex;
         align-items: center;
         margin: 0px 20px;
+    }
+    
+    .rstr-sort-btn {
+        border: 1px solid ${palette.darygray};
+        color: ${palette.darygray};
+        border-radius: 5px;
+        padding: 6px;
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+    .rstr-sort-btn:hover {
+        border: 1px solid ${palette.blue};
+        color: ${palette.blue};
+    }
+
+    .rstr-sort-btn-clicked {
+        border: 1px solid ${palette.blue};
+        color: ${palette.blue};
+        border-radius: 5px;
+        padding: 6px;
+        margin: 0 5px;
+        cursor: pointer;
     }
 
     .rstr-loading {
@@ -339,17 +362,16 @@ export const RstrListPage = () => {
                             <>
                                 <div className='rstr-list-top'>
                                     <div className='total-rstr-num'>{`약 ${totalRstr}건`}</div>
-                                    <div className='rstr-sort-btn'>
+                                    <div className='rstr-sort-btns'>
                                         <SortIcon />
-                                        <ButtonGroup
-                                            variant="text"
-                                            aria-label="Basic button group"
-                                        >
-                                            <StyledButton onClick={handleBasicSort}>기본순</StyledButton>
-                                            <StyledButton onClick={handleReviewSort}>리뷰높은순</StyledButton>
-                                            <StyledButton onClick={handleReviewCountSort}>리뷰많은순</StyledButton>
-                                            <StyledButton onClick={handleFavoriteSort}>찜많은순</StyledButton>
-                                        </ButtonGroup>
+                                        <div className={sortOrder === 'distance' ? "rstr-sort-btn-clicked" : "rstr-sort-btn"}
+                                            onClick={handleBasicSort}>기본순</div>
+                                        <div className={sortOrder === 'rstr_review_rating' ? "rstr-sort-btn-clicked" : "rstr-sort-btn"}
+                                            onClick={handleReviewSort}>리뷰높은순</div>
+                                        <div className={sortOrder === 'rstr_review_count' ? "rstr-sort-btn-clicked" : "rstr-sort-btn"}
+                                            onClick={handleReviewCountSort}>리뷰많은순</div>
+                                        <div className={sortOrder === 'rstr_favorite_count' ? "rstr-sort-btn-clicked" : "rstr-sort-btn"}
+                                            onClick={handleFavoriteSort}>찜많은순</div>
                                     </div>
                                 </div>
                                 <div style={{ height: '550px' }}>

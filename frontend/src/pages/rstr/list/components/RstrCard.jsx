@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import palette from '../../../../styles/palette';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import { useNavigate } from 'react-router-dom';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 const RstrCardContainer = styled.div`
     margin: 5px 9px;
@@ -15,13 +16,33 @@ const RstrCardContainer = styled.div`
     
     &:hover {
         cursor: pointer;
+        box-shadow: 4px 2px 4px ${palette.gray};
     }
 `
 const ImgContainer = styled.div`
+    position: relative;
     width: 100%;
     height: 10rem;
     overflow: hidden;
     border-radius: 10px;
+
+    .rstr-favorite {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 65px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 2px;
+        border-radius: 0 0 0 10px;
+        font-size: 0.9rem;
+    }
+`;
+
+const StyledFavoriteIcon = styled(BookmarkIcon)`
+    color: ${palette.blue};
 `;
 
 const Img = styled.img`
@@ -54,7 +75,6 @@ const RstrInfo = styled.div`
 
 const StyledStarIcon = styled(StarRoundedIcon)`
     color: ${palette.yellow};
-    color: #FFD700;
     margin-right: -2px;
 `;
 
@@ -106,6 +126,16 @@ const RstrCard = ({ rstrInfo, mode }) => {
                 ) : (
                     <Img src="/img/noimage.png" alt='이미지 없음' />
                 )}
+                {
+                    mode == 'rstrList' && (
+                        <div className='rstr-favorite'>
+                            <StyledFavoriteIcon fontSize="small" />
+                            <div style={{ width: '10px', marginTop: '2px' }}>
+                                {rstrInfo.rstr_favorite_count}
+                            </div>
+                        </div>
+                    )
+                }
             </ImgContainer>
             <RstrInfo className='title'>
                 {rstrInfo.rstr_name.length > 8 ? rstrInfo.rstr_name.slice(0, 10) + '...' : rstrInfo.rstr_name}

@@ -57,8 +57,8 @@ const Container = styled.div`
     padding: 5px 10px;
     border: 2px solid ${palette.blue};
     border-radius: 20px;
-    width: 350px;
-    height: 30px;
+    width: 320px;
+    height: 28px;
     background-color: #ffffff;
 
     input {
@@ -82,7 +82,7 @@ const StyledSearchIcon = styled(SearchIcon)`
 
 const StyledImageSearchIcon = styled(ImageSearchIcon)`
     color: ${palette.blue};
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     &:hover {
         cursor: pointer;
     }
