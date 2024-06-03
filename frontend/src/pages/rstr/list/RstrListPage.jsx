@@ -132,31 +132,6 @@ export const RstrListPage = () => {
         setPage(newPage);
     }, [location]);
 
-    const fetchAllRestaurants = async () => {
-        setIsNotInfo(false);
-        const params = new URLSearchParams({
-            page: page,
-            // region: checkedRegion,
-            // category: checkedCategory
-        }).toString();
-        const url = `/mainsystem/findAll?${params}`;
-
-        try {
-            const response = await defaultBackInstance.get(url);
-            setRstrList(response.data.rstr_favorite);
-            setTotalPage(response.data.total_pages);
-            setPageSize(response.data.page_size);
-            setTotalRstr(response.data.total_rstr);
-
-            if (response.data.rstr.length === 0) {
-                setIsNotInfo(true);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-        setIsLoading(false);
-    };
-
     const fetchDataWithFile = async () => { // 이미지 검색
         const formData = new FormData();
         formData.append('file', file);
@@ -226,6 +201,7 @@ export const RstrListPage = () => {
             page: page,
             category: checkedCategory,
             region: checkedRegion,
+            sort: sortOrder
         }).toString();
 
         const url = `/mainsystem/findRstrByName?${params}`;
@@ -258,9 +234,7 @@ export const RstrListPage = () => {
         setIsLoading(true);
         setIsNotInfo(false);
 
-        if (!file && !search && !sessionStorage.getItem('random')) {
-            fetchAllRestaurants();
-        } else if (file && page === 1) { // 이미지 파일
+        if (file && page === 1) { // 이미지 파일
             fetchDataWithFile();
         } else if (search) { // 검색어
             fetchDataWithName();
