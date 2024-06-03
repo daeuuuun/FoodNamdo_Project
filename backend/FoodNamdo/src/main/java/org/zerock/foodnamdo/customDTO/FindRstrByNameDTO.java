@@ -21,6 +21,7 @@ public class FindRstrByNameDTO {
     private String category_name;
     private String rstr_review_rating;
     private int rstr_review_count;
+    private int rstr_favorite_count;
 
     // 생성자를 이용한 변환 메서드
     public static FindRstrByNameDTO fromEntity(RstrEntity entity) {
@@ -38,6 +39,7 @@ public class FindRstrByNameDTO {
                 .category_name(CategoryDTO.categoryNamesFromEntities(entity.getCategories()))
                 .rstr_review_rating(reviewRating)
                 .rstr_review_count(entity.getRstrReviewCount())
+                .rstr_favorite_count(entity.getRstrFavoriteCount())
                 .build();
     }
 }
