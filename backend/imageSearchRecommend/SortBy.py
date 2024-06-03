@@ -9,3 +9,4 @@ class Column(Enum):
     relax = "relax"
     category_name = "category_name"
     rstr_review_count="rstr_review_count"
+    rstr_favorite_count="rstr_favorite_count"

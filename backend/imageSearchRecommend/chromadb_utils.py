@@ -116,7 +116,7 @@ def remove_duplicates(query_result):
 def remove_above_threshold(query_result, similarity):
     return [item for item in query_result if item["distance"] <= similarity]
 
-rstr_column_array = ['example', 'relax', 'rstr_name', 'rstr_region', 'category_name', 'rstr_review_rating', "rstr_review_count"]
+rstr_column_array = ['example', 'relax', 'rstr_name', 'rstr_region', 'category_name', 'rstr_review_rating', "rstr_review_count", "rstr_favorite_count"]
 rstr_column = ", ".join(rstr_column_array)
 join_category = "JOIN rstr_category ON rstr_category.rstr_id = rstr.rstr_id JOIN category ON category.category_id = rstr_category.category_id"
 def insert_rstrimg_rstr_info(query_result):
