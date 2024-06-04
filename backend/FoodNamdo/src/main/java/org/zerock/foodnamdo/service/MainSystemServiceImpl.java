@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +48,7 @@ public class MainSystemServiceImpl implements MainSystemService{
     private final MainSystemRepositoryBadge mainSystemRepositoryBadge;
     private final RestTemplate restTemplate;
     private final MainSystemRepositoryUserBadge mainSystemRepositoryUserBadge;
+    @Autowired
     private ApplicationEventPublisher eventPublisher;
 
 
@@ -363,6 +365,7 @@ public class MainSystemServiceImpl implements MainSystemService{
     private final String uploadUrl = "http://foodnamdo.iptime.org:8000/images/?path=review_img&api_key=d0f535568d149afec1933a8c37c765e0";
 
     @Override
+    @Transactional
     public void saveReviewImage(Long reviewId, MultipartFile image) throws IOException {
         ReviewEntity reviewEntity = mainSystemRepositoryReview.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid review ID"));
