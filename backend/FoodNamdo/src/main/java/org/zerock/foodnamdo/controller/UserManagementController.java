@@ -127,7 +127,7 @@ public class UserManagementController {
 
             Map<String, Object> claims = new HashMap<>();
             claims.put("userId", userId);
-            claims.put("roles", authentication.getAuthorities());
+//            claims.put("roles", authentication.getAuthorities());
 
             String accessToken = jwtUtil.generateAccessToken(claims); // 15 minute for access token
             String refreshToken = jwtUtil.generateRefreshToken(claims); // 7 days for refresh token
