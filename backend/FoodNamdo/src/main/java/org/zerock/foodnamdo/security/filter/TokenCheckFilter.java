@@ -63,6 +63,7 @@ public class TokenCheckFilter extends OncePerRequestFilter {
                 "/mainsystem/RstrFavoriteRegister",
                 "/mainsystem/ReviewRegister",
                 "/mainsystem/mainRstr",
+                "/mainsystem/RstrDetail",
                 "/mypage/**");
 //        List<String> filterPaths = Arrays.asList("/usermanagement/deleteUser", "/mainsystem/**", "/mypage/myInfo", "/mypage/getFavoriteRstr");
 

@@ -380,6 +380,7 @@ public class MainSystemServiceImpl implements MainSystemService{
     @Override
     public void postReviewImage(int reviewImgId) throws IOException {
         // Use the internal Docker network address
+//        String urlString = "http://foodnamdo.iptime.org/image_search_recommend/review_image/" + reviewImgId;
         String urlString = "http://image_search_recommend:8000/review_image/" + reviewImgId;
         URL url = new URL(urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -398,6 +399,7 @@ public class MainSystemServiceImpl implements MainSystemService{
     @Override
     public JsonNode getRecommand(Long userId) throws IOException {
         // Use the internal Docker network address
+//        String urlString = "http://foodnamdo.iptime.org/image_search_recommend/recommend/" + userId + "?n_results=5";
         String urlString = "http://image_search_recommend:8000/recommend/" + userId + "?n_results=5";
         URL url = new URL(urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

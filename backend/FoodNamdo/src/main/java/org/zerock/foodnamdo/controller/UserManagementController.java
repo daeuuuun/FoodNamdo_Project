@@ -197,6 +197,7 @@ public class UserManagementController {
 
         if (savedCode != null && savedCode.equals(request.getCode())) {
             UserEntity userEntity = userManagementService.findAccountIdByNameAndPhone(request.getName(), formatPhone);
+            log.info(userEntity);
             if (userEntity != null) {
                 Map<String, String> response = new HashMap<>();
                 response.put("accountId", "sendId");

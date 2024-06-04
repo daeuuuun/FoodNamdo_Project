@@ -17,6 +17,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,19 +62,12 @@ public class MainSystemController {
 
         Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
 
-        JsonNode rstrRecommandList = null;
-        try {
-            APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Long userId = userDetails.getUserId();  // Extract userId
-            rstrRecommandList = mainSystemService.getRecommand(userId);
-        } catch (IOException e) {
-            log.error("Error fetching recommendations or No Token", e);
-        }
+        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userDetails.getUserId();  // Extract userId
+        JsonNode rstrRecommandList = mainSystemService.getRecommand(userId);
 
         Page<RstrEntity> rstrReviewList = mainSystemService.findAllByOrderByRstrReviewRatingDesc(pageable);
-//        List<RstrEntity> rstrReviewList = mainSystemService.findAllByOrderByRstrReviewRatingDesc();
         Page<RstrEntity> rstrFavoriteList = mainSystemService.findAllByOrderByRstrFavoriteCountDesc(pageable);
-//        List<RstrEntity> rstrFavoriteList = mainSystemService.findAllByOrderByRstrFavoriteCountDesc();
 
         List<FindAllRstrDTO> rstrReviewAllDTOList = rstrReviewList.getContent().stream()
                 .map(FindAllRstrDTO::fromEntity)
@@ -85,11 +79,38 @@ public class MainSystemController {
 
         // 응답 데이터 생성
         Map<String, Object> response = new LinkedHashMap<>();
-//        response.put("page_size", pageSize);
-//        response.put("total_pages", totalPages);
-//        response.put("page_num", page);
-//        response.put("total_rstr", totalResults);
-//        response.put("rstr", rstrAllDTOList);
+        response.put("rstr_recommand", rstrRecommandList);
+        response.put("rstr_favorite", rstrFavoriteAllDTOList);
+        response.put("rstr_review", rstrReviewAllDTOList);
+
+        return response;
+    }
+
+    @Operation(summary = "메인페이지 음식점 목록(로그인x)")
+    @GetMapping(value = "/mainRstrNoToken", produces = "application/json")
+    @ResponseBody
+    public Map<String, Object> mainRstrNoToken() throws IOException {
+        log.info("mainRstrNoToken......");
+        int page = 1;
+        int pageSize = 3;
+
+        Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
+
+        JsonNode rstrRecommandList = null;
+
+        Page<RstrEntity> rstrReviewList = mainSystemService.findAllByOrderByRstrReviewRatingDesc(pageable);
+        Page<RstrEntity> rstrFavoriteList = mainSystemService.findAllByOrderByRstrFavoriteCountDesc(pageable);
+
+        List<FindAllRstrDTO> rstrReviewAllDTOList = rstrReviewList.getContent().stream()
+                .map(FindAllRstrDTO::fromEntity)
+                .collect(Collectors.toList());
+
+        List<FindAllRstrDTO> rstrFavoriteAllDTOList = rstrFavoriteList.getContent().stream()
+                .map(FindAllRstrDTO::fromEntity)
+                .collect(Collectors.toList());
+
+        // 응답 데이터 생성
+        Map<String, Object> response = new LinkedHashMap<>();
         response.put("rstr_recommand", rstrRecommandList);
         response.put("rstr_favorite", rstrFavoriteAllDTOList);
         response.put("rstr_review", rstrReviewAllDTOList);
@@ -199,7 +220,6 @@ public class MainSystemController {
     @Operation(summary = "음식점 상세 조회")
     @GetMapping(value = "/RstrDetail", produces = "application/json")
     @ResponseBody
-//    public Map<String, Object> RstrDetail(
     public RstrDetailDTO RstrDetail(
             @RequestParam("rstr_id") Long rstrId) {
         log.info("RstrDetail......");
@@ -209,11 +229,25 @@ public class MainSystemController {
         try {
             APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Long userId = userDetails.getUserId();  // Extract userId
+            log.info("userId: " + userId);
 
             mainSystemService.updateLastVisit(userId, rstrId);
+            log.info("last visit updated.");
         } catch (Exception e) {
             log.info("User is not authenticated, proceeding without updating last visit.");
         }
+
+        return RstrDetailDTO.fromEntity(rstrEntity);
+    }
+
+    @Operation(summary = "음식점 상세 조회(로그인x)")
+    @GetMapping(value = "/RstrDetailNoToken", produces = "application/json")
+    @ResponseBody
+    public RstrDetailDTO RstrDetailNoToken(
+            @RequestParam("rstr_id") Long rstrId) {
+        log.info("RstrDetail......");
+
+        RstrEntity rstrEntity = mainSystemService.findByRstrId(rstrId);
 
         return RstrDetailDTO.fromEntity(rstrEntity);
     }
