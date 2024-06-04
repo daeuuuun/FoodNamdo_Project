@@ -11,12 +11,15 @@ services:
       - frontend
       - food_namdo
       - image_search_recommend
+    environment:
+      - TZ=Asia/Seoul
     restart: always
 
   frontend:
     build: ./frontend
     environment:
       - WATCHPACK_POLLING=true
+      - TZ=Asia/Seoul
     volumes:
       - /usr/src/app/node_modules
       - ./frontend:/usr/src/app
@@ -29,6 +32,8 @@ services:
 
   food_namdo:
     build: ./backend/FoodNamdo
+    environment:
+      - TZ=Asia/Seoul
     ports:
       - "8080:8080"
     depends_on:
@@ -41,6 +46,6 @@ services:
     volumes:
       - ./backend/imageSearchRecommend:/usr/src/app
     ports:
-      - "8000:8000"
+      - 8000:8000
     env_file: .env
     restart: always
