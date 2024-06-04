@@ -180,7 +180,7 @@ export const RstrListPage = () => {
             setTotalPage(response.data.total_pages);
             setPageSize(response.data.page_size);
             setTotalRstr(response.data.total_rstr);
-            console.log(response.data);
+
             // random URL을 session에 저장하는 코드
             sessionStorage.setItem('random', response.data.random);
         } catch (error) {
@@ -250,7 +250,6 @@ export const RstrListPage = () => {
     // 검색 시
     useEffect(() => {
         loadData();
-        console.log(sortOrder);
     }, [file, page, search, checkedRegion, checkedCategory, sortOrder]);
 
     const loadData = () => {
