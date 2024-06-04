@@ -11,8 +11,8 @@ const PasswordChange = () => {
             authBackInstance.post(`/mypage/changePassword`, {
                 prevPassword:currentPwRef.current.value, newPassword:nextPwRef.current.value
             })
-                .then(resp => console.log(resp))
-                .catch(err => console.log(err))
+                .then(resp => alert("비밀번호 변경이 완료되었습니다."))
+                .catch(err => alert("비밀번호 변경에 실패하였습니다."))
         }
     }
     return (

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import noImage from '../../asset/noimage.jpg'
 
 const CarouselContainer = ({ title, styles, images, auto, time, onesImages }) => {
-
+    console.log(images)
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const handleRightButton = useCallback(() => {
         setCurrentImageIndex(prevIndex =>
