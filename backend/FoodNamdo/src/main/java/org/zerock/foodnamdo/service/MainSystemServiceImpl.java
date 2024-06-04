@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
@@ -17,6 +18,7 @@ import org.zerock.foodnamdo.customDTO.*;
 import org.zerock.foodnamdo.domain.*;
 import org.zerock.foodnamdo.repository.*;
 import org.springframework.web.client.RestTemplate;
+import org.zerock.foodnamdo.util.ReviewImageSavedEvent;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -45,6 +47,7 @@ public class MainSystemServiceImpl implements MainSystemService{
     private final MainSystemRepositoryBadge mainSystemRepositoryBadge;
     private final RestTemplate restTemplate;
     private final MainSystemRepositoryUserBadge mainSystemRepositoryUserBadge;
+    private ApplicationEventPublisher eventPublisher;
 
 
 
@@ -381,7 +384,8 @@ public class MainSystemServiceImpl implements MainSystemService{
         int reviewImgId = Math.toIntExact(reviewImgEntity.getReviewImgId());
         log.info("reviewImgId: {}", reviewImgId);
 
-        postReviewImage(reviewImgId);
+        eventPublisher.publishEvent(new ReviewImageSavedEvent(reviewImgId));
+//        postReviewImage(reviewImgId);
 
     }
 
