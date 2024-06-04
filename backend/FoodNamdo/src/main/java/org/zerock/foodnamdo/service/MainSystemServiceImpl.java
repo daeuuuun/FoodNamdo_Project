@@ -79,6 +79,14 @@ public class MainSystemServiceImpl implements MainSystemService{
         return mainSystemRepositoryRstr.findAllByOrderByRstrFavoriteCountDesc();
     }
 
+    public ReviewEntity findRstrByReviewId(Long reviewId) {
+        return mainSystemRepositoryReview.findByReviewId(reviewId);
+    }
+
+//    public RstrEntity findByReviewEntity_reviewId(Long reviewId){
+//        return mainSystemRepositoryRstr.findByReviewEntity_reviewId(reviewId);
+//    }
+
     public Page<RstrEntity> findAllByRstrNameContainsAndFilters(String name, String category, String region, Pageable pageable) {
         return mainSystemRepositoryRstr.findByRstrNameContainsAndFilters(name, category, region, pageable);
         //        return mainSystemRepositoryRstr.findAllByRstrNameContains(name, pageable);
@@ -649,6 +657,15 @@ public class MainSystemServiceImpl implements MainSystemService{
 
     @Override
     public void deleteByReviewId(Long reviewId) {
-        mainSystemRepositoryReview.deleteByReviewId(reviewId);
+        mainSystemRepositoryReview.deleteAllByReviewId(reviewId);
+//        updateRestaurantRatingAndCount();
     }
+
+    @Override
+    public void deleteReviewImg(Long reviewId) {
+        mainSystemRepositoryReviewImg.deleteAllByReviewEntity_ReviewId(reviewId);
+    }
+
+    @Override
+    public void deleteReactionByReviewId(Long reviewId) {mainSystemRepositoryReaction.deleteAllByReviewEntity_ReviewId(reviewId);}
 }
