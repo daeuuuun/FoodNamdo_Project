@@ -52,7 +52,7 @@ const AuthPage = ({ mode }) => {
                 navigate('/login');
             } catch (error) {
                 console.log(error);
-                alert('해당 정보를 찾을 수 없습니다.');
+                alert('해당 정보를 찾을 수 없습니다. 정보를 다시 입력해주세요.');
                 setFormData(prevState => ({
                     ...prevState,
                     name: '',
@@ -61,7 +61,6 @@ const AuthPage = ({ mode }) => {
                 }));
             }
         } else if (mode === 'findPw') { // 비밀번호 찾기
-            navigate('/reset-pw')
             try {
                 const response = await axios.post
                     (BACKEND_SERVER_URL + 'usermanagement/findPasswordByAccountIdAndNameAndPhone', {
@@ -73,9 +72,11 @@ const AuthPage = ({ mode }) => {
 
                 const userId = response.data.userId;
 
-                navigate('/reset-pw', { state: userId });
+                if (response.data) {
+                    navigate('/reset-pw', { state: userId });
+                }
             } catch (error) {
-                alert('해당 정보를 찾을 수 없습니다.');
+                alert('해당 정보를 찾을 수 없습니다. 정보를 다시 입력해주세요.');
                 setFormData(prevState => ({
                     ...prevState,
                     account_id: '',
@@ -96,13 +97,18 @@ const AuthPage = ({ mode }) => {
             return;
         };
         try {
-            await axios.post(
+            const response = await axios.post(
                 BACKEND_SERVER_URL + 'usermanagement/verify', {
                 name: formData.name,
                 phone: formData.phone
             });
             setIsVerified(true);
-            alert('인증번호가 전송되었습니다.');
+
+            if (response.data) {
+                alert('인증번호가 전송되었습니다.');
+            } else {
+                alert('이름이나 전화번호를 다시 확인해주세요.')
+            }
         } catch (error) {
             alert('인증번호 발송에 실패하였습니다. 다시 시도해주세요.');
             console.log(error);
