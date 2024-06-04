@@ -36,7 +36,7 @@ const Header = () => {
                     {
                         isAuthenticated ? (
                             <div className={styles.sign}>
-                                <div className={styles.signIn} onClick={handleLogout}>로그아웃</div>
+                                <div className={styles.signUp} onClick={handleLogout}>로그아웃</div>
                             </div>
                         ) : (
                             <div className={styles.sign}>
