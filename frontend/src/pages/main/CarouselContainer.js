@@ -39,9 +39,9 @@ const CarouselContainer = ({ title, styles, images, auto, time, onesImages }) =>
                         const newIndex = (currentImageIndex + index) % images.length;
                         return (
                             <div key={newIndex} className={styles.recImgDiv}>
-                                {images[newIndex].rstr_img_url[0] ? (<img src={images[newIndex].rstr_img_url[0]} className={styles.recommendStoreImg} alt={`Cafe ${newIndex + 1}`} />) : (
+                                {images[newIndex].rstr_img_url[0] ? (<img src={images[newIndex].rstr_img_url[0]} className={styles.recommendStoreImg} alt={title} loading={"lazy"}/>) : (
                                     <img src={noImage} className={styles.recommendStoreImg}
-                                         alt={`Cafe ${newIndex + 1}`}/>)}
+                                         alt={title} loading={"lazy"}/>)}
                                 <div className={styles.imgText}>{images[newIndex].rstr_name}</div>
                             </div>
                         );
