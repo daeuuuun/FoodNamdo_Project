@@ -61,14 +61,13 @@ public class MainSystemController {
 
         Pageable pageable = PageRequest.of(Math.max(0, page - 1), pageSize);
 
-        APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long userId = userDetails.getUserId();  // Extract userId
-
         JsonNode rstrRecommandList = null;
         try {
+            APIUserDTO userDetails = (APIUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Long userId = userDetails.getUserId();  // Extract userId
             rstrRecommandList = mainSystemService.getRecommand(userId);
         } catch (IOException e) {
-            log.error("Error fetching recommendations", e);
+            log.error("Error fetching recommendations or No Token", e);
         }
 
         Page<RstrEntity> rstrReviewList = mainSystemService.findAllByOrderByRstrReviewRatingDesc(pageable);
