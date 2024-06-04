@@ -17,6 +17,8 @@ public interface MainSystemRepositoryReaction extends JpaRepository<ReactionEnti
 
     List<ReactionEntity> findAllByUserEntity_UserId(Long userId);
 
+    void deleteAllByReviewEntity_ReviewId(Long reviewId);
+
 //    @Query("SELECT COUNT(r) FROM ReactionEntity r WHERE r.reviewEntity.reviewId = :reviewId AND r.reactionType = :reactionType")
 //    long countByReviewIdAndReactionType(@Param("reviewId") Long reviewId, @Param("reactionType") ReactionType reactionType);
 //    long countByReviewIdAndReactionType(@Param("reviewId") Long reviewId, @Param("reactionType") ReactionType reactionType);

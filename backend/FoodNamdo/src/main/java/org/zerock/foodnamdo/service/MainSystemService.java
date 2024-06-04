@@ -50,6 +50,8 @@ public interface MainSystemService {
 
     void deleteByReviewId(Long reviewID);
 
+    void deleteReactionByReviewId(Long reviewID);
+
     Long saveReviewAndReturnId(ReviewRegisterDTO reviewRegisterDTO);
 
     void updateRestaurantRatingAndCount(Long rstrId);
@@ -83,5 +85,11 @@ public interface MainSystemService {
     Page<RstrEntity> findAll(Pageable pageable);
 
     JsonNode getRecommand(Long userId) throws IOException;
+
+//    RstrEntity findByReviewEntity_reviewId(Long reviewId);
+
+    ReviewEntity findRstrByReviewId(Long reviewId);
+
+    void deleteReviewImg(Long reviewId);
 //    ResponseEntity<String> processOCR(MultipartFile file);
 }

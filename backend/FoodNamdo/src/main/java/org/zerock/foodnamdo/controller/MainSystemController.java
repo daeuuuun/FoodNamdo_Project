@@ -509,6 +509,16 @@ public class MainSystemController {
     public String deleteReview(@RequestParam("review_id") Long reviewId, RedirectAttributes redirectAttributes) {
         log.info("delete user.." + reviewId);
 
+//        ReviewEntity reviewEntity = mainSystemService.findRstrByReviewId(reviewId);
+//
+//        Long rstrId = reviewEntity.getRstrEntity().getRstrId();
+//
+//        RstrEntity rstrEntity = mainSystemService.findByRstrId(rstrId);
+
+        mainSystemService.deleteReactionByReviewId(reviewId);
+
+        mainSystemService.deleteReviewImg(reviewId);
+
         mainSystemService.deleteByReviewId(reviewId);
 
         redirectAttributes.addFlashAttribute("result", "deleted");

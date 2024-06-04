@@ -42,4 +42,6 @@ public interface MainSystemRepositoryRstr extends JpaRepository<RstrEntity, Long
     Page<RstrEntity> findAllByOrderByRstrFavoriteCountDesc(Pageable pageable);
 
     List<RstrEntity> findAllByOrderByRstrFavoriteCountDesc();
+
+//    RstrEntity findByReviewEntity_reviewId(Long reviewId);
 }
