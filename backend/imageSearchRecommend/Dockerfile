@@ -6,4 +6,4 @@ RUN pip3 install chromadb open-clip-torch fastapi uvicorn[standard] mariadb scik
 
 WORKDIR /usr/src/app
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "FastAPIContoller:app", "--host", "0.0.0.0", "--port", "8000"]

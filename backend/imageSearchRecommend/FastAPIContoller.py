@@ -1,6 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, Query, Response
 from contextlib import asynccontextmanager
-import chromadb_utils, chromadb, os, SortBy, Category, Region, plyvel, leveldb_utils, json, Table, recommend_utils, time, threading
+import ImageSearchService as ImageSearchService, chromadb, os, SortBy, Category, Region, plyvel, LeveldbRpository as leveldbRpository, json, Table, RecommendService as recommendService, time, threading
 from chromadb.utils.embedding_functions import OpenCLIPEmbeddingFunction
 from chromadb.utils.data_loaders import ImageLoader
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,8 +27,8 @@ levelDB = plyvel.DB("./levelDB_data/", create_if_missing=True)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     if not chromaDB_exists:
-        chromadb_utils.init(rstr_img_collection, "rstr_img")
-        chromadb_utils.init(review_img_collection, "review_img")
+        ImageSearchService.init(rstr_img_collection, "rstr_img")
+        ImageSearchService.init(review_img_collection, "review_img")
     yield
     levelDB.close()
     print("FastAPI application is shutting down!")
@@ -58,11 +58,11 @@ async def image_search_all(file: UploadFile = File(..., description="이미지 �
     if not is_valid_image_filename(file.filename):
         raise HTTPException(status_code=422, detail=error_422_detail)
     try:
-        results = chromadb_utils.img_to_img(rstr_img_collection, review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, table)
+        results = ImageSearchService.img_to_img(rstr_img_collection, review_img_collection, file, file.filename.split(".")[-1], similarity, n_results, table)
     except Exception as e:
         print(e)
         raise HTTPException(status_code=422, detail="This file cannot be used")
-    random = leveldb_utils.insert_results(levelDB, results)
+    random = leveldbRpository.insert_results(levelDB, results)
     return sort_paginate_json(results, page_size, page_number, sort_order, reverse, category, region, random)
 
 @app.get("/{random}/")
@@ -102,14 +102,14 @@ def remove_final(query_result, category: Category.rstrCategory, region: Region.r
 
 @app.get("/recommend/{user_id}")
 async def recommend(user_id: int, n_results: int = Query(5, ge=1, le=10)):
-    return recommend_utils.rstr(user_id, n_results)
+    return recommendService.rstr(user_id, n_results)
 
 @app.post('/review_image/{review_img_id}')
 async def insert_review_image(review_img_id: int):
-    chromadb_utils.insert_chromaDB_review_image(review_img_collection, review_img_id)
+    ImageSearchService.insert_chromaDB_review_image(review_img_collection, review_img_id)
     return Response(status_code=200)
 
 @app.delete('/review_image/{review_img_id}')
 async def delete_review_image(review_img_id):
-    chromadb_utils.delete_review_image(review_img_collection, review_img_id)
+    ImageSearchService.delete_review_image(review_img_collection, review_img_id)
     return Response(status_code=200)

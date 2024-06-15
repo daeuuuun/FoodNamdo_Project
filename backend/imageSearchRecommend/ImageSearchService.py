@@ -1,4 +1,4 @@
-import mariadb_utils, os, uuid, main, Table
+import mariadbRepository as mariadbRepository, os, uuid, FastAPIContoller as FastAPIContoller, Table
 from tqdm import tqdm
 from fastapi import HTTPException
 import urllib.parse
@@ -10,8 +10,8 @@ def init(collection, table):
     elif(table == "review_img"):
         query = f"SELECT review_img_id, {table}.review_id as review_id, review_img_url, rstr_id FROM {table} JOIN review ON {table}.review_id = review.review_id"
     save_path = "./img/"
-    data = mariadb_utils.select_from_db_data(query)
-    columns = mariadb_utils.select_from_db_column(query)
+    data = mariadbRepository.select_from_db_data(query)
+    columns = mariadbRepository.select_from_db_column(query)
     img_saving(collection, save_path, table, data, columns)
 
 # 이미지 검색을 위한 이미지 저장 및 ChromaDB 저장
@@ -19,7 +19,7 @@ def img_saving(collection, save_path, table, data, columns):
     os.makedirs(save_path + table, exist_ok=True)
     for attribute in tqdm(data, desc="Processing", unit="item"):
         file_extension_name = str(attribute[2]).split(".")[-1]
-        if not main.is_valid_image_filename(str(attribute[2])):
+        if not FastAPIContoller.is_valid_image_filename(str(attribute[2])):
             params = str(attribute[2]).split('?')[1]
             param_list = params.split('&')
             file_extension_name = [param for param in param_list if param.startswith('image_name=')][0].split('.')[-1]
@@ -123,7 +123,7 @@ join_category = "JOIN rstr_category ON rstr_category.rstr_id = rstr.rstr_id JOIN
 def insert_rstrimg_rstr_info(query_result):
     for item in query_result:
         query = f"SELECT {rstr_column} FROM rstr_img JOIN rstr ON rstr_img.rstr_id = rstr.rstr_id {join_category} WHERE rstr_img.rstr_id = {item['rstr_id']}"
-        data = mariadb_utils.select_from_db_data(query)
+        data = mariadbRepository.select_from_db_data(query)
         for i in range(len(rstr_insert_column_array)):
             item[rstr_insert_column_array[i]] = data[0][i]
     return query_result
@@ -131,7 +131,7 @@ def insert_rstrimg_rstr_info(query_result):
 def insert_reviewimg_rstr_info(query_result):
     for item in query_result:
         query = f"SELECT {rstr_column} FROM review_img JOIN review ON review_img.review_id = review.review_id JOIN rstr ON review.rstr_id = rstr.rstr_id {join_category} WHERE review_img.review_id = {item['review_id']}"
-        data = mariadb_utils.select_from_db_data(query)
+        data = mariadbRepository.select_from_db_data(query)
         for i in range(len(rstr_insert_column_array)):
             item[rstr_insert_column_array[i]] = data[0][i]
     return query_result
@@ -140,8 +140,8 @@ def insert_chromaDB_review_image(collection, review_img_id):
     table = "review_img"
     query = f"SELECT review_img_id, {table}.review_id as review_id, review_img_url, rstr_id FROM {table} JOIN review ON {table}.review_id = review.review_id WHERE {table}.review_img_id = {review_img_id}"
     save_path = "./img/"
-    data = mariadb_utils.select_from_db_data(query)
-    columns = mariadb_utils.select_from_db_column(query)
+    data = mariadbRepository.select_from_db_data(query)
+    columns = mariadbRepository.select_from_db_column(query)
     img_saving(collection, save_path, table, data, columns)
 
 def delete_review_image(collection, review_img_id):

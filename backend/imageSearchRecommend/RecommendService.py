@@ -1,20 +1,20 @@
-import mariadb_utils
+import mariadbRepository as mariadbRepository
 
 rstr_column_array = ['rstr.rstr_id as rstr_id', 'example', 'relax', 'rstr_name', 'rstr_region', 'category_name', 'rstr_review_rating', 'rstr_review_count']
 join_category = "JOIN rstr_category ON rstr_category.rstr_id = rstr.rstr_id JOIN category ON category.category_id = rstr_category.category_id"
 def rstr(user_id, n_results):
     query = f"SELECT last_visit FROM user WHERE user_id = {user_id}"
-    data = mariadb_utils.select_from_db_data(query)
+    data = mariadbRepository.select_from_db_data(query)
     rstr_id = data[0][0]
 
     
     if rstr_id < 0:
         query = "SELECT rstr_id, rstr_la, rstr_lo FROM rstr ORDER BY rstr_naver_rating DESC, RAND() LIMIT 1"
-        data = mariadb_utils.select_from_db_data(query)
+        data = mariadbRepository.select_from_db_data(query)
         rstr_id = data[0][0]
     
     query = f"SELECT rstr_la, rstr_lo, rstr_name FROM rstr WHERE rstr.rstr_id = {rstr_id}"
-    data = mariadb_utils.select_from_db_data(query)
+    data = mariadbRepository.select_from_db_data(query)
     rstr_la = data[0][0]
     rstr_lo = data[0][1]
     rstr_name = data[0][2]
@@ -52,7 +52,7 @@ def select_data(base_query, n_results, rstr_id, column_name):
     return info_to_json(query, rstr_column_list)
 
 def info_to_json(query, column_list):
-    data = mariadb_utils.select_from_db_data(query)
+    data = mariadbRepository.select_from_db_data(query)
     items = []
     for row in data:
         item = {}
@@ -85,7 +85,7 @@ def select_nearby(n_results, rstr_la, rstr_lo):
 def insert_rstrimg(item):
     item['rstr_img_url'] = []
     query = f"SELECT rstr_img_url FROM rstr_img WHERE rstr_img.rstr_id = {item['rstr_id']}"
-    data = mariadb_utils.select_from_db_data(query)
+    data = mariadbRepository.select_from_db_data(query)
     for i in range(len(data)):
         item['rstr_img_url'].append(data[i][0])
     return item
