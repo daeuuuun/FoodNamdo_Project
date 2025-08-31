@@ -1,0 +1,75 @@
+.insertDiv {
+    padding-top: 2%;
+}
+
+.title {
+    font-size: 30px;
+    padding-bottom: 2%;
+}
+
+.contentDiv {
+    height: 30vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.content {
+    border: solid 3px #DBE2EF;
+    width: 100%;
+    height: 100%;
+    font-family: "Gmarket Sans Medium";
+    font-size: 20px;
+    border-radius: 10px;
+    padding: 1%;
+    resize: none;
+}
+
+.content:focus {
+    outline: none;
+}
+
+.btnDiv {
+    display: flex;
+}
+
+.nullDiv {
+    flex: 6;
+}
+
+.btn {
+    flex: 2;
+    padding: 1%;
+    margin: 1%;
+    font-family: "Gmarket Sans Medium";
+    font-size: 20px;
+    border: none;
+    border-radius: 10px;
+    background: #DBE2EF;
+}
+
+.textarea {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #DBE2EF;
+    border-radius: 10px;
+    font-size: 20px;
+    resize: none;
+    font-family: "Gmarket Sans Medium";
+    padding: 2%;
+}
+
+.textarea:focus {
+    border-color: #DBE2EF;
+    outline: none;
+}
+
+.imageInput {
+    font-family: "Gmarket Sans Medium";
+    padding: 2%;
+}

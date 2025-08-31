@@ -1,0 +1,15 @@
+.my-favorite-container {
+	padding: 20px;
+}
+
+.my-favorite-count {
+	font-size: 18px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+}
+
+.my-favorite-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0 12px;
+}

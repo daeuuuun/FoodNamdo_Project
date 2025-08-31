@@ -1,0 +1,22 @@
+.div {
+    display: flex;
+    justify-content: center;
+}
+
+.div2 {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 50%;
+}
+
+.loginLink {
+    background-color: #DBE2EF;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 6vh;
+    border-radius: 10px;
+    font-size: 20px;
+}

@@ -1,0 +1,28 @@
+.bottomTextDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: right;
+    align-items: center;
+    width: 50%;
+    height: 100%;
+    margin: 3% 0 0;
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+}
+
+.btn {
+    width: 80%;
+    height: 20%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    padding: 7%;
+    font-size: 30px;
+    background-color: #DBE2EF;
+    border-style: none;
+    border-radius: 10px;
+    font-family: 'Gmarket Sans Medium';
+}
+
+.btn:hover {
+    color: #555555;
+}
