@@ -1,0 +1,48 @@
+.background {
+    display: flex;
+    flex-direction: column;
+    background-color: #DBE2EF;
+}
+
+.divBox {
+    display: flex;
+    border-radius: 10px;
+    width: 90%;
+    margin: 2% auto;
+    flex-direction: column;
+}
+
+.badge {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contentBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    flex-direction: column;
+    padding: 2%;
+}
+
+.textDiv {
+    display: flex;
+    align-items: center;
+}
+
+.text {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.detailDiv {
+    display: flex;
+    background-color: #F9F7F7;
+    margin: 1%;
+    border-radius: 10px;
+}

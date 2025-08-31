@@ -1,0 +1,89 @@
+.rightContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.Contain {
+  background-color: #F9F7F7;
+  border-radius: 10px;
+  margin: 2%;
+  display: flex;
+  flex-direction: column;
+}
+
+.topBar {
+  display: flex;
+  flex-direction: row;
+}
+
+.btns {
+  background-color: #DBE2EF;
+  border-radius: 10px;
+  font-size: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1%;
+  margin: 1%;
+  flex: 1;
+}
+
+.btns:hover {
+  cursor: pointer;
+}
+
+.storeName {
+  font-size: 20px;
+  padding: 1%;
+  margin: 1%;
+  flex: 10;
+}
+
+.categoryDiv {
+  background-color: #DBE2EF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-self: center;
+  font-size: 20px;
+  width: 20%;
+  margin: 1%;
+  padding: 1%;
+  border-radius: 10px;
+}
+
+.categorys {
+  display: flex;
+  flex-direction: row;
+}
+
+.textContain {
+  font-size: 20px;
+  background-color: #DBE2EF;
+  padding: 1%;
+  margin: 1%;
+  width: 96%;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+  border-radius: 10px;
+}
+
+.reviewTime {
+  font-size: 15px;
+  display: flex;
+  justify-content: right;
+  margin-right: 1%;
+  margin-bottom: 1%;
+  font-family: 'Gmarket Sans Light';
+}
+
+.topDiv {
+  display: flex;
+  flex-direction: column;
+}
+
+.btnDiv {
+  display: flex;
+  flex-direction: row;
+}

@@ -1,0 +1,128 @@
+.auth-form-container {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-form-container img {
+    width: 8rem;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem 0;
+    padding: 30px 30px;
+    /* border: 1px solid #3F72AF; */
+    border: 1px solid #A0A0A0;
+    /* background-color: #DBE2EF; */
+    width: 30%;
+    min-height: 150px;
+    border-radius: 25px;
+}
+
+.auth-form .input-form {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    margin: 0.3rem 0;
+    width: 90%;
+    height: 40px;
+    border-radius: 15px;
+    padding: 0 0.8rem;
+    border: 1px solid #BEBEBE;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.auth-form .input-focus-form {
+    border: 1px solid #3F72AF;
+    color: #3F72AF;
+}
+
+.auth-form .input-focus-form .icons {
+    color: #3F72AF;
+}
+
+.address-form {
+    min-height: 2.2rem;
+    height: 3rem;
+}
+
+.input-form .icons {
+    font-size: 1.4rem;
+    margin-right: 0.3rem;
+    color: #BEBEBE;
+}
+
+.input-form input {
+    width: 80%;
+    height: 38px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    font-family: 'Gmarket Sans Medium';
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.input-form input::placeholder {
+    color: #A0A0A0;
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 5px;
+    font-family: 'Gmarket Sans Medium';
+    font-size: 0.9rem;
+    font-weight: 300;
+    width: 100px;
+    height: 28px;
+    border-radius: 15px;
+    border: 1px solid #3F72AF;
+    color: #3F72AF;
+    text-align: center;
+
+    &:hover {
+        background-color: #3F72AF;
+        color: #ffffff;
+    }
+}
+
+.auth-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 2.5rem;
+    width: 99%;
+    border-radius: 15px;
+    background-color: #3F72AF;
+    font-size: 1rem;
+    margin-top: 0.9rem;
+    color: #ffffff;
+    border: none;
+    font-family: 'Gmarket Sans Medium';
+
+    &:hover {
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.auth-form .error-text {
+    font-size: 0.9rem;
+    color: #D50136;
+    margin-top: 10px;
+    margin-left: -140px;
+    line-height: 15px;
+}
